@@ -38,6 +38,7 @@ WARNINGS_IGNORE :=
 CFLAGS          := -std=c99 $(WARNINGS) $(WARNINGS_IGNORE)
 LIBTOOL         := ar -rcs
 FMTTOOL         := $(shell which clang-format)
+DO_FMT          :=
 
 #   Define the flags for the various different end-result build targets
 RELFLAGS  := $(CFLAGS) -O2

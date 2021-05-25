@@ -22,7 +22,7 @@
 -include $(TESTDEPS)
 
 $(TESTBUILDDIR)/%.o : %.c
-ifdef FMTTOOL
+ifdef DO_FMT
 	@printf "%-8s %-16s\n" "(FMT)" "$<"
 	@$(FMTTOOL) -i $<
 endif
@@ -30,7 +30,7 @@ endif
 	@$(CC) -c $(TESTFLAGS) -o $@ $< -MMD -MP
 
 $(DBGBUILDDIR)/%.o : %.c
-ifdef FMTTOOL
+ifdef DO_FMT
 	@printf "%-8s %-16s\n" "(FMT)" "$<"
 	@$(FMTTOOL) -i $<
 endif
@@ -38,7 +38,7 @@ endif
 	@$(CC) -c $(DBGFLAGS) -o $@ $< -MMD -MP
 
 $(DBGRBUILDDIR)/%.o : %.c
-ifdef FMTTOOL
+ifdef DO_FMT
 	@printf "%-8s %-16s\n" "(FMT)" "$<"
 	@$(FMTTOOL) -i $<
 endif
@@ -46,7 +46,7 @@ endif
 	@$(CC) -c $(DBGRFLAGS) -o $@ $< -MMD -MP
 
 $(RELBUILDDIR)/%.o : %.c
-ifdef FMTTOOL
+ifdef DO_FMT
 	@printf "%-8s %-16s\n" "(FMT)" "$<"
 	@$(FMTTOOL) -i $<
 endif
