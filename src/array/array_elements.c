@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../error/include/error.h"
+#include "../logging/logging.h"
 #include "include/array.h"
 
 int Array_Prepend(Array_t *Array, const void *Element) {

@@ -23,5 +23,5 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../error/include/error.h"
+#include "../logging/logging.h"
 #include "include/list.h"

@@ -24,7 +24,7 @@
 #include <string.h>
 
 #include "../../include/libcontainer.h"
-#include "../error/include/error.h"
+#include "../logging/logging.h"
 #include "include/list.h"
 #include "include/list_node.h"
 

@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../error/include/error.h"
+#include "../logging/logging.h"
 #include "include/list_node.h"
 
 List_Node_t *ListNode_Create(const void *Contents, size_t Size) {

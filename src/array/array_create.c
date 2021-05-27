@@ -25,7 +25,7 @@
 
 #include "../../include/libcontainer.h"
 
-#include "../error/include/error.h"
+#include "../logging/logging.h"
 #include "include/array.h"
 
 Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {

@@ -24,7 +24,7 @@
 
 #include "include/array.h"
 
-#include "../error/include/error.h"
+#include "../logging/logging.h"
 
 int Test_Array_Create(void) {
 

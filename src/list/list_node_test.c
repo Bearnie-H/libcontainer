@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../error/include/error.h"
+#include "../logging/logging.h"
 #include "include/list_node.h"
 
 int Test_list_node(void) {
