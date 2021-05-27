@@ -2,7 +2,7 @@
     libcontainer - A library for creating and working with generic containers in pure C.
 
     This library contains a range of generic, useful "container" implementations
-    to help solve the problem of rebuilding common data structures, and to 
+    to help solve the problem of rebuilding common data structures, and to
     provide a consistent and memory-safe basis for building upon. These containers
     are designed to provide some of the benefits and power of the C++ standard library
     container templates, but in a pure C environment.
@@ -125,7 +125,7 @@ typedef void(*ReleaseFunc_t)(void*);
     Inputs:
     StartingCapacity    -   The desired initial capacity. The array will be initialized to
    hold at least this many elements.
-                                
+
     ElementSize         -   The size (in bytes) of a single element to be held.
    Good practice is to have this be of the form: sizeof(<type>).
 
@@ -372,9 +372,40 @@ void* Array_GetElement(Array_t* Array, int Index);
     int     -   Returns 0 on success, non-zero on failure.
 */
 int Array_SetElement(Array_t* Array, const void* Element, int Index);
+
+/*
+    Array_PopElement
+
+    This function will return the requested element of the Array, removing
+    it from the Array but not releasing the resources. Ownership of the given
+    element is transferred to the caller.
+
+    Inputs:
+    Array   -   Pointer to the Array_t to pop the element from.
+    Index   -   Index of the element within the array to pop.
+
+    Outputs:
+    void*   -   Untyped pointer to the requested element on success, or NULL on failure.
+
+    Note:
+    All resources owned by the element (if any) are transferred to the caller
+    by using this function. Furthermore, correct casting of the return value is
+    necessary for safe operation.
+*/
+void* Array_PopElement(Array_t* Array, int Index);
 /* ----- Array Functions ----- */
 
 /* +++++ List Functions +++++ */
+/* TODO: Function Documentation */
+List_t* List_Create(void);
+/* TODO: Function Documentation */
+List_t* List_CreateHet(void);
+/* TODO: Function Documentation */
+List_t* List_RefCreate(ReleaseFunc_t ReleaseFunc);
+/* TODO: Function Documentation */
+List_t* List_RefCreateHet(void);
+/* TODO: Function Documentation */
+void List_Release(List_t* List);
 /* ... */
 /* ----- List Functions ----- */
 

@@ -20,6 +20,8 @@
    IN THE SOFTWARE.
 */
 
-#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 
+#include "../error/include/error.h"
 #include "include/list.h"

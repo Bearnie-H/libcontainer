@@ -85,7 +85,8 @@ int Array_RemoveN(Array_t *Array, int Index, int Count) {
         return 1;
     }
 
-    if ((Index < 0) || (Array->Length < (size_t)Index)) {
+    if ((0 == Array->Length) || (Index < 0) ||
+        (Array->Length < (size_t)Index)) {
         DEBUG_PRINTF("Index (%d) is out of bounds.", Index);
         return 1;
     }
@@ -129,7 +130,8 @@ void *Array_GetElement(Array_t *Array, int Index) {
         return NULL;
     }
 
-    if ((Index < 0) || (Array->Length < (size_t)Index)) {
+    if ((0 == Array->Length) || (Index < 0) ||
+        (Array->Length < (size_t)Index)) {
         DEBUG_PRINTF("Error, requested index [ %d ] is out of bounds.", Index);
         return NULL;
     }
@@ -159,7 +161,8 @@ int Array_SetElement(Array_t *Array, const void *Element, int Index) {
         return 1;
     }
 
-    if ((Index < 0) || (Array->Length < (size_t)Index)) {
+    if ((0 == Array->Length) || (Index < 0) ||
+        (Array->Length < (size_t)Index)) {
         DEBUG_PRINTF("Error, requested index [ %d ] is out of bounds.", Index);
         return 1;
     }
@@ -169,4 +172,28 @@ int Array_SetElement(Array_t *Array, const void *Element, int Index) {
 
     DEBUG_PRINTF("Successfully set element at index [ %d ].", Index);
     return 0;
+}
+
+void *Array_PopElement(Array_t *Array, int Index) {
+
+    void *ElementContents = NULL;
+
+    /* Get the contents to be returned to the caller (also validate arguments).
+     */
+    ElementContents = Array_GetElement(Array, Index);
+    if (NULL == ElementContents) {
+        DEBUG_PRINTF("%s", "Error, Failed to GetElement during PopElement.");
+        return NULL;
+    }
+
+    /* Resize the array, removing the element. */
+    memmove(&(Array->Contents[Index * Array->ElementSize]),
+            &(Array->Contents[(Index + 1) * Array->ElementSize]),
+            (Array->Length - Index - 1) * Array->ElementSize);
+
+    Array->Length -= 1;
+
+    DEBUG_PRINTF("Successfully popped element at index [ %d ] from Array_t.",
+                 Index);
+    return ElementContents;
 }

@@ -20,26 +20,66 @@
    IN THE SOFTWARE.
 */
 
-#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+#include "../../include/libcontainer.h"
 #include "../error/include/error.h"
 #include "include/list.h"
 #include "include/list_node.h"
 
-int Test_list(void) {
+int Test_List_Create(void) {
 
-    int FailedTests = 0;
+    List_t *List = NULL;
 
-    /* Test the functions on the nodes specifically, to ensure all List tests
-     * can use them safely. */
-    FailedTests += Test_list_node();
+    List = List_Create();
+    if (NULL == List) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create List_t.");
+        TEST_FAILURE;
+    }
 
-    FailedTests += Test_List_Create();
-    FailedTests += Test_List_CreateHet();
-    FailedTests += Test_List_RefCreate();
-    FailedTests += Test_List_RefCreateHet();
+    List_Release(List);
+    TEST_SUCCESSFUL;
+}
 
-    /* Tests go here... */
+int Test_List_CreateHet(void) {
 
-    return FailedTests;
+    List_t *List = NULL;
+
+    List = List_CreateHet();
+    if (NULL == List) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create List_t.");
+        TEST_FAILURE;
+    }
+
+    List_Release(List);
+    TEST_SUCCESSFUL;
+}
+
+int Test_List_RefCreate(void) {
+
+    List_t *List = NULL;
+
+    List = List_RefCreate(NULL);
+    if (NULL == List) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create List_t.");
+        TEST_FAILURE;
+    }
+
+    List_Release(List);
+    TEST_SUCCESSFUL;
+}
+
+int Test_List_RefCreateHet(void) {
+
+    List_t *List = NULL;
+
+    List = List_RefCreateHet();
+    if (NULL == List) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create List_t.");
+        TEST_FAILURE;
+    }
+
+    List_Release(List);
+    TEST_SUCCESSFUL;
 }

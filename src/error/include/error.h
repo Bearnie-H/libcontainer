@@ -55,10 +55,18 @@ extern C {
 #define TEST_PRINTF(_fmt, ...)                                                 \
     fprintf(stderr, "(TESTING) [%s:%d:%s()]: " _fmt "\n", __FILE__, __LINE__,  \
             __func__, __VA_ARGS__)
+
+#define TEST_NOT_IMPLEMENTED TEST_PRINTF("%s", "Test Failure - Test not yet implemented!"); return 1
+#define TEST_SUCCESSFUL TEST_PRINTF("%s", "Test Successful."); return 0
+#define TEST_FAILURE return 1
+
 #else
 
 #define DEBUG_PRINTF(_fmt, ...) ((void)0)
 #define TEST_PRINTF(_fmt, ...) ((void)0)
+#define TEST_NOT_IMPLEMENTED ((void)0)
+#define TEST_SUCCESSFUL ((void)0)
+#define TEST_FAILURE ((void)0)
 
 #endif
 
@@ -66,12 +74,19 @@ extern C {
 
 #undef DEBUG_PRINTF
 #undef TEST_PRINTF
+#undef TEST_NOT_IMPLEMENTED
+#undef TEST_SUCCESSFUL
+#undef TEST_FAILURE
 
 #define DEBUG_PRINTF(_fmt, ...) ((void)0)
 
 #define TEST_PRINTF(_fmt, ...)                                                 \
     fprintf(stderr, "(TESTING) [%s:%d:%s()]: " _fmt "\n", __FILE__, __LINE__,  \
             __func__, __VA_ARGS__)
+
+#define TEST_NOT_IMPLEMENTED TEST_PRINTF("%s", "Test Failure - Test not yet implemented!"); return 1
+#define TEST_SUCCESSFUL TEST_PRINTF("%s", "Test Successful."); return 0
+#define TEST_FAILURE return 1
 
 #endif
 

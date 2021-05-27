@@ -32,14 +32,12 @@ int Test_Array_Create(void) {
 
     Array = Array_Create(0, sizeof(int));
     if (NULL == Array) {
-        TEST_PRINTF("%s", "Failed to create Array_t*!");
-        return 1;
+        TEST_PRINTF("%s", "Test Failure - Failed to create Array_t*.");
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }
 
 int Test_Array_RefCreate(void) {
@@ -48,12 +46,10 @@ int Test_Array_RefCreate(void) {
 
     Array = Array_RefCreate(0, sizeof(int), (ReleaseFunc_t)Array_Release);
     if (NULL == Array) {
-        TEST_PRINTF("%s", "Failed to create Array_t*!");
-        return 1;
+        TEST_PRINTF("%s", "Test Failure - Failed to create Array_t*.");
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }

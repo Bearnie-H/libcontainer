@@ -34,13 +34,13 @@ int Test_Array_Grow(void) {
     Array = Array_Create(InitialCapacity, sizeof(int));
     if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t.");
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_Grow(Array, DesiredCapacity)) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Array_Grow().");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (Array->Capacity < DesiredCapacity) {
@@ -49,10 +49,9 @@ int Test_Array_Grow(void) {
                     (unsigned long)Array->Capacity,
                     (unsigned long)(InitialCapacity + DesiredCapacity));
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }

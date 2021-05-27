@@ -36,7 +36,7 @@ int Test_Array_Prepend(void) {
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t.");
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
@@ -44,7 +44,7 @@ int Test_Array_Prepend(void) {
             "%s",
             "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_Prepend(Array, Elements)) {
@@ -52,7 +52,7 @@ int Test_Array_Prepend(void) {
             "%s",
             "Test Failure - Failed to prepend additional element to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
@@ -60,12 +60,11 @@ int Test_Array_Prepend(void) {
                     "expected value [ %s ].",
                     (char *)Array->Contents, Expected);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }
 
 int Test_Array_Append(void) {
@@ -77,7 +76,7 @@ int Test_Array_Append(void) {
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t.");
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
@@ -85,7 +84,7 @@ int Test_Array_Append(void) {
             "%s",
             "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_Append(Array, Elements)) {
@@ -93,7 +92,7 @@ int Test_Array_Append(void) {
             "%s",
             "Test Failure - Failed to append additional element to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
@@ -101,12 +100,11 @@ int Test_Array_Append(void) {
                     "expected value [ %s ].",
                     (char *)Array->Contents, Expected);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }
 
 int Test_Array_Insert(void) {
@@ -119,7 +117,7 @@ int Test_Array_Insert(void) {
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t.");
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
@@ -127,7 +125,7 @@ int Test_Array_Insert(void) {
             "%s",
             "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_Insert(Array, Elements, InsertIndex)) {
@@ -135,7 +133,7 @@ int Test_Array_Insert(void) {
             "%s",
             "Test Failure - Failed to insert additional element to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
@@ -143,12 +141,11 @@ int Test_Array_Insert(void) {
                     "expected value [ %s ].",
                     (char *)Array->Contents, Expected);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }
 
 int Test_Array_InsertN(void) {
@@ -161,7 +158,7 @@ int Test_Array_InsertN(void) {
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t.");
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
@@ -169,7 +166,7 @@ int Test_Array_InsertN(void) {
             "%s",
             "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 !=
@@ -178,7 +175,7 @@ int Test_Array_InsertN(void) {
             "%s",
             "Test Failure - Failed to insert additional elements to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
@@ -186,12 +183,11 @@ int Test_Array_InsertN(void) {
                     "expected value [ %s ].",
                     (char *)Array->Contents, Expected);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }
 
 int Test_Array_Remove(void) {
@@ -204,7 +200,7 @@ int Test_Array_Remove(void) {
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t.");
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
@@ -212,7 +208,7 @@ int Test_Array_Remove(void) {
             "%s",
             "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_Remove(Array, RemoveIndex)) {
@@ -220,7 +216,7 @@ int Test_Array_Remove(void) {
                     "index [ %d ] from Array_t.",
                     RemoveIndex);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
@@ -228,12 +224,11 @@ int Test_Array_Remove(void) {
                     "expected value [ %s ].",
                     (char *)Array->Contents, Expected);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }
 
 int Test_Array_RemoveN(void) {
@@ -246,7 +241,7 @@ int Test_Array_RemoveN(void) {
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t.");
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
@@ -254,7 +249,7 @@ int Test_Array_RemoveN(void) {
             "%s",
             "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_RemoveN(Array, RemoveIndex, Array_Length(Array))) {
@@ -262,7 +257,7 @@ int Test_Array_RemoveN(void) {
                     "index [ %d ] from Array_t.",
                     RemoveIndex);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
@@ -270,12 +265,11 @@ int Test_Array_RemoveN(void) {
                     "expected value [ %s ].",
                     (char *)Array->Contents, Expected);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }
 
 int Test_Array_GetElement(void) {
@@ -289,7 +283,7 @@ int Test_Array_GetElement(void) {
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t.");
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_InsertN(Array, Contents, 0, (sizeof(Contents) - 1))) {
@@ -297,7 +291,7 @@ int Test_Array_GetElement(void) {
             "%s",
             "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     Element = (char *)Array_GetElement(Array, Index);
@@ -306,7 +300,7 @@ int Test_Array_GetElement(void) {
             "Test Failure - Failed to retrieve element at index [ %d ].",
             Index);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (*Element != Expected) {
@@ -314,12 +308,11 @@ int Test_Array_GetElement(void) {
                     "expected element (%c).",
                     *Element, Expected);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }
 
 int Test_Array_SetElement(void) {
@@ -333,7 +326,7 @@ int Test_Array_SetElement(void) {
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t.");
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_InsertN(Array, Contents, 0, (sizeof(Contents) - 1))) {
@@ -341,14 +334,14 @@ int Test_Array_SetElement(void) {
             "%s",
             "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != Array_SetElement(Array, &(NewValue), Index)) {
         TEST_PRINTF("Test Failure - Failed to set element at index [ %d ].",
                     Index);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
@@ -356,15 +349,14 @@ int Test_Array_SetElement(void) {
                     "value (%s).",
                     Array->Contents, Expected);
         Array_Release(Array);
-        return 1;
+        TEST_FAILURE;
     }
 
     Array_Release(Array);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }
 
-int Array_Ref_InsertN(void) {
+int Test_Array_Ref_InsertN(void) {
 
     Array_t *Outer = NULL;
     Array_t *Inner = NULL;
@@ -377,7 +369,7 @@ int Array_Ref_InsertN(void) {
         TEST_PRINTF(
             "%s",
             "Test Failure - Failed to create outer Array_t of Array_t's.");
-        return 1;
+        TEST_FAILURE;
     }
 
     for (Index = 0; Index < SubArrayCount; Index++) {
@@ -386,7 +378,7 @@ int Array_Ref_InsertN(void) {
             TEST_PRINTF("Test Failure - Failed to create inner Array_t [ %d ].",
                         Index);
             Array_Release(Outer);
-            return 1;
+            TEST_FAILURE;
         }
 
         snprintf(Contents, sizeof(Contents), "%d", Index);
@@ -396,7 +388,7 @@ int Array_Ref_InsertN(void) {
                 "Test Failure - Failed to set contents for Array_t [ %d ].",
                 Index);
             Array_Release(Outer);
-            return 1;
+            TEST_FAILURE;
         }
 
         if (0 !=
@@ -405,7 +397,7 @@ int Array_Ref_InsertN(void) {
                         "into outer Array_t.",
                         Index);
             Array_Release(Outer);
-            return 1;
+            TEST_FAILURE;
         }
     }
 
@@ -416,7 +408,7 @@ int Array_Ref_InsertN(void) {
                         "index [ %d ].",
                         Index);
             Array_Release(Outer);
-            return 1;
+            TEST_FAILURE;
         }
 
         if (0 == Index) {
@@ -430,18 +422,15 @@ int Array_Ref_InsertN(void) {
                         "does not match expectation (%s).",
                         Index, Inner->Contents, Contents);
             Array_Release(Outer);
-            return 1;
+            TEST_FAILURE;
         }
     }
 
-    /* How to actually validate this worked? */
-
     Array_Release(Outer);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }
 
-int Array_Ref_RemoveN(void) {
+int Test_Array_Ref_RemoveN(void) {
 
     Array_t *Outer = NULL;
     Array_t *Inner = NULL;
@@ -455,7 +444,7 @@ int Array_Ref_RemoveN(void) {
         TEST_PRINTF(
             "%s",
             "Test Failure - Failed to create outer Array_t of Array_t's.");
-        return 1;
+        TEST_FAILURE;
     }
 
     for (Index = 0; Index < SubArrayCount; Index++) {
@@ -464,7 +453,7 @@ int Array_Ref_RemoveN(void) {
             TEST_PRINTF("Test Failure - Failed to create inner Array_t [ %d ].",
                         Index);
             Array_Release(Outer);
-            return 1;
+            TEST_FAILURE;
         }
 
         snprintf(Contents, sizeof(Contents), "%d", Index);
@@ -474,7 +463,7 @@ int Array_Ref_RemoveN(void) {
                 "Test Failure - Failed to set contents for Array_t [ %d ].",
                 Index);
             Array_Release(Outer);
-            return 1;
+            TEST_FAILURE;
         }
 
         if (0 !=
@@ -483,7 +472,7 @@ int Array_Ref_RemoveN(void) {
                         "into outer Array_t.",
                         Index);
             Array_Release(Outer);
-            return 1;
+            TEST_FAILURE;
         }
     }
 
@@ -491,7 +480,7 @@ int Array_Ref_RemoveN(void) {
         TEST_PRINTF("%s", "Test Failure - Failed to remove inner Array_t from "
                           "outer Array_t.");
         Array_Release(Outer);
-        return 1;
+        TEST_FAILURE;
     }
 
     for (Index = 0; Index < (int)Array_Length(Outer); Index++) {
@@ -501,7 +490,7 @@ int Array_Ref_RemoveN(void) {
                         "index [ %d ].",
                         Index);
             Array_Release(Outer);
-            return 1;
+            TEST_FAILURE;
         }
 
         if (0 == Index) {
@@ -518,13 +507,10 @@ int Array_Ref_RemoveN(void) {
                         "does not match expectation (%s).",
                         Index, Inner->Contents, Contents);
             Array_Release(Outer);
-            return 1;
+            TEST_FAILURE;
         }
     }
 
-    /* How to validate this actually worked? */
-
     Array_Release(Outer);
-    TEST_PRINTF("%s", "Test Successful.");
-    return 0;
+    TEST_SUCCESSFUL;
 }

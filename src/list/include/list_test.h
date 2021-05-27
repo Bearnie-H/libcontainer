@@ -35,6 +35,11 @@ extern "C" {
 */
 int Test_list(void);
 
+int Test_List_Create(void);
+int Test_List_CreateHet(void);
+int Test_List_RefCreate(void);
+int Test_List_RefCreateHet(void);
+
 #ifdef __cplusplus
 }
 #endif
