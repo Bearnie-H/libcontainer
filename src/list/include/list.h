@@ -34,7 +34,8 @@ extern "C" {
 #include <stdint.h>
 #include <sys/types.h>
 
-#include "../../../include/libcontainer.h"
+#define LIBCONTAINER_ENABLE_LIST
+
 #include "list_node.h"
 
 struct List_t {
@@ -55,43 +56,31 @@ struct List_t {
 
     /* Length holds the count of nodes within the list. */
     size_t Length;
-
-    /*
-        IsReference defines whether the nodes of the list own the resources they
-        hold, or if they simple reference existing objects.
-    */
-    bool IsReference;
-
-    /*
-        IsHomogeneous defines whether the list contains nodes where the contents
-        of each are of the same type (size, alignment, etc...), or if each node
-        may contain different objects.
-    */
-    bool IsHomogeneous;
-
-    /*
-        ReleaseFunc can mean a number of different things based on the values of IsReference and
-        IsHomogeneous. Generally, this refers to a function used to release the resources of
-        the nodes within the list.
-
-        IsHomogeneous && !IsReference   - Simplest case; Simply the free() function
-            from stdlib.h, and used for the contents of each node within the list.
-
-        IsHomogeneous && IsReference    - Slightly more complex; Refers to the function
-            to call to release the resources of a given Node. Equal across all
-            nodes and is therefore not required when adding a new node.
-
-        !IsHomogeneous && !IsReference  - Simple case; Simply the free() function
-            from stdlib.h, and used for the contents of each node within the list.
-            The fact that the list is heterogeneous doesn't matter, as the list
-            contains the resources for each element.
-
-        !IsHomogeneous && IsReference   - Complex case; Each element must provide
-            its own ReleaseFunc when it is added to the List in order to ensure each
-            element is able to be safely released.
-    */
-    ReleaseFunc_t ReleaseFunc;
 };
+
+/* Private Function Declarations. */
+
+/*
+    List_findNode
+
+    This function is the basic linear search through a List_t to find the item at the
+    specified index. Slightly more efficient for the ends of the List, but a linear search
+    for any middle index.
+
+    Inputs:
+    List    -   Pointer to the List_T to search through.
+    Index   -   The 0-indexed location of the List_Node_t to return.
+
+    Outputs:
+    List_Node_t*    -   Pointer to the desired Node of the List_t.
+
+    Note:
+    As this function is private, and all public functions perform
+    bounds-checking on the Index value, this is guaranteed to return
+    a Node within the List as long as the List_t itself is structured
+    correctly. As such, no input validation is needed.
+*/
+List_Node_t* List_findNode(List_t* List, int Index);
 
 #if defined(TESTING) || defined(DEBUGGER)
 

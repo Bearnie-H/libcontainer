@@ -22,6 +22,10 @@
 
 #include <stdio.h>
 
+#define LIBCONTAINER_ENABLE_ARRAY
+#define LIBCONTAINER_ENABLE_LIST
+
+#include "../include/libcontainer.h"
 #include "array/include/array.h"
 #include "list/include/list.h"
 

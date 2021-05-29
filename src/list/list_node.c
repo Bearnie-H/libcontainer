@@ -42,8 +42,7 @@ List_Node_t *ListNode_Create(const void *Contents, size_t Size) {
 
     Node = (List_Node_t *)malloc(sizeof(List_Node_t));
     if (NULL == Node) {
-        DEBUG_PRINTF("%s",
-                     "Error, Failed to allocate memory for new List_Node_t.");
+        DEBUG_PRINTF("%s", "Error, Failed to allocate memory for new List_Node_t.");
         return NULL;
     }
 
@@ -54,9 +53,7 @@ List_Node_t *ListNode_Create(const void *Contents, size_t Size) {
 
     Node->Contents = (uint8_t *)malloc(sizeof(uint8_t) * Size);
     if (NULL == Node->Contents) {
-        DEBUG_PRINTF(
-            "%s",
-            "Error, Failed to allocate memory for new List_Node_t->Contents.");
+        DEBUG_PRINTF("%s", "Error, Failed to allocate memory for new List_Node_t->Contents.");
         free(Node);
         return NULL;
     }
@@ -68,8 +65,7 @@ List_Node_t *ListNode_Create(const void *Contents, size_t Size) {
     return Node;
 }
 
-List_Node_t *ListNode_RefCreate(const void *Contents,
-                                ReleaseFunc_t ReleaseFunc) {
+List_Node_t *ListNode_RefCreate(const void *Contents, ReleaseFunc_t ReleaseFunc) {
 
     List_Node_t *Node = NULL;
 
@@ -85,8 +81,7 @@ List_Node_t *ListNode_RefCreate(const void *Contents,
 
     Node = (List_Node_t *)malloc(sizeof(List_Node_t));
     if (NULL == Node) {
-        DEBUG_PRINTF("%s",
-                     "Error, Failed to allocate memory for new List_Node_t.");
+        DEBUG_PRINTF("%s", "Error, Failed to allocate memory for new List_Node_t.");
         return NULL;
     }
 
@@ -113,6 +108,66 @@ void ListNode_Release(List_Node_t *Node) {
         Node->ReleaseFunc(Node->Contents);
     }
 
+    ListNode_Delete(Node);
+
+    DEBUG_PRINTF("%s", "Successfully released List_Node_t.");
+    return;
+}
+
+int ListNode_InsertAfter(List_Node_t *Base, List_Node_t *ToInsert) {
+
+    List_Node_t *Next = NULL;
+
+    if ((NULL == Base) || (NULL == ToInsert)) {
+        DEBUG_PRINTF("%s", "Error, NULL List_Node_t* provided for either Base or ToInsert.");
+        return 1;
+    }
+
+    Next = Base->Next;
+
+    Base->Next = ToInsert;
+    ToInsert->Next = Next;
+
+    ToInsert->Previous = Base;
+
+    if (NULL != Next) {
+        Next->Previous = ToInsert;
+    }
+
+    DEBUG_PRINTF("%s", "Successfully added new List_Node_t* after requested List_Node_t*.");
+    return 0;
+}
+
+int ListNode_InsertBefore(List_Node_t *Base, List_Node_t *ToInsert) {
+
+    List_Node_t *Previous = NULL;
+
+    if ((NULL == Base) || (NULL == ToInsert)) {
+        DEBUG_PRINTF("%s", "Error, NULL List_Node_t* provided for either Base or ToInsert.");
+        return 1;
+    }
+
+    Previous = Base->Previous;
+
+    Base->Previous = ToInsert;
+    ToInsert->Previous = Previous;
+
+    if (NULL != Previous) {
+        Previous->Next = ToInsert;
+    }
+    ToInsert->Next = Base;
+
+    DEBUG_PRINTF("%s", "Successfully added new List_Node_t* before requested List_Node_t*.");
+    return 0;
+}
+
+void ListNode_Delete(List_Node_t *Node) {
+
+    if (NULL == Node) {
+        DEBUG_PRINTF("%s", "NULL List_Node_t* provided, nothing to delete.");
+        return;
+    }
+
     if (NULL != Node->Previous) {
         Node->Previous->Next = Node->Next;
     }
@@ -129,61 +184,49 @@ void ListNode_Release(List_Node_t *Node) {
     Node->ReleaseFunc = NULL;
     free(Node);
 
-    DEBUG_PRINTF("%s", "Successfully released List_Node_t.");
+    DEBUG_PRINTF("%s", "Successfully deleted List_Node_t but not its contents.");
     return;
 }
 
-int ListNode_InsertAfter(List_Node_t *Base, List_Node_t *ToInsert) {
+int ListNode_UpdateValue(List_Node_t *Node, const void *Element, size_t ElementSize,
+                         ReleaseFunc_t ReleaseFunc) {
 
-    List_Node_t *Next = NULL;
+    void *NewContents = NULL;
+    bool NewNodeIsReference = false;
 
-    if ((NULL == Base) || (NULL == ToInsert)) {
-        DEBUG_PRINTF(
-            "%s",
-            "Error, NULL List_Node_t* provided for either Base or ToInsert.");
+    if ((NULL == Node) || (NULL == Element)) {
+        DEBUG_PRINTF("%s", "Error, NULL Node* or Element* provided.");
         return 1;
     }
 
-    Next = Base->Next;
-
-    Base->Next = ToInsert;
-    ToInsert->Next = Next;
-
-    ToInsert->Previous = Base;
-
-    if (NULL != Next) {
-        Next->Previous = ToInsert;
+    if (0 == ElementSize) {
+        NewNodeIsReference = true;
+        NewContents = (void *)Element;
+        if (NULL == ReleaseFunc) {
+            DEBUG_PRINTF("%s", "Error, NULL ReleaseFunc provided for "
+                               "Reference-Type contents.");
+            return 1;
+        }
+    } else {
+        NewNodeIsReference = false;
+        ReleaseFunc = (ReleaseFunc_t)free;
+        NewContents = (uint8_t *)malloc(sizeof(uint8_t) * ElementSize);
+        if (NULL == NewContents) {
+            DEBUG_PRINTF("%s", "Error, Failed to allocate memory to hold new Node contents.");
+            return 1;
+        }
+        memcpy(NewContents, Element, ElementSize);
     }
 
-    DEBUG_PRINTF(
-        "%s",
-        "Successfully added new List_Node_t* after requested List_Node_t*.");
-    return 0;
-}
+    /* Release the existing contents of the node. */
+    Node->ReleaseFunc(Node->Contents);
 
-int ListNode_InsertBefore(List_Node_t *Base, List_Node_t *ToInsert) {
+    /* Actually update the Node to the desired new contents. */
+    Node->Contents = NewContents;
+    Node->IsReference = NewNodeIsReference;
+    Node->ReleaseFunc = ReleaseFunc;
+    Node->Size = ElementSize;
 
-    List_Node_t *Previous = NULL;
-
-    if ((NULL == Base) || (NULL == ToInsert)) {
-        DEBUG_PRINTF(
-            "%s",
-            "Error, NULL List_Node_t* provided for either Base or ToInsert.");
-        return 1;
-    }
-
-    Previous = Base->Previous;
-
-    Base->Previous = ToInsert;
-    ToInsert->Previous = Previous;
-
-    if (NULL != Previous) {
-        Previous->Next = ToInsert;
-    }
-    ToInsert->Next = Base;
-
-    DEBUG_PRINTF(
-        "%s",
-        "Successfully added new List_Node_t* before requested List_Node_t*.");
+    DEBUG_PRINTF("%s", "Successfully updated List_Node_t contents to new value.");
     return 0;
 }

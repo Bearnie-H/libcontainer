@@ -40,6 +40,8 @@ LIBTOOL         := ar -rcs
 FMTTOOL         := $(shell which clang-format)
 DO_FMT          :=
 
+include Build_Tuning.mk
+
 #   Define the flags for the various different end-result build targets
 RELFLAGS  := $(CFLAGS) -O2
 DBGFLAGS  := $(CFLAGS) -g -O0 -DDEBUG

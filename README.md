@@ -21,18 +21,38 @@ your specific application:
 | :----------: | :---------- |
 | `LIBCONTAINER_ARRAY_DEFAULT_CAPACITY` | Minimum Capacity of Array_t objects unless specified |
 
-To change any of these macros, simply add the necessary flags to the `CFLAGS` variable
-of the project `Makefile`, e.g. (`-DLIBCONTAINER_ARRAY_DEFAULT_CAPACITY=16`). Note
-that all of these are initialized to sensible defaults, and making these kinds of
+To specify non-default values for any of these tunable parameters, simply set the variable as desired
+when calling the `make` program, e.g. `make LIBCONTAINER_ARRAY_DEFAULT_CAPACITY=16 release`.
+Note that all of these are initialized to sensible defaults, and making these kinds of
 changes are only necessary if you wish to tune the performance for your use-case.
-
-...
 
 ## Installing the Library
 
+The `Makefile` included in this project defines placeholder `install` and `uninstall` targets to perform
+this installation. Currently these are no-ops and simply error out, but at some point these will
+fully install the compiled library and header file to the necessary paths.
+
+Until the `make install` target is defined, the library can be installed by placing it where your
+linker can see (or by including it into the other project requiring it), and the main library header
+`libcontainer.h` into the compiler include-path.
+
 ...
 
-## Examples
+## Using the Library
+
+Once the library is installed, either to your system path or to a project using the library,
+there are a handful of additional useful macros to help maintain a cleaner namespace.
+Each of the containers can be individually enabled for each compilation unit by defining
+the `LIBCONTAINER_ENABLE_<Container>` macros as desired. For example, if only the Array_t
+container is desired in a specific file, simply add `#define LIBCONTAINER_ENABLE_ARRAY`
+before `#include`-ing the library header to only bring the Array_t type and functions in.
+
+The library binary itself contains all of the implemented containers, and this mechanism provides
+a way to ensure only the containers you want end up compiled into your project.
+
+...
+
+### Examples
 
 As this library provides a significant number of functionality, only a small set of example
 operations are provided here.

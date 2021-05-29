@@ -20,9 +20,8 @@
    IN THE SOFTWARE.
 */
 
-#include "include/array.h"
-
 #include "../logging/logging.h"
+#include "include/array.h"
 
 int Test_array(void) {
 

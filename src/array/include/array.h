@@ -34,6 +34,8 @@ extern "C" {
 #include <sys/types.h>
 #include <stdint.h>
 
+#define LIBCONTAINER_ENABLE_ARRAY
+
 #include "../../../include/libcontainer.h"
 
 #ifndef LIBCONTAINER_ARRAY_DEFAULT_CAPACITY

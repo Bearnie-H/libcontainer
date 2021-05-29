@@ -38,15 +38,12 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
     }
 
     if (NULL == Array->Contents) {
-        DEBUG_PRINTF(
-            "%s",
-            "Error, Array_t* in invalid state with NULL Contents pointer.");
+        DEBUG_PRINTF("%s", "Error, Array_t* in invalid state with NULL Contents pointer.");
         return 1;
     }
 
     if (0 == Array->ElementSize) {
-        DEBUG_PRINTF("%s",
-                     "Error, Array_t* in invalid state with ElementSize of 0.");
+        DEBUG_PRINTF("%s", "Error, Array_t* in invalid state with ElementSize of 0.");
         return 1;
     }
 
@@ -78,8 +75,7 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
     Array->Contents = Temp;
     Array->Capacity = NewCap;
 
-    DEBUG_PRINTF("Successfully increased Array_t capacity to [ %ld ]",
-                 (unsigned long)NewCap);
+    DEBUG_PRINTF("Successfully increased Array_t capacity to [ %ld ]", (unsigned long)NewCap);
     return 0;
 }
 

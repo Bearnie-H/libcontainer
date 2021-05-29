@@ -22,9 +22,8 @@
 
 #include <stdlib.h>
 
-#include "include/array.h"
-
 #include "../logging/logging.h"
+#include "include/array.h"
 
 int Test_Array_Create(void) {
 

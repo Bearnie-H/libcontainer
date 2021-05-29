@@ -40,17 +40,13 @@ int Test_Array_Prepend(void) {
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to insert initial contents to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
 
     if (0 != Array_Prepend(Array, Elements)) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to prepend additional element to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to prepend additional element to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -80,17 +76,13 @@ int Test_Array_Append(void) {
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to insert initial contents to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
 
     if (0 != Array_Append(Array, Elements)) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to append additional element to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to append additional element to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -121,17 +113,13 @@ int Test_Array_Insert(void) {
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to insert initial contents to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
 
     if (0 != Array_Insert(Array, Elements, InsertIndex)) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to insert additional element to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to insert additional element to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -162,18 +150,13 @@ int Test_Array_InsertN(void) {
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to insert initial contents to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
 
-    if (0 !=
-        Array_InsertN(Array, Elements, InsertIndex, (sizeof(Elements) - 1))) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to insert additional elements to Array_t.");
+    if (0 != Array_InsertN(Array, Elements, InsertIndex, (sizeof(Elements) - 1))) {
+        TEST_PRINTF("%s", "Test Failure - Failed to insert additional elements to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -204,9 +187,7 @@ int Test_Array_Remove(void) {
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to insert initial contents to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -245,9 +226,7 @@ int Test_Array_RemoveN(void) {
     }
 
     if (0 != Array_InsertN(Array, Elements, 0, (sizeof(Elements) - 1))) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to insert initial contents to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -287,18 +266,14 @@ int Test_Array_GetElement(void) {
     }
 
     if (0 != Array_InsertN(Array, Contents, 0, (sizeof(Contents) - 1))) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to insert initial contents to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
 
     Element = (char *)Array_GetElement(Array, Index);
     if (NULL == Element) {
-        TEST_PRINTF(
-            "Test Failure - Failed to retrieve element at index [ %d ].",
-            Index);
+        TEST_PRINTF("Test Failure - Failed to retrieve element at index [ %d ].", Index);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -330,16 +305,13 @@ int Test_Array_SetElement(void) {
     }
 
     if (0 != Array_InsertN(Array, Contents, 0, (sizeof(Contents) - 1))) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to insert initial contents to Array_t.");
+        TEST_PRINTF("%s", "Test Failure - Failed to insert initial contents to Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
 
     if (0 != Array_SetElement(Array, &(NewValue), Index)) {
-        TEST_PRINTF("Test Failure - Failed to set element at index [ %d ].",
-                    Index);
+        TEST_PRINTF("Test Failure - Failed to set element at index [ %d ].", Index);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -366,17 +338,14 @@ int Test_Array_Ref_InsertN(void) {
 
     Outer = Array_RefCreate(0, sizeof(Array_t *), (ReleaseFunc_t)Array_Release);
     if (NULL == Outer) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to create outer Array_t of Array_t's.");
+        TEST_PRINTF("%s", "Test Failure - Failed to create outer Array_t of Array_t's.");
         TEST_FAILURE;
     }
 
     for (Index = 0; Index < SubArrayCount; Index++) {
         Inner = Array_Create(0, sizeof(char));
         if (NULL == Inner) {
-            TEST_PRINTF("Test Failure - Failed to create inner Array_t [ %d ].",
-                        Index);
+            TEST_PRINTF("Test Failure - Failed to create inner Array_t [ %d ].", Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
@@ -384,15 +353,12 @@ int Test_Array_Ref_InsertN(void) {
         snprintf(Contents, sizeof(Contents), "%d", Index);
 
         if (0 != Array_InsertN(Inner, Contents, 0, strlen(Contents))) {
-            TEST_PRINTF(
-                "Test Failure - Failed to set contents for Array_t [ %d ].",
-                Index);
+            TEST_PRINTF("Test Failure - Failed to set contents for Array_t [ %d ].", Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
 
-        if (0 !=
-            Array_InsertN(Outer, &(Inner), ((Index >= 1) ? (1) : (0)), 1)) {
+        if (0 != Array_InsertN(Outer, &(Inner), ((Index >= 1) ? (1) : (0)), 1)) {
             TEST_PRINTF("Test Failure - Failed to insert inner Array_t [ %d ] "
                         "into outer Array_t.",
                         Index);
@@ -441,17 +407,14 @@ int Test_Array_Ref_RemoveN(void) {
 
     Outer = Array_RefCreate(0, sizeof(Array_t *), (ReleaseFunc_t)Array_Release);
     if (NULL == Outer) {
-        TEST_PRINTF(
-            "%s",
-            "Test Failure - Failed to create outer Array_t of Array_t's.");
+        TEST_PRINTF("%s", "Test Failure - Failed to create outer Array_t of Array_t's.");
         TEST_FAILURE;
     }
 
     for (Index = 0; Index < SubArrayCount; Index++) {
         Inner = Array_Create(0, sizeof(char));
         if (NULL == Inner) {
-            TEST_PRINTF("Test Failure - Failed to create inner Array_t [ %d ].",
-                        Index);
+            TEST_PRINTF("Test Failure - Failed to create inner Array_t [ %d ].", Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
@@ -459,15 +422,12 @@ int Test_Array_Ref_RemoveN(void) {
         snprintf(Contents, sizeof(Contents), "%d", Index);
 
         if (0 != Array_InsertN(Inner, Contents, 0, strlen(Contents))) {
-            TEST_PRINTF(
-                "Test Failure - Failed to set contents for Array_t [ %d ].",
-                Index);
+            TEST_PRINTF("Test Failure - Failed to set contents for Array_t [ %d ].", Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
 
-        if (0 !=
-            Array_InsertN(Outer, &(Inner), ((Index >= 1) ? (1) : (0)), 1)) {
+        if (0 != Array_InsertN(Outer, &(Inner), ((Index >= 1) ? (1) : (0)), 1)) {
             TEST_PRINTF("Test Failure - Failed to insert inner Array_t [ %d ] "
                         "into outer Array_t.",
                         Index);
@@ -496,8 +456,7 @@ int Test_Array_Ref_RemoveN(void) {
         if (0 == Index) {
             snprintf(Contents, sizeof(Contents), "%d", Index);
         } else if (Index >= RemoveIndex) {
-            snprintf(Contents, sizeof(Contents), "%d",
-                     SubArrayCount - Index - 1);
+            snprintf(Contents, sizeof(Contents), "%d", SubArrayCount - Index - 1);
         } else {
             snprintf(Contents, sizeof(Contents), "%d", SubArrayCount - Index);
         }

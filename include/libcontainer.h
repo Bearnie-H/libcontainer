@@ -53,6 +53,7 @@ extern "C" {
 
 /* ++++++++++ Exported Library Types ++++++++++ */
 
+#ifdef LIBCONTAINER_ENABLE_ARRAY
 /*
     Array_t
 
@@ -72,6 +73,10 @@ extern "C" {
 */
 typedef struct Array_t Array_t;
 
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_LIST
+
 /*
     List_t
 
@@ -90,6 +95,8 @@ typedef struct Array_t Array_t;
 */
 typedef struct List_t List_t;
 
+#endif
+
 /*
     ReleaseFunc_t
 
@@ -102,6 +109,7 @@ typedef struct List_t List_t;
 
     Note:
     If NULL is given, the library will default to the free() function in libstd.h
+    if the context implies this is a meaningful default.
 */
 typedef void(*ReleaseFunc_t)(void*);
 
@@ -111,6 +119,7 @@ typedef void(*ReleaseFunc_t)(void*);
 
 /* ++++++++++ Exported Library Functions ++++++++++ */
 
+#ifdef LIBCONTAINER_ENABLE_ARRAY
 /* +++++ Array Functions +++++ */
 /*
     Array_Create
@@ -394,20 +403,270 @@ int Array_SetElement(Array_t* Array, const void* Element, int Index);
 */
 void* Array_PopElement(Array_t* Array, int Index);
 /* ----- Array Functions ----- */
+#endif
 
+#ifdef LIBCONTAINER_ENABLE_LIST
 /* +++++ List Functions +++++ */
-/* TODO: Function Documentation */
+/*
+    List_Create
+
+    This function will create a new List_t, capable of holding arbitrary elements.
+    This List_t can hold a heterogeneous collection of items, and can either own the
+    resources held by the items, or simply reference objects which hold their own resources.
+    For more information, see the List_Insert() and List_RefInsert() functions.
+
+    Inputs:
+    None, A default list is constructed and returned.
+
+    Outputs:
+    List_t* -   A pointer to the newly constructed List_t, ready to be used.
+*/
 List_t* List_Create(void);
-/* TODO: Function Documentation */
-List_t* List_CreateHet(void);
-/* TODO: Function Documentation */
-List_t* List_RefCreate(ReleaseFunc_t ReleaseFunc);
-/* TODO: Function Documentation */
-List_t* List_RefCreateHet(void);
-/* TODO: Function Documentation */
+
+/*
+    List_Release
+
+    This function will fully and safely release the List_t, as well as all
+    of the contents of the list. For complete and safe release, the ReleaseFunc
+    provided when adding items to the List_t must fully release the contents of
+    the given item.
+
+    Inputs:
+    List    -   A pointer to the List_t to release.
+
+    Outputs:
+    None, the List_t is fully released and no further operations are valid on it.
+*/
 void List_Release(List_t* List);
+
+/*
+    List_Length
+
+    This function returns the count of items in the list.
+
+    Inputs:
+    List    -   Pointer to the List_t to get the length of.
+
+    Outputs:
+    size_t  -   The count of items in the list.
+*/
+size_t List_Length(List_t* List);
+
+/*
+    List_Insert
+
+    This function will insert a new item into the list at the desired location.
+    This item is a non-reference type, and ownership of the item's resources are
+    transferred to the List_t.
+
+    Inputs:
+    List            -   Pointer to the List_t to insert the item into.
+    Element         -   Pointer to the item to add to the list.
+    ElementSize     -   The size of the element to be added to the list, in bytes.
+    Index           -   The 0-indexed location to add the item at in the List_t.
+
+    Outputs:
+    int -   Returns 0 on success, nonzero on failure.
+*/
+int List_Insert(List_t* List, const void* Element, size_t ElementSize, int Index);
+
+/*
+    List_RefInsert
+
+    This function will insert a new item into the list at the desired location.
+    This item is a reference type, and ownership of the item's resources are
+    retained by the item, to be released by the given ReleaseFunc.
+
+    Inputs:
+    List            -   Pointer to the List_t to insert the item into.
+    Element         -   Pointer to the item to add to the list.
+    ReleaseFunc     -   The function to use to release the resources owned by the element if the item is to be disposed.
+    Index           -   The 0-indexed location to add the item at in the List_t.
+
+    Outputs:
+    int -   Returns 0 on success, nonzero on failure.
+*/
+int List_RefInsert(List_t* List, const void* Element, ReleaseFunc_t ReleaseFunc, int Index);
+
+/*
+    List_Prepend
+
+    This function is a shorthand for List_Insert(List, Element, ElementSize, 0).
+
+    Inputs:
+    List            -   Pointer to the List_t to insert the item into.
+    Element         -   Pointer to the item to add to the list.
+    ElementSize     -   The size of the element to be added to the list, in bytes.
+
+    Outputs:
+    int -   Returns 0 on success, nonzero on failure.
+*/
+int List_Prepend(List_t* List, const void* Element, size_t ElementSize);
+
+/*
+    List_RefPrepend
+
+    This function is a shorthand for List_RefInsert(List, Element, ReleaseFunc, 0).
+
+    Inputs:
+    List            -   Pointer to the List_t to insert the item into.
+    Element         -   Pointer to the item to add to the list.
+    ReleaseFunc     -   The function to use to release the resources owned by the element if the item is to be disposed.
+    Index           -   The 0-indexed location to add the item at in the List_t.
+
+    Outputs:
+    int -   Returns 0 on success, nonzero on failure.
+*/
+int List_RefPrepend(List_t* List, const void* Element, ReleaseFunc_t ReleaseFunc);
+
+/*
+    List_Append
+
+    This function is a shorthand for List_Insert(List, Element, ElementSize, List->Length).
+
+    Inputs:
+    List            -   Pointer to the List_t to insert the item into.
+    Element         -   Pointer to the item to add to the list.
+    ElementSize     -   The size of the element to be added to the list, in bytes.
+
+    Outputs:
+    int -   Returns 0 on success, nonzero on failure.
+*/
+int List_Append(List_t* List, const void* Element, size_t ElementSize);
+
+/*
+    List_RefAppend
+
+    This function is a shorthand for List_RefInsert(List, Element, ReleaseFunc, List->Length).
+
+    Inputs:
+    List            -   Pointer to the List_t to insert the item into.
+    Element         -   Pointer to the item to add to the list.
+    ReleaseFunc     -   The function to use to release the resources owned by the element if the item is to be disposed.
+    Index           -   The 0-indexed location to add the item at in the List_t.
+
+    Outputs:
+    int -   Returns 0 on success, nonzero on failure.
+*/
+int List_RefAppend(List_t* List, const void* Element, ReleaseFunc_t ReleaseFunc);
+
+/*
+    List_Remove
+
+    This function will remove the item at the specified index from the List_t, using
+    the ReleaseFunc it was created with for Reference-types, or free() otherwise.
+    This will remove the item and shrink the list.
+
+    Inputs:
+    List    -   Pointer to the List_t to operate on.
+    Index   -   The 0-indexed location of the item to remove from the list.
+
+    Outputs:
+    int -   Returns 0 on success, nonzero on failure.
+*/
+int List_Remove(List_t* List, int Index);
+
+/*
+    List_GetElement
+
+    This function returns a pointer to the contents of the item at the specified
+    index into the List_t. The element stays within the list, and this simply gives
+    access to the data.
+
+    Inputs:
+    List    -   Pointer to the List_t to operate on.
+    Index   -   The 0-indexed location in the List_t of the element to retrieve.
+
+    Outputs:
+    void*   -   Untyped pointer to the contents at the specified index on success, NULL on failure.
+
+    Note
+    It is the responsibility of the caller to ensure the return value is cast to the correct
+    type.
+*/
+void* List_GetElement(List_t* List, int Index);
+
+/*
+    List_SetElement
+
+    This function allows overwriting the non-reference type item at the specified index
+    of the List_t, updating the contents to a new value. The existing contents are released
+    when the new contents are written.
+
+    Inputs:
+    List            -   Pointer to the List_t to operate on.
+    Element         -   Pointer to the contents to update the item in the list to.
+    ElementSize     -   The size of the contents, measured in bytes.
+    Index           -   The 0-indexed position in the List_t of the item to update.
+
+    Outputs:
+    int -   Returns 0 on success, nonzero on failure.
+*/
+int List_SetElement(List_t* List, const void* Element, size_t ElementSize, int Index);
+
+/*
+    List_RefSetElement
+
+    This function allows overwriting the reference type item at the specified index
+    of the List_t, updating the contents to a new value. The existing contents are released
+    when the new contents are written.
+
+    Inputs:
+    List            -   Pointer to the List_t to operate on.
+    Element         -   Pointer to the contents to update the item in the list to.
+    ReleaseFunc     -   The function which will safely release the new item being added.
+    Index           -   The 0-indexed position in the List_t of the item to update.
+
+    Outputs:
+    int -   Returns 0 on success, nonzero on failure.
+*/
+int List_RefSetElement(List_t* List, const void* Element, ReleaseFunc_t ReleaseFunc, int Index);
+
+/*
+    List_PopElement
+
+    This function will return the contents of the element at the specified index in
+    the List_t, removing it from the List_t and transferring ownership to the caller.
+    This is similar to List_GetElement, but the item is additionally removed from the list.
+
+    Inputs:
+    List    -   Pointer to the List_t to operate on.
+    Index   -   The 0-indexed location of the List_t of the element to pop.
+
+    Outputs:
+    void*   -   Returns an untyped pointer to the requested item contents on success, or NULL on failure.
+*/
+void* List_PopElement(List_t* List, int Index);
+
+/*
+    List_PopFront
+
+    This function is a shorthand for List_PopElement(List, 0).
+
+    Inputs:
+    List    -   Pointer to the List_t to operate on.
+
+    Outputs:
+    void*   -   Returns an untyped pointer to the requested item contents on success, or NULL on failure.
+*/
+void* List_PopFront(List_t* List);
+
+/*
+    List_PopBack
+
+    This function is a shorthand for List_PopElement(List, List->Length).
+
+    Inputs:
+    List    -   Pointer to the List_t to operate on.
+
+    Outputs:
+    void*   -   Returns an untyped pointer to the requested item contents on success, or NULL on failure.
+*/
+void* List_PopBack(List_t* List);
+
 /* ... */
 /* ----- List Functions ----- */
+#endif
 
 /* ... */
 

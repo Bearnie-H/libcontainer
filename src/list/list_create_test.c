@@ -21,60 +21,15 @@
 */
 
 #include <stdlib.h>
-#include <string.h>
 
-#include "../../include/libcontainer.h"
 #include "../logging/logging.h"
 #include "include/list.h"
-#include "include/list_node.h"
 
 int Test_List_Create(void) {
 
     List_t *List = NULL;
 
     List = List_Create();
-    if (NULL == List) {
-        TEST_PRINTF("%s", "Test Failure - Failed to create List_t.");
-        TEST_FAILURE;
-    }
-
-    List_Release(List);
-    TEST_SUCCESSFUL;
-}
-
-int Test_List_CreateHet(void) {
-
-    List_t *List = NULL;
-
-    List = List_CreateHet();
-    if (NULL == List) {
-        TEST_PRINTF("%s", "Test Failure - Failed to create List_t.");
-        TEST_FAILURE;
-    }
-
-    List_Release(List);
-    TEST_SUCCESSFUL;
-}
-
-int Test_List_RefCreate(void) {
-
-    List_t *List = NULL;
-
-    List = List_RefCreate(NULL);
-    if (NULL == List) {
-        TEST_PRINTF("%s", "Test Failure - Failed to create List_t.");
-        TEST_FAILURE;
-    }
-
-    List_Release(List);
-    TEST_SUCCESSFUL;
-}
-
-int Test_List_RefCreateHet(void) {
-
-    List_t *List = NULL;
-
-    List = List_RefCreateHet();
     if (NULL == List) {
         TEST_PRINTF("%s", "Test Failure - Failed to create List_t.");
         TEST_FAILURE;

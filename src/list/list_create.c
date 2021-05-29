@@ -21,12 +21,9 @@
 */
 
 #include <stdlib.h>
-#include <string.h>
 
-#include "../../include/libcontainer.h"
 #include "../logging/logging.h"
 #include "include/list.h"
-#include "include/list_node.h"
 
 List_t *List_Create(void) {
 
@@ -43,70 +40,6 @@ List_t *List_Create(void) {
     List->Head = NULL;
     List->Tail = NULL;
     List->Length = 0;
-    List->IsHomogeneous = true;
-    List->IsReference = false;
-    List->ReleaseFunc = free;
-
-    return List;
-}
-
-List_t *List_CreateHet(void) {
-
-    List_t *List = NULL;
-
-    /* Create the default List_t. */
-    List = List_Create();
-    if (NULL == List) {
-        DEBUG_PRINTF("%s", "Error, Failed to create List_t.");
-        return NULL;
-    }
-
-    /* Tailor the settings for a heterogeneous, non-reference list. */
-    List->IsHomogeneous = false;
-
-    return List;
-}
-
-List_t *List_RefCreate(ReleaseFunc_t ReleaseFunc) {
-
-    List_t *List = NULL;
-
-    /* Create the default List_t. */
-    List = List_Create();
-    if (NULL == List) {
-        DEBUG_PRINTF("%s", "Error, Failed to create List_t.");
-        return NULL;
-    }
-
-    /* Assert a meaningful ReleaseFunc. */
-    if (NULL == ReleaseFunc) {
-        DEBUG_PRINTF("%s", "NULL ReleaseFunc provided, defaulting to free().");
-        ReleaseFunc = free;
-    }
-
-    /* Tailor the properties for a homogeneous, ref-type List. */
-    List->IsReference = true;
-    List->ReleaseFunc = ReleaseFunc;
-
-    return List;
-}
-
-List_t *List_RefCreateHet(void) {
-
-    List_t *List = NULL;
-
-    /* Create the default List_t. */
-    List = List_Create();
-    if (NULL == List) {
-        DEBUG_PRINTF("%s", "Error, Failed to create List_t.");
-        return NULL;
-    }
-
-    /* Tailor the settings for a heterogeneous, non-reference list. */
-    List->IsHomogeneous = false;
-    List->IsReference = true;
-    List->ReleaseFunc = NULL; /* Each element must provide it's own ReleaseFunc
-                                 when being added to the List. */
 
     return List;
 }
@@ -129,7 +62,6 @@ void List_Release(List_t *List) {
 
     List->Head = NULL;
     List->Tail = NULL;
-    List->ReleaseFunc = NULL;
     List->Length = 0;
 
     free(List);

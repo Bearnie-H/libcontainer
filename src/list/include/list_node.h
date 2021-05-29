@@ -34,6 +34,8 @@ extern "C" {
 #include <stdint.h>
 #include <sys/types.h>
 
+#define LIBCONTAINER_ENABLE_LIST
+
 #include "../../../include/libcontainer.h"
 
 /*
@@ -168,6 +170,47 @@ int ListNode_InsertAfter(List_Node_t* Base, List_Node_t* ToInsert);
     int     -   Returns 0 on success, non-zero on failure.
 */
 int ListNode_InsertBefore(List_Node_t* Base, List_Node_t* ToInsert);
+
+/*
+    ListNode_Delete
+
+    This function will remove a List_Node_t, but not release its contents. This is useful when
+    an item is being transferred out of a List_t, and ownership is being transferred to something
+    else.
+
+    Inputs:
+    Node    -   Pointer to the List_Node_t to delete.
+
+    Outputs:
+    None, the Node is removed and the neighbouring pointers are safely updated.
+*/
+void ListNode_Delete(List_Node_t* Node);
+
+/*
+    ListNode_UpdateValue
+
+    This function will update the value held by the List_Node_t, releasing the existing
+    contents and updating to the newly provided value. This is the common function regardless
+    of whether the values are Reference-Type or not, and the semantics depends on the value of
+    the ElementSize parameter.
+
+    Inputs:
+    Node            -   The List_Node_t to update the value of.
+    Element         -   Pointer to the new value to update the Node to.
+    ElementSize     -   The size (in bytes) of memory to allocate to hold the value.
+    ReleaseFunc     -   The function to use to release the resources held by the object.
+                            Only meaningful if ElementSize != 0.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+
+    Note:
+    If ElementSize is equal to 0, this indicates a Reference-Type value, and no allocations
+    should be performed. This also means the given ReleaseFunc will be stored to release the
+    contents as needed. Non-zero ElementSize indicates a non-reference value, and an allocation
+    will take place, setting the ReleaseFunc to free() from stdlib.h
+*/
+int ListNode_UpdateValue(List_Node_t* Node, const void* Element, size_t ElementSize, ReleaseFunc_t ReleaseFunc);
 
 
 #if defined(TESTING) || defined(DEBUGGER)

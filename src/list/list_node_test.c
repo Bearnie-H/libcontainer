@@ -20,7 +20,6 @@
    IN THE SOFTWARE.
 */
 
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "../logging/logging.h"
@@ -34,6 +33,7 @@ int Test_list_node(void) {
     FailedTests += Test_ListNode_RefCreate();
     FailedTests += Test_ListNode_InsertAfter();
     FailedTests += Test_ListNode_InsertBefore();
+    FailedTests += Test_ListNode_UpdateValue();
     /* Tests go here... */
 
     return FailedTests;
@@ -83,15 +83,13 @@ int Test_ListNode_InsertAfter(void) {
 
     Node1 = ListNode_Create(Contents, sizeof(Contents));
     if (NULL == Node1) {
-        DEBUG_PRINTF("%s",
-                     "Test Failure - Failed to allocate List_Node_t (Node1).");
+        DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node1).");
         TEST_FAILURE;
     }
 
     Node2 = ListNode_Create(Contents, sizeof(Contents));
     if (NULL == Node2) {
-        DEBUG_PRINTF("%s",
-                     "Test Failure - Failed to allocate List_Node_t (Node2).");
+        DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node2).");
         ListNode_Release(Node1);
         TEST_FAILURE;
     }
@@ -105,9 +103,7 @@ int Test_ListNode_InsertAfter(void) {
 
     if (!((Node1->Next == Node2) && (Node1->Next->Previous == Node1) &&
           (Node2->Previous == Node1) && (Node2->Previous->Next == Node2))) {
-        DEBUG_PRINTF(
-            "%s",
-            "Test Failure - Inter-Node linking not equal to expectation.");
+        DEBUG_PRINTF("%s", "Test Failure - Inter-Node linking not equal to expectation.");
         ListNode_Release(Node1);
         ListNode_Release(Node2);
         TEST_FAILURE;
@@ -125,15 +121,13 @@ int Test_ListNode_InsertBefore(void) {
 
     Node1 = ListNode_Create(Contents, sizeof(Contents));
     if (NULL == Node1) {
-        DEBUG_PRINTF("%s",
-                     "Test Failure - Failed to allocate List_Node_t (Node1).");
+        DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node1).");
         TEST_FAILURE;
     }
 
     Node2 = ListNode_Create(Contents, sizeof(Contents));
     if (NULL == Node2) {
-        DEBUG_PRINTF("%s",
-                     "Test Failure - Failed to allocate List_Node_t (Node2).");
+        DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node2).");
         ListNode_Release(Node1);
         TEST_FAILURE;
     }
@@ -147,9 +141,7 @@ int Test_ListNode_InsertBefore(void) {
 
     if (!((Node1->Previous == Node2) && (Node1->Previous->Next == Node1) &&
           (Node2->Next == Node1) && (Node2->Next->Previous == Node2))) {
-        DEBUG_PRINTF(
-            "%s",
-            "Test Failure - Inter-Node linking not equal to expectation.");
+        DEBUG_PRINTF("%s", "Test Failure - Inter-Node linking not equal to expectation.");
         ListNode_Release(Node1);
         ListNode_Release(Node2);
         TEST_FAILURE;
@@ -157,5 +149,33 @@ int Test_ListNode_InsertBefore(void) {
 
     ListNode_Release(Node1);
     ListNode_Release(Node2);
+    TEST_SUCCESSFUL;
+}
+
+int Test_ListNode_UpdateValue(void) {
+
+    List_Node_t *Node = NULL;
+    int InitialContents = 10, NewContents = 5;
+
+    Node = ListNode_Create(&InitialContents, sizeof(InitialContents));
+    if (NULL == Node) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create List_Node_t.");
+        TEST_FAILURE;
+    }
+
+    if (0 != ListNode_UpdateValue(Node, &NewContents, sizeof(NewContents), NULL)) {
+        TEST_PRINTF("%s", "Test Failure - Error setting new Node value.");
+        ListNode_Release(Node);
+        TEST_FAILURE;
+    }
+
+    if (*(int *)(Node->Contents) != NewContents) {
+        TEST_PRINTF("Test Failure - Node contents (%d) not equal to expected value (%d).",
+                    *(int *)(Node->Contents), NewContents);
+        ListNode_Release(Node);
+        TEST_FAILURE;
+    }
+
+    ListNode_Release(Node);
     TEST_SUCCESSFUL;
 }

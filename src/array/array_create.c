@@ -23,8 +23,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../include/libcontainer.h"
-
 #include "../logging/logging.h"
 #include "include/array.h"
 
@@ -33,8 +31,7 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
     Array_t *Array = NULL;
 
     if (0 == ElementSize) {
-        DEBUG_PRINTF("Error, invalid ElementSize [ %ld ].",
-                     (unsigned long)ElementSize);
+        DEBUG_PRINTF("Error, invalid ElementSize [ %ld ].", (unsigned long)ElementSize);
         return NULL;
     }
 
@@ -50,8 +47,7 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
 
     Array->Contents = (uint8_t *)calloc(StartingCapacity, ElementSize);
     if (NULL == Array->Contents) {
-        DEBUG_PRINTF("%s",
-                     "Error, failed to allocate memory for Array_t->Contents.");
+        DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t->Contents.");
         free(Array);
         return NULL;
     }
@@ -67,8 +63,7 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
     return Array;
 }
 
-Array_t *Array_RefCreate(size_t StartingCapacity, size_t ElementSize,
-                         ReleaseFunc_t ReleaseFunc) {
+Array_t *Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFunc_t ReleaseFunc) {
 
     Array_t *Array = NULL;
 
@@ -78,8 +73,7 @@ Array_t *Array_RefCreate(size_t StartingCapacity, size_t ElementSize,
     }
 
     if (0 == ElementSize) {
-        DEBUG_PRINTF("Error, invalid ElementSize [ %ld ].",
-                     (unsigned long)ElementSize);
+        DEBUG_PRINTF("Error, invalid ElementSize [ %ld ].", (unsigned long)ElementSize);
         return NULL;
     }
 
@@ -95,8 +89,7 @@ Array_t *Array_RefCreate(size_t StartingCapacity, size_t ElementSize,
 
     Array->Contents = (uint8_t *)calloc(StartingCapacity, ElementSize);
     if (NULL == Array->Contents) {
-        DEBUG_PRINTF("%s",
-                     "Error, failed to allocate memory for Array_t->Contents.");
+        DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t->Contents.");
         free(Array);
         return NULL;
     }
@@ -122,8 +115,7 @@ Array_t *Array_Duplicate(Array_t *Source) {
     }
 
     if (Source->IsReference) {
-        Destination = Array_RefCreate(Source->Capacity, Source->ElementSize,
-                                      Source->ReleaseFunc);
+        Destination = Array_RefCreate(Source->Capacity, Source->ElementSize, Source->ReleaseFunc);
     } else {
         Destination = Array_Create(Source->Capacity, Source->ElementSize);
     }
@@ -166,8 +158,7 @@ void Array_Release(Array_t *Array) {
             DEBUG_PRINTF("%s", "Array_t is array of references, releasing each "
                                "element with the provided ReleaseFunc.");
             for (Index = 0; Index < Array->Length; Index++) {
-                Array->ReleaseFunc(*(uint8_t **)&(
-                    Array->Contents[Index * Array->ElementSize]));
+                Array->ReleaseFunc(*(uint8_t **)&(Array->Contents[Index * Array->ElementSize]));
             }
         }
 
@@ -177,8 +168,7 @@ void Array_Release(Array_t *Array) {
         Array->ReleaseFunc = NULL;
 
     } else {
-        DEBUG_PRINTF(
-            "%s", "Array_t has NULL contents pointer, no contents to release.");
+        DEBUG_PRINTF("%s", "Array_t has NULL contents pointer, no contents to release.");
     }
 
     Array->Capacity = 0;

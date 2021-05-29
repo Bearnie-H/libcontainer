@@ -51,9 +51,7 @@ int Array_InsertN(Array_t *Array, const void *Elements, int Index, int Count) {
     }
 
     if (0 != Array_Grow(Array, Count)) {
-        DEBUG_PRINTF(
-            "%s",
-            "Error, failed to ensure array has room to insert new element.");
+        DEBUG_PRINTF("%s", "Error, failed to ensure array has room to insert new element.");
         return 1;
     }
 
@@ -61,20 +59,15 @@ int Array_InsertN(Array_t *Array, const void *Elements, int Index, int Count) {
             &(Array->Contents[Index * Array->ElementSize]),
             (Array->Length - Index) * Array->ElementSize);
 
-    memcpy(&(Array->Contents[Index * Array->ElementSize]), Elements,
-           Count * Array->ElementSize);
+    memcpy(&(Array->Contents[Index * Array->ElementSize]), Elements, Count * Array->ElementSize);
 
     Array->Length += Count;
 
-    DEBUG_PRINTF(
-        "Successfully inserted [ %d ] element(s) starting at index [ %d ].",
-        Count, Index);
+    DEBUG_PRINTF("Successfully inserted [ %d ] element(s) starting at index [ %d ].", Count, Index);
     return 0;
 }
 
-int Array_Remove(Array_t *Array, int Index) {
-    return Array_RemoveN(Array, Index, 1);
-}
+int Array_Remove(Array_t *Array, int Index) { return Array_RemoveN(Array, Index, 1); }
 
 int Array_RemoveN(Array_t *Array, int Index, int Count) {
 
@@ -85,8 +78,7 @@ int Array_RemoveN(Array_t *Array, int Index, int Count) {
         return 1;
     }
 
-    if ((0 == Array->Length) || (Index < 0) ||
-        (Array->Length < (size_t)Index)) {
+    if ((0 == Array->Length) || (Index < 0) || (Array->Length < (size_t)Index)) {
         DEBUG_PRINTF("Index (%d) is out of bounds.", Index);
         return 1;
     }
@@ -104,8 +96,7 @@ int Array_RemoveN(Array_t *Array, int Index, int Count) {
     */
     if (Array->IsReference && !Array->IsShadow) {
         for (ReleaseIndex = 0; ReleaseIndex < Count; ReleaseIndex++) {
-            Array->ReleaseFunc(
-                *(uint8_t **)&(Array->Contents[Index * Array->ElementSize]));
+            Array->ReleaseFunc(*(uint8_t **)&(Array->Contents[Index * Array->ElementSize]));
         }
     }
 
@@ -115,9 +106,7 @@ int Array_RemoveN(Array_t *Array, int Index, int Count) {
 
     Array->Length -= Count;
 
-    DEBUG_PRINTF(
-        "Successfully removed [ %d ] element(s) starting at index [ %d ].",
-        Count, Index);
+    DEBUG_PRINTF("Successfully removed [ %d ] element(s) starting at index [ %d ].", Count, Index);
     return 0;
 }
 
@@ -130,15 +119,13 @@ void *Array_GetElement(Array_t *Array, int Index) {
         return NULL;
     }
 
-    if ((0 == Array->Length) || (Index < 0) ||
-        (Array->Length < (size_t)Index)) {
+    if ((0 == Array->Length) || (Index < 0) || (Array->Length < (size_t)Index)) {
         DEBUG_PRINTF("Error, requested index [ %d ] is out of bounds.", Index);
         return NULL;
     }
 
     if (Array->IsReference) {
-        Element = (void *)(*(uint8_t **)&(
-            Array->Contents[Array->ElementSize * Index]));
+        Element = (void *)(*(uint8_t **)&(Array->Contents[Array->ElementSize * Index]));
     } else {
         Element = (void *)(&(Array->Contents[Array->ElementSize * Index]));
     }
@@ -161,8 +148,7 @@ int Array_SetElement(Array_t *Array, const void *Element, int Index) {
         return 1;
     }
 
-    if ((0 == Array->Length) || (Index < 0) ||
-        (Array->Length < (size_t)Index)) {
+    if ((0 == Array->Length) || (Index < 0) || (Array->Length < (size_t)Index)) {
         DEBUG_PRINTF("Error, requested index [ %d ] is out of bounds.", Index);
         return 1;
     }
@@ -193,7 +179,6 @@ void *Array_PopElement(Array_t *Array, int Index) {
 
     Array->Length -= 1;
 
-    DEBUG_PRINTF("Successfully popped element at index [ %d ] from Array_t.",
-                 Index);
+    DEBUG_PRINTF("Successfully popped element at index [ %d ] from Array_t.", Index);
     return ElementContents;
 }

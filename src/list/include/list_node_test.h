@@ -39,6 +39,7 @@ int Test_ListNode_Create(void);
 int Test_ListNode_RefCreate(void);
 int Test_ListNode_InsertAfter(void);
 int Test_ListNode_InsertBefore(void);
+int Test_ListNode_UpdateValue(void);
 
 #ifdef __cplusplus
 }

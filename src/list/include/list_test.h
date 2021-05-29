@@ -36,9 +36,21 @@ extern "C" {
 int Test_list(void);
 
 int Test_List_Create(void);
-int Test_List_CreateHet(void);
 int Test_List_RefCreate(void);
-int Test_List_RefCreateHet(void);
+
+int Test_List_Insert(void);
+int Test_List_RefInsert(void);
+int Test_List_Prepend(void);
+int Test_List_RefPrepend(void);
+int Test_List_Append(void);
+int Test_List_RefAppend(void);
+int Test_List_Remove(void);
+int Test_List_GetElement(void);
+int Test_List_SetElement(void);
+int Test_List_RefSetElement(void);
+int Test_List_PopElement(void);
+int Test_List_PopFront(void);
+int Test_List_PopBack(void);
 
 #ifdef __cplusplus
 }
