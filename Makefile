@@ -52,7 +52,8 @@ TESTFLAGS := $(CFLAGS) -g -O0 -DDEBUG -DDEBUGGER -DTESTING
 RM    := rm -f
 STRIP := strip -S -X
 MKDIR := mkdir -p
-CP    := cp -rpv
+CP    := cp -rp
+LN    := ln -sf
 
 #   Common Variables
 ROOTDIR      := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -60,7 +61,8 @@ SRCROOTDIR   := $(ROOTDIR)/src
 BUILDROOTDIR := $(ROOTDIR)/build
 OUTROOTDIR   := $(ROOTDIR)/products
 LIBDIR       := $(ROOTDIR)/lib
-TARGET       := libcontainer-$(VERSION)
+TARGETNAME   := libcontainer
+TARGET       := $(TARGETNAME)-$(VERSION)
 TARGETSUFFIX := .a
 TESTSUFFIX   := .out
 
@@ -112,12 +114,11 @@ TESTTARGET   := $(TARGET)-test$(TESTSUFFIX)
 TESTBIN      := $(TESTOUTDIR)/$(TESTTARGET)
 
 #   Install Build Settings - Define to allow building the install target
-INSTALL_PATH     ?= /usr/local#   If this is defined as an environment variable, allow this to be overwritten
+INSTALL_PATH     ?= /usr/local/$(TARGETNAME)#   If this is defined as an environment variable, allow this to be overwritten
 INSTALLBINDIR    := $(INSTALL_PATH)/lib
 INSTALLHEADERDIR := $(INSTALL_PATH)/include
-INSTALLLIBDIR    := $(INSTALL_PATH)/lib
-INSTALLMANDIR    := $(INSTALL_PATH)/share/man/man1
-INSTALLDIRS      := $(INSTALLBINDIR) $(INSTALLLIBDIR) $(INSTALLHEADERDIR) $(INSTALLMANDIR)
+INSTALLMANDIR    ?= /usr/local/share/man/man1
+INSTALLDIRS      := $(INSTALLBINDIR) $(INSTALLHEADERDIR) $(INSTALLMANDIR)
 #   Other installation directories go here...
 
 INSTALLBIN       := $(RELBIN)
@@ -154,22 +155,25 @@ help: ## Show this help menu.
 
 #   Before installing anything, make sure the "release" target is fully up-to-date
 install: ## Build and install the release target to your system
-# $(error "Install target undefined!")
+	@$(MKDIR) $(INSTALLDIRS)
 	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLBIN)" "$(INSTALLBINDIR)/$(notdir $(INSTALLBIN))"
-# @$(CP) $(INSTALLBIN) $(INSTALLBINDIR)/$(notdir $(INSTALLBIN))
+	@$(CP) $(INSTALLBIN) $(INSTALLBINDIR)/$(notdir $(INSTALLBIN))
 	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLHEADERS)" "$(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))"
-# @$(CP) $(INSTALLHEADERS) $(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))
+	@$(CP) $(INSTALLHEADERS) $(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))
 	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLMANPAGES)" "$(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))"
-# @$(CP) $(INSTALLMANPAGES) $(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))
+	@$(CP) $(INSTALLMANPAGES) $(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))
+	@printf "%-8s %-16s -> %s\n" "(LN)" "$(notdir $(INSTALLBIN))" "$(TARGETNAME)$(TARGETSUFFIX)"
+	@$(LN) $(INSTALLBINDIR)/$(notdir $(INSTALLBIN)) $(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)
 
 uninstall:  ## Remove everything installed by the "install" target.
-# $(error "Uninstall target undefined!")
+	@printf "%-8s %s\n" "(RM)" "$(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)"
+	@$(RM) $(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)
 	@printf "%-8s %s\n" "(RM)" "$(INSTALLBINDIR)/$(notdir $(INSTALLBIN))"
-# @$(RM) $(INSTALLBINDIR)/$(notdir $(INSTALLBIN))
+	@$(RM) $(INSTALLBINDIR)/$(notdir $(INSTALLBIN))
 	@printf "%-8s %s\n" "(RM)" "$(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))"
-# @$(RM) $(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))
+	@$(RM) $(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))
 	@printf "%-8s %s\n" "(RM)" "$(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))"
-# @$(RM) $(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))
+	@$(RM) $(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))
 
 #   Ensure all of the build and output directories exist.
 prep:   ## Ensure the build and output directory trees exist as expected.

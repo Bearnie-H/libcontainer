@@ -4,7 +4,16 @@ This library provides a set of generic containers in a pure C (C99) implementati
 
 ## Purpose
 
-...
+The purpose of this library is to provide the same kind of generic, useful containers
+similar to those found in the C++ STL or other modern languages. This started as a selfish
+desire to not re-implement type-specific containers every time I needed to work with
+a different underlying type. Working with generic containers does come with somewhat
+of a performance cost, as the internal algorithms can't assume anything about the
+shape or size of the items they operate on.
+
+Ideally, this library provides a helpful base for building larger and more interesting
+tools. By providing generic containers, more time can be spent on the interesting
+problems to be solved, and less time spent wrangling data.
 
 ## Building the Library
 
@@ -30,36 +39,42 @@ changes are only necessary if you wish to tune the performance for your use-case
 
 ## Installing the Library
 
-The `Makefile` included in this project defines placeholder `install` and `uninstall` targets to perform
-this installation. Currently these are no-ops and simply error out, but at some point these will
-fully install the compiled library and header file to the necessary paths.
+The `Makefile` included in this project defines `install` and `uninstall` targets to
+perform a proper installation of the library, as well as uninstalling it.
 
-Until the `make install` target is defined, the library can be installed by placing it where your
-linker can see (or by including it into the other project requiring it), and the main library header
-`libcontainer.h` into the compiler include-path.
+To properly install the library, the process is as simple as:
+```bash
+#   Build and run the test suite, and build the debug and release libraries.
+make
 
-...
+#   Install the release library, header, and man page to your system.
+sudo make install
+```
+from the command line.
+
+By default, this will place the library binary and header file in `/usr/local/libcontainer/`,
+and the man page in `/usr/local/share/man/man1/`. Setting the environment variable `INSTALLDIR`
+will allow updating the prefix used for the binary and header file, and updating the
+`INSTALLMANDIR` environment variable will update the prefix for the man page.
+Once installed, the file `libcontainer.a` and header `libcontainer.h` will be accessible and
+stable across library version upgrades.
+
+An additional, optional, step you may wish to perform is to add the library and header folders
+to the `INCLUDE_PATH` and `LD_LIBRARY_PATH` so these are visible without any compiler flags.
+More commonly, either these files will be linked into further projects, or these additional
+include and library paths can be passed to the compiler in the other project.
 
 ## Using the Library
 
 Once the library is installed, either to your system path or to a project using the library,
 there are a handful of additional useful macros to help maintain a cleaner namespace.
 Each of the containers can be individually enabled for each compilation unit by defining
-the `LIBCONTAINER_ENABLE_<Container>` macros as desired. For example, if only the Array_t
+the `LIBCONTAINER_ENABLE_<Container>` macros as desired. For example, if only the `Array_t`
 container is desired in a specific file, simply add `#define LIBCONTAINER_ENABLE_ARRAY`
-before `#include`-ing the library header to only bring the Array_t type and functions in.
+before `#include`-ing the library header to only bring the `Array_t` type and functions in.
 
 The library binary itself contains all of the implemented containers, and this mechanism provides
 a way to ensure only the containers you want end up compiled into your project.
-
-...
-
-### Examples
-
-As this library provides a significant number of functionality, only a small set of example
-operations are provided here.
-
-...
 
 ## License
 

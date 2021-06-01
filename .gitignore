@@ -62,4 +62,6 @@ dkms.conf
 build/**
 products/**
 
+#   VS Code workspace and editor files
 *.code-workspace
+.vscode/**

@@ -169,8 +169,6 @@ typedef unsigned int (HashFunc_t)(const void*, size_t);
 */
 typedef void(ReleaseFunc_t)(void*);
 
-/* ... */
-
 /* ---------- Exported Library Types ---------- */
 
 /* ++++++++++ Exported Library Functions ++++++++++ */
@@ -980,8 +978,6 @@ void Hashmap_Release(Hashmap_t* Map);
 /* ----- Hashmap Functions ----- */
 
 #endif
-
-/* ... */
 
 /* ---------- Exported Library Functions ---------- */
 
