@@ -82,6 +82,22 @@ struct List_t {
 */
 List_Node_t* List_findNode(List_t* List, int Index);
 
+/*
+    List_removeNode
+
+    This function will remove the given List_Node_t from the specified List_t.
+    This is the generic removal operation, and will safely release the Node resources,
+    as well as handle updating the necessary List fields.
+
+    Inputs:
+    List    -   Pointer to the List_t to remove the node from.
+    Node    -   Pointer to the Node to be removed from the List.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int List_removeNode(List_t* List, List_Node_t* Node);
+
 #if defined(TESTING) || defined(DEBUGGER)
 
 #include "list_test.h"

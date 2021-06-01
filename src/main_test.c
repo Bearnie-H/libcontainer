@@ -24,9 +24,11 @@
 
 #define LIBCONTAINER_ENABLE_ARRAY
 #define LIBCONTAINER_ENABLE_LIST
+#define LIBCONTAINER_ENABLE_HASHMAP
 
 #include "../include/libcontainer.h"
 #include "array/include/array.h"
+#include "hashmap/include/hashmap.h"
 #include "list/include/list.h"
 
 int Test_main(int argc, char **argv) {
@@ -49,6 +51,7 @@ int Test_main(int argc, char **argv) {
 
     FailedTests += Test_array();
     FailedTests += Test_list();
+    FailedTests += Test_hashmap();
 
     /* Returning non-zero indicates to the Makefile during make to abort.
         This lets failing tests block further builds with the "all" target

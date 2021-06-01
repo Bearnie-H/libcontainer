@@ -53,7 +53,7 @@ struct Array_t {
 
         This only has meaning if the IsReference value for an array is true.
     */
-    ReleaseFunc_t ReleaseFunc;
+    ReleaseFunc_t* ReleaseFunc;
 
     /*
         Contents is the start of the memory address holding the
@@ -116,6 +116,22 @@ struct Array_t {
     int -   Returns 0 on success, non-zero on failure.
 */
 int Array_Grow(Array_t* Array, size_t AdditionalCapacity);
+
+/*
+    Array_Capacity
+
+    This function returns the number of items a given Array_t can hold before allocating more memory.
+
+    Inputs:
+    Array   -   The array to determine the capacity of.
+
+    Outputs:
+    ssize_t -   The capacity of the array (0 inclusive) on success, 0 on failure.
+
+    Note:
+    This operation is O(1) in the capacity of the array.
+*/
+ssize_t Array_Capacity(Array_t* Array);
 
 #if defined(TESTING) || defined(DEBUGGER)
 

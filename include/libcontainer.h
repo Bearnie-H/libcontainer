@@ -38,6 +38,7 @@ extern "C" {
 #endif
 
 #include <sys/types.h>
+#include <stdbool.h>
 
 /* ++++++++++ Exported Library Macros ++++++++++ */
 
@@ -97,6 +98,61 @@ typedef struct List_t List_t;
 
 #endif
 
+#ifdef LIBCONTAINER_ENABLE_HASHMAP
+
+/*
+    Hashmap_t
+
+    A Hashmap_t is a generic key-value map. A given Hashmap_t must use homogeneous
+    keys, but can contain heterogeneous values associated with them. See the documentation
+    about, and examples of, the HashFunc_t typedef for more detail about the Hash function
+    used in this container.
+
+    This struct is opaque to ensure all accesses are performed
+    through the functions provided in this library to ensure
+    safe access and operation.
+
+    See the functions prefixed with "Hashmap_" for the available operations
+    on Hashmaps.
+*/
+typedef struct Hashmap_t Hashmap_t;
+
+/*
+    HashFunc_t
+
+    This represents the class of functions the Hashmap_t can use to compute
+    the necessary internal hash value to map a key to a value within the Hashmap.
+
+    This takes in a pointer to the key, as well as an *optional* size_t value.
+    If the key is something like a string, array, or other non-constant sized
+    item, this size value allows safe access to the key through the pointer.
+    This size_t value should correspond to the number of bytes (specifically
+    the number of *sizeof(char)*) which the item is composed of. If the key is
+    a constant sized type, like int or double, this parameter can be ignored.
+
+    By default, this library provides useable HashFunc_t implementations for the
+    following key types:
+
+        -   int
+        -   double
+        -   string (char*) ( optionally NULL terminated, but not necessary if size_t is provided. )
+
+    To extend the Hashmap_t to new keys, simply provide a HashFunc_t implementation for
+    the desired type, as well as a meaningful ReleaseFunc_t (if necessary), and use those
+    during Hashmap_t construction.
+
+    Inputs:
+    const void* Key -   Untyped pointer to the Key value, to be read to compute the Hash value.
+    size_t KeySize  -   The number of bytes available to be read from Key, if it's not a direct cast.
+
+    Outputs:
+    unsigned int    -   The resulting Hash Value, prior to being reduced by the Hashmap_t to
+                            the specific index value required to locate an item.
+*/
+typedef unsigned int (HashFunc_t)(const void*, size_t);
+
+#endif
+
 /*
     ReleaseFunc_t
 
@@ -111,7 +167,7 @@ typedef struct List_t List_t;
     If NULL is given, the library will default to the free() function in libstd.h
     if the context implies this is a meaningful default.
 */
-typedef void(*ReleaseFunc_t)(void*);
+typedef void(ReleaseFunc_t)(void*);
 
 /* ... */
 
@@ -182,7 +238,7 @@ Array_t* Array_Create(size_t StartingCapacity, size_t ElementSize);
     when an element is removed, or if the array is released as a whole. Each element
     must be able to be fully released by a single call of the given ReleaseFunc.
 */
-Array_t* Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFunc_t ReleaseFunc);
+Array_t* Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFunc_t* ReleaseFunc);
 
 /*
     Array_Duplicate
@@ -236,7 +292,7 @@ void Array_Release(Array_t* Array);
     Array   -   The array to determine the length of.
 
     Outputs:
-    ssize_t -   The length of the array (0 inclusive) on success, or -1 on failure.
+    ssize_t -   The length of the array (0 inclusive) on success, 0 on failure.
 
     Note:
     This operation is O(1) in the length of the array.
@@ -406,7 +462,9 @@ void* Array_PopElement(Array_t* Array, int Index);
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_LIST
+
 /* +++++ List Functions +++++ */
+
 /*
     List_Create
 
@@ -486,7 +544,7 @@ int List_Insert(List_t* List, const void* Element, size_t ElementSize, int Index
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_RefInsert(List_t* List, const void* Element, ReleaseFunc_t ReleaseFunc, int Index);
+int List_RefInsert(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc, int Index);
 
 /*
     List_Prepend
@@ -517,7 +575,7 @@ int List_Prepend(List_t* List, const void* Element, size_t ElementSize);
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_RefPrepend(List_t* List, const void* Element, ReleaseFunc_t ReleaseFunc);
+int List_RefPrepend(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc);
 
 /*
     List_Append
@@ -548,7 +606,7 @@ int List_Append(List_t* List, const void* Element, size_t ElementSize);
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_RefAppend(List_t* List, const void* Element, ReleaseFunc_t ReleaseFunc);
+int List_RefAppend(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc);
 
 /*
     List_Remove
@@ -620,7 +678,7 @@ int List_SetElement(List_t* List, const void* Element, size_t ElementSize, int I
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_RefSetElement(List_t* List, const void* Element, ReleaseFunc_t ReleaseFunc, int Index);
+int List_RefSetElement(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc, int Index);
 
 /*
     List_PopElement
@@ -664,8 +722,263 @@ void* List_PopFront(List_t* List);
 */
 void* List_PopBack(List_t* List);
 
-/* ... */
 /* ----- List Functions ----- */
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_HASHMAP
+
+/* +++++ Default Hash Functions +++++ */
+
+/*
+    HashFunc_Int
+
+    This function computes the necessary hash value for an *int* type key
+    for use with the Hashmap_t container.
+
+    Inputs:
+    Key     -   Pointer to the key value to compute the hash value of.
+    KeySize -   Size of the key (in bytes). Optional as Int has a known constant size.
+
+    Outputs:
+    int     -   The hashed value of the key, to be used internally by the Hashmap_t to store the
+                    corresponding value.
+
+    Note:
+    As this function is part of the built-in set provided by this library, and the key is a
+    constant size, the KeySize value can be always ignored for a Hashmap using this function
+    as its HashFunc.
+*/
+HashFunc_t HashFunc_Int;
+
+/*
+    HashFunc_Long
+
+    This function computes the necessary hash value for an *long* type key
+    for use with the Hashmap_t container.
+
+    Inputs:
+    Key     -   Pointer to the key value to compute the hash value of.
+    KeySize -   Size of the key (in bytes). Optional as Int has a known constant size.
+
+    Outputs:
+    int     -   The hashed value of the key, to be used internally by the Hashmap_t to store the
+                    corresponding value.
+
+    Note:
+    As this function is part of the built-in set provided by this library, and the key is a
+    constant size, the KeySize value can be always ignored for a Hashmap using this function
+    as its HashFunc.
+*/
+HashFunc_t HashFunc_Long;
+
+/*
+    HashFunc_Double
+
+    This function computes the necessary hash value for a *double* type key
+    for use with the Hashmap_t container.
+
+    Inputs:
+    Key     -   Pointer to the key value to compute the hash value of.
+    KeySize -   Size of the key (in bytes). Optional as Double has a known constant size.
+
+    Outputs:
+    int     -   The hashed value of the key, to be used internally by the Hashmap_t to store the
+                    corresponding value.
+
+    Note:
+    As this function is part of the built-in set provided by this library, and the key is a
+    constant size, the KeySize value can be always ignored for a Hashmap using this function
+    as its HashFunc.
+*/
+HashFunc_t HashFunc_Double;
+
+/*
+    HashFunc_String
+
+    This function computes the necessary hash value for a *string* type key
+    for use with the Hashmap_t container.
+
+    Inputs:
+    Key     -   Pointer to the key value to compute the hash value of.
+    KeySize -   Optional, and changes the interpretation of the Key if present.
+                    If 0, use strlen() to compute the length of the given string.
+                    If non-zero, use KeySize as the length of the given string.
+
+    Outputs:
+    int     -   The hashed value of the key, to be used internally by the Hashmap_t to store the
+                    corresponding value.
+
+    Note:
+    This is the default HashFunc if NULL is given when creating a Hashmap_t.
+*/
+HashFunc_t HashFunc_String;
+
+/* ----- Default Hash Functions ----- */
+
+/* +++++ Hashmap Functions +++++ */
+
+/*
+    Hashmap_Create
+
+    This function will create and prepare a Hashmap_t for use. As this takes in a generic HashFunc
+    and ReleaseFunc for the Keys, this can be used with *arbitrary* key types, but only one key
+    type per Hashmap_t.
+
+    Inputs:
+    HashFunc        -   Pointer to the function to use to convert the given Key type to a Hash value
+                            for locating the corresponding item into the Hashmap. See the documentation
+                            for the HashFunc_t type for more information.
+    KeySize         -   The size (in bytes) of the Key type for this Hashmap_t.
+                            If the type is [ string ], this can be 0. Generally, this is a sizeof() based
+                            argument.
+    KeyReleaseFunc  -   Pointer to the function to use to release any resources held by the Key types
+                            for when an entry is released.
+
+    Outputs:
+    Hashmap_t*  -   A fully prepared and ready-to-use Hashmap_t on success, or NULL on failure.
+*/
+Hashmap_t* Hashmap_Create(HashFunc_t* HashFunc, size_t KeySize, ReleaseFunc_t* KeyReleaseFunc);
+
+/*
+    Hashmap_Length
+
+    This function will return the "length" of the Hashmap_t, i.e. the number of items it contains.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap to query the length of.
+
+    Outputs:
+    size_t  -   The count of items contained within the Hashmap_t.
+*/
+size_t Hashmap_Length(Hashmap_t* Map);
+
+/*
+    Hashmap_KeyExists
+
+    This function will check the Hashmap for the given Key, checking if it exists or not.
+    This is valuable check before insertions, as Hashmap_Insert() overwrites earlier contents.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap_t to operate on.
+    Key     -   Pointer to the Key Value to use.
+    KeySize -   Size of the Key value, as measured in bytes.
+
+    Outputs:
+    bool    -   Returns true if the key exists within the Hashmap, false if it does not exist.
+*/
+bool Hashmap_KeyExists(Hashmap_t* Map, const void* Key, size_t KeySize);
+
+/*
+    Hashmap_Insert
+
+    This function will add a key-value pair to the Hashmap, releasing and overwriting
+    the contents if the given Key already exists within the Map.
+
+    Inputs:
+    Map                 -   Pointer to the Hashmap_t to operate on.
+    Key                 -   Pointer to the Key Value to use.
+    Value               -   Pointer to the Value associated with the Key to add.
+    KeySize             -   Size of the Key value, as measured in bytes.
+    ValueSize           -   Size of the Value, as measured in bytes.
+    ValueReleaseFunc    -   Pointer to the function to call to release the resources associated
+                                with the Value.
+
+    Outputs:
+    int     -   Returns 0 on success, nonzero on failure.
+
+    Note:
+    Unlike several other functions here where KeySize is an optional parameter, it is absolutely
+    required here. This value must be equal to the number of bytes required to generate a copy of
+    the Key, typically in the form of a sizeof() operator. For string keys, strlen() is more
+    commonly used.
+*/
+int Hashmap_Insert(Hashmap_t* Map, const void* Key, const void* Value, size_t KeySize, size_t ValueSize, ReleaseFunc_t* ValueReleaseFunc);
+
+/*
+    Hashmap_Retrieve
+
+    This function will return a pointer to the value corresponding to the given Key
+    in the Hashmap if it exists. This pointer points to the value within the Hashmap,
+    and any modifications will affect the contents within the Hashmap.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap_t to operate on.
+    Key     -   Pointer to the Key Value to use.
+    KeySize -   Size of the Key value, as measured in bytes.
+
+    Outputs:
+    void*   -   Untyped pointer to the value corresponding to the given Key if it exists,
+                    or NULL if the Key is not within the Hashmap.
+
+    Note: The KeySize argument is optional, as the Hashmap will cache the value
+            provided during Hashmap_Create(). Good practice still provides this,
+            but it's not entirely necessary.
+*/
+void *Hashmap_Retrieve(Hashmap_t *Map, const void *Key, size_t KeySize);
+
+/*
+    Hashmap_Pop
+
+    This function will return the value corresponding to the given Key from the Hashmap, transferring
+    ownership to the caller. Regardless of the underlying type, the returned pointer must
+    be release with a call to free() or equivalent for the type. This functions roughly
+    equivalent to a Hashmap_Retrieve() followed by a Hashmap_Remove(), but adds the ownership
+    transfer.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap_t to operate on.
+    Key     -   Pointer to the Key Value to use.
+    KeySize -   Size of the Key value, as measured in bytes.
+
+    Outputs:
+    void*   -   Untyped pointer to the value corresponding to the given Key if it exists,
+                    or NULL if the Key is not within the Hashmap.
+
+    Note: The KeySize argument is optional, as the Hashmap will cache the value
+            provided during Hashmap_Create(). Good practice still provides this,
+            but it's not entirely necessary.
+*/
+void* Hashmap_Pop(Hashmap_t *Map, const void *Key, size_t KeySize);
+
+/*
+    Hashmap_Remove
+
+    This function will remove the value corresponding to the Key from the Hashmap
+    if it exists, or do nothing if it doesn't exist.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap_t to operate on.
+    Key     -   Pointer to the Key Value to use.
+    KeySize -   Size of the Key value, as measured in bytes.
+
+    Outputs:
+    int -   Returns 0 on success, nonzero on failure.
+
+    Note: The KeySize argument is optional, as the Hashmap will cache the value
+            provided during Hashmap_Create(). Good practice still provides this,
+            but it's not entirely necessary.
+*/
+int Hashmap_Remove(Hashmap_t* Map, const void* Key, size_t KeySize);
+
+/*
+    Hashmap_Release
+
+    This function will fully release the Hashmap_t and all of the entries it contains.
+    As long as the provided KeyReleaseFunc and ValueReleaseFunc values satisfy the expectation
+    of fully releasing their corresponding contents, this will fully and safely release
+    all held resources.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap_t to operate on.
+
+    Outputs:
+    None, the Hashmap_t and all of the held contents are fully released with the previously provided
+    ReleaseFunc_t values.
+*/
+void Hashmap_Release(Hashmap_t* Map);
+
+/* ----- Hashmap Functions ----- */
+
 #endif
 
 /* ... */

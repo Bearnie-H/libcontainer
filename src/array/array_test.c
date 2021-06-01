@@ -47,7 +47,5 @@ int Test_array(void) {
     FailedTests += Test_Array_Ref_InsertN();
     FailedTests += Test_Array_Ref_RemoveN();
 
-    /* Tests go here... */
-
     return FailedTests;
 }

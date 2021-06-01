@@ -65,7 +65,7 @@ List_Node_t *ListNode_Create(const void *Contents, size_t Size) {
     return Node;
 }
 
-List_Node_t *ListNode_RefCreate(const void *Contents, ReleaseFunc_t ReleaseFunc) {
+List_Node_t *ListNode_RefCreate(const void *Contents, ReleaseFunc_t *ReleaseFunc) {
 
     List_Node_t *Node = NULL;
 
@@ -189,7 +189,7 @@ void ListNode_Delete(List_Node_t *Node) {
 }
 
 int ListNode_UpdateValue(List_Node_t *Node, const void *Element, size_t ElementSize,
-                         ReleaseFunc_t ReleaseFunc) {
+                         ReleaseFunc_t *ReleaseFunc) {
 
     void *NewContents = NULL;
     bool NewNodeIsReference = false;
@@ -209,7 +209,7 @@ int ListNode_UpdateValue(List_Node_t *Node, const void *Element, size_t ElementS
         }
     } else {
         NewNodeIsReference = false;
-        ReleaseFunc = (ReleaseFunc_t)free;
+        ReleaseFunc = (ReleaseFunc_t *)free;
         NewContents = (uint8_t *)malloc(sizeof(uint8_t) * ElementSize);
         if (NULL == NewContents) {
             DEBUG_PRINTF("%s", "Error, Failed to allocate memory to hold new Node contents.");

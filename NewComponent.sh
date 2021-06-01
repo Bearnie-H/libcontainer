@@ -233,9 +233,19 @@ function CreateComponentDirectories() {
 function CreateComponentSourceFiles() {
 
     local RefName="$ComponentName"
+    local LicenseFile="LICENSE"
+    local LicenseText=
 
     if [ ! -z "$ComponentSubFilename" ]; then
         RefName="$ComponentSubFilename"
+    fi
+
+    if [ -f "$LicenseFile" ]; then
+        log $LOG_INFO "Adding License preamble to start of newly created files."
+        LicenseText="$(cat "$LicenseFile" | sed 's/^\(.\)/    \1/')"
+        LicenseText="/*
+$LicenseText
+*/"
     fi
 
     RefName="$(echo "$RefName" | tr '-' '_')"
@@ -262,29 +272,35 @@ function CreateComponentSourceFiles() {
     ProjectName="LIBCONTAINER"
 
     #   Create the main source file...
-    ComponentSrcContents="#include <errno.h>
+    ComponentSrcContents="$LicenseText
+
+#include <stdlib.h>
 
 #include \"include/$RefName.h\""
 
     #   Create the main test file...
-    ComponentTestSrcContents="#include <errno.h>
-    
+    ComponentTestSrcContents="$LicenseText
+
+#include <stdlib.h>
 #include <stdio.h>
 
 #include \"include/$RefName.h\"
+#include \"../logging/logging.h\"
 
 int Test_$RefName(void) {
 
     int FailedTests = 0;
 
     /* Tests go here... */
+    TEST_PRINTF(\"Warning, no tests yet implemented for component [ %s ].\", \"$RefName\");
 
     return FailedTests;
-}
-"
+}"
 
     #   Create the main header file...
-    ComponentHeaderContents="#ifndef $ProjectName"_"$ComponentNameUppercase""_H
+    ComponentHeaderContents="$LicenseText
+
+#ifndef $ProjectName"_"$ComponentNameUppercase""_H
 #define $ProjectName"_"$ComponentNameUppercase""_H
 
 /*
@@ -304,11 +320,12 @@ extern \"C\" {
 }
 #endif
 
-#endif
-"
+#endif"
 
     #   Create the main header test file...
-    ComponentTestHeaderContents="#ifndef $ProjectName"_"$ComponentNameUppercase""_TEST_H
+    ComponentTestHeaderContents="$LicenseText
+
+#ifndef $ProjectName"_"$ComponentNameUppercase""_TEST_H
 #define $ProjectName"_"$ComponentNameUppercase""_TEST_H
 
 /*
@@ -327,8 +344,7 @@ int Test_$RefName(void);
 }
 #endif
 
-#endif
-"
+#endif"
 
     echo "$ComponentSrcContents" > "$ComponentSrc"
     echo "$ComponentTestSrcContents" > "$ComponentTestSrc"

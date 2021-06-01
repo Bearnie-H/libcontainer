@@ -8,7 +8,7 @@
             "name": "clang - Build and debug active project",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/products/debugger/libcontainer-v0.1.1-debugger.out",
+            "program": "${workspaceFolder}/products/debugger/libcontainer-v0.3.1-debugger.out",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

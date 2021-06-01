@@ -20,6 +20,8 @@ your specific application:
 | Macro Name | Description |
 | :----------: | :---------- |
 | `LIBCONTAINER_ARRAY_DEFAULT_CAPACITY` | Minimum Capacity of Array_t objects unless specified |
+| `LIBCONTAINER_HASHMAP_LOAD_FACTOR`    | Hashmap Load Factor threshold before a table rehash |
+| `LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY` | Hashmap default starting size |
 
 To specify non-default values for any of these tunable parameters, simply set the variable as desired
 when calling the `make` program, e.g. `make LIBCONTAINER_ARRAY_DEFAULT_CAPACITY=16 release`.

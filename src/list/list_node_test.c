@@ -34,7 +34,6 @@ int Test_list_node(void) {
     FailedTests += Test_ListNode_InsertAfter();
     FailedTests += Test_ListNode_InsertBefore();
     FailedTests += Test_ListNode_UpdateValue();
-    /* Tests go here... */
 
     return FailedTests;
 }
@@ -66,7 +65,7 @@ int Test_ListNode_RefCreate(void) {
         TEST_FAILURE;
     }
 
-    Outer = ListNode_RefCreate(Inner, (ReleaseFunc_t)ListNode_Release);
+    Outer = ListNode_RefCreate(Inner, (ReleaseFunc_t *)ListNode_Release);
     if (NULL == Outer) {
         TEST_PRINTF("%s", "Test Failure - Failed to create outer List_Node_t.");
         TEST_FAILURE;

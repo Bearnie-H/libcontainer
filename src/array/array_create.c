@@ -63,7 +63,7 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
     return Array;
 }
 
-Array_t *Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFunc_t ReleaseFunc) {
+Array_t *Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFunc_t *ReleaseFunc) {
 
     Array_t *Array = NULL;
 

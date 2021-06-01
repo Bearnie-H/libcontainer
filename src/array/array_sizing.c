@@ -83,8 +83,18 @@ ssize_t Array_Length(Array_t *Array) {
 
     if (NULL == Array) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t* provided.");
-        return -1;
+        return 0;
     }
 
     return (ssize_t)Array->Length;
+}
+
+ssize_t Array_Capacity(Array_t *Array) {
+
+    if (NULL == Array) {
+        DEBUG_PRINTF("%s", "Error, NULL Array_t* provided.");
+        return 0;
+    }
+
+    return (ssize_t)Array->Capacity;
 }

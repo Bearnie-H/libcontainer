@@ -1,4 +1,6 @@
 /*
+    MIT License
+
     Copyright (c) 2021 Bearnie-H
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,8 +22,8 @@
     SOFTWARE.
 */
 
-#ifndef LIBCONTAINER_LIST_TEST_H
-#define LIBCONTAINER_LIST_TEST_H
+#ifndef LIBCONTAINER_HASHMAP_TEST_H
+#define LIBCONTAINER_HASHMAP_TEST_H
 
 /*
     If this header should export C-compatible symbols, rearrange these ifdefs as appropriate
@@ -33,29 +35,29 @@ extern "C" {
 /*
     Top-level testing entry-point for the component.
 */
-int Test_list(void);
+int Test_hashmap(void);
 
-int Test_List_Create(void);
-int Test_List_RefCreate(void);
+int Test_Hashmap_DoubleKey(void);
+int Test_Hashmap_StringKey(void);
 
-int Test_List_Insert(void);
-int Test_List_RefInsert(void);
-int Test_List_Prepend(void);
-int Test_List_RefPrepend(void);
-int Test_List_Append(void);
-int Test_List_RefAppend(void);
-int Test_List_Remove(void);
-int Test_List_RemoveAll(void);
-int Test_List_GetElement(void);
-int Test_List_SetElement(void);
-int Test_List_RefSetElement(void);
-int Test_List_PopElement(void);
-int Test_List_PopFront(void);
-int Test_List_PopBack(void);
+int Test_Hashmap_Create_DoubleKey(void);
+int Test_Hashmap_Insert_DoubleKey(void);
+int Test_Hashmap_Overwrite_DoubleKey(void);
+int Test_Hashmap_Retrieve_DoubleKey(void);
+int Test_Hashmap_KeyExists_DoubleKey(void);
+int Test_Hashmap_Remove_DoubleKey(void);
+int Test_Hashmap_Pop_DoubleKey(void);
+
+int Test_Hashmap_Create_StringKey(void);
+int Test_Hashmap_Insert_StringKey(void);
+int Test_Hashmap_Overwrite_StringKey(void);
+int Test_Hashmap_Retrieve_StringKey(void);
+int Test_Hashmap_KeyExists_StringKey(void);
+int Test_Hashmap_Remove_StringKey(void);
+int Test_Hashmap_Pop_StringKey(void);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

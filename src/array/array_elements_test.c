@@ -336,7 +336,7 @@ int Test_Array_Ref_InsertN(void) {
     int Index = 0;
     int SubArrayCount = 16;
 
-    Outer = Array_RefCreate(0, sizeof(Array_t *), (ReleaseFunc_t)Array_Release);
+    Outer = Array_RefCreate(0, sizeof(Array_t *), (ReleaseFunc_t *)Array_Release);
     if (NULL == Outer) {
         TEST_PRINTF("%s", "Test Failure - Failed to create outer Array_t of Array_t's.");
         TEST_FAILURE;
@@ -405,7 +405,7 @@ int Test_Array_Ref_RemoveN(void) {
     int RemoveIndex = 5;
     int SubArrayCount = 16;
 
-    Outer = Array_RefCreate(0, sizeof(Array_t *), (ReleaseFunc_t)Array_Release);
+    Outer = Array_RefCreate(0, sizeof(Array_t *), (ReleaseFunc_t *)Array_Release);
     if (NULL == Outer) {
         TEST_PRINTF("%s", "Test Failure - Failed to create outer Array_t of Array_t's.");
         TEST_FAILURE;

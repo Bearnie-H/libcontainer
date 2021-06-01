@@ -75,7 +75,7 @@ struct List_Node_t {
         to release the memory held by the contents of this node. This is held within
         the node itself, to allow for heterogeneous lists.
     */
-    ReleaseFunc_t ReleaseFunc;
+    ReleaseFunc_t* ReleaseFunc;
 };
 
 /*
@@ -116,7 +116,7 @@ List_Node_t* ListNode_Create(const void* Contents, size_t Size);
     Note:
     Passing NULL as the ReleaseFunc will default to using free() from the stdlib.h
 */
-List_Node_t* ListNode_RefCreate(const void* Contents, ReleaseFunc_t ReleaseFunc);
+List_Node_t* ListNode_RefCreate(const void* Contents, ReleaseFunc_t* ReleaseFunc);
 
 /*
     ListNode_Release
@@ -210,7 +210,7 @@ void ListNode_Delete(List_Node_t* Node);
     contents as needed. Non-zero ElementSize indicates a non-reference value, and an allocation
     will take place, setting the ReleaseFunc to free() from stdlib.h
 */
-int ListNode_UpdateValue(List_Node_t* Node, const void* Element, size_t ElementSize, ReleaseFunc_t ReleaseFunc);
+int ListNode_UpdateValue(List_Node_t* Node, const void* Element, size_t ElementSize, ReleaseFunc_t* ReleaseFunc);
 
 
 #if defined(TESTING) || defined(DEBUGGER)

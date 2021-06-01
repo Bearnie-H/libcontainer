@@ -102,7 +102,7 @@ int List_Append(List_t *List, const void *Element, size_t ElementSize) {
     return List_Insert(List, Element, ElementSize, List->Length);
 }
 
-int List_RefInsert(List_t *List, const void *Element, ReleaseFunc_t ReleaseFunc, int Index) {
+int List_RefInsert(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc, int Index) {
 
     List_Node_t *NewNode = NULL;
     List_Node_t *BaseNode = NULL;
@@ -123,7 +123,10 @@ int List_RefInsert(List_t *List, const void *Element, ReleaseFunc_t ReleaseFunc,
         return 1;
     }
 
-    if (0 == Index) {
+    if (0 == List->Length) {
+        List->Head = NewNode;
+        List->Tail = NewNode;
+    } else if (0 == Index) {
         if (0 != ListNode_InsertBefore(List->Head, NewNode)) {
             DEBUG_PRINTF("%s", "Failed to insert new List_Node_t at beginning of the List_t.");
             ListNode_Release(NewNode);
@@ -152,35 +155,16 @@ int List_RefInsert(List_t *List, const void *Element, ReleaseFunc_t ReleaseFunc,
     return 0;
 }
 
-int List_RefPrepend(List_t *List, const void *Element, ReleaseFunc_t ReleaseFunc) {
+int List_RefPrepend(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc) {
     return List_RefInsert(List, Element, ReleaseFunc, 0);
 }
 
-int List_RefAppend(List_t *List, const void *Element, ReleaseFunc_t ReleaseFunc) {
+int List_RefAppend(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc) {
     return List_RefInsert(List, Element, ReleaseFunc, List->Length);
 }
 
 int List_Remove(List_t *List, int Index) {
-
-    List_Node_t *Node = NULL;
-
-    if (NULL == List) {
-        DEBUG_PRINTF("%s", "Error, NULL List_t* provided.");
-        return 1;
-    }
-
-    if ((0 == List->Length) || (Index < 0) || (List->Length <= (size_t)Index)) {
-        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", Index);
-        return 1;
-    }
-
-    Node = List_findNode(List, Index);
-    ListNode_Release(Node);
-
-    List->Length -= 1;
-
-    DEBUG_PRINTF("Successfully removed item at index [ %d ].", Index);
-    return 0;
+    return List_removeNode(List, List_findNode(List, Index));
 }
 
 void *List_GetElement(List_t *List, int Index) {
@@ -226,7 +210,7 @@ int List_SetElement(List_t *List, const void *Element, size_t ElementSize, int I
 
     /* Since we're setting the node contents to a non-reference type, the
      * ReleaseFunc is always just free(). */
-    if (0 != ListNode_UpdateValue(Node, Element, ElementSize, (ReleaseFunc_t)free)) {
+    if (0 != ListNode_UpdateValue(Node, Element, ElementSize, (ReleaseFunc_t *)free)) {
         DEBUG_PRINTF("%s", "Error, Failed to update Node contents.");
         return 1;
     }
@@ -235,7 +219,7 @@ int List_SetElement(List_t *List, const void *Element, size_t ElementSize, int I
     return 0;
 }
 
-int List_RefSetElement(List_t *List, const void *Element, ReleaseFunc_t ReleaseFunc, int Index) {
+int List_RefSetElement(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc, int Index) {
 
     List_Node_t *Node = NULL;
 
@@ -283,10 +267,12 @@ void *List_PopElement(List_t *List, int Index) {
     Node = List_findNode(List, Index);
     NodeContents = Node->Contents;
 
-    if (0 == (size_t)Index) {
-        List->Head = Node->Next;
-    } else if ((size_t)Index == List->Length) {
-        List->Tail = Node->Previous;
+    if (Node == List->Head) {
+        List->Head = List->Head->Next;
+    }
+
+    if (Node == List->Tail) {
+        List->Tail = List->Tail->Previous;
     }
 
     ListNode_Delete(Node);
@@ -317,4 +303,38 @@ List_Node_t *List_findNode(List_t *List, int Index) {
         ;
 
     return Node;
+}
+
+int List_removeNode(List_t *List, List_Node_t *Node) {
+
+    List_Node_t *CheckNode = NULL;
+
+    if ((NULL == List) || (NULL == Node)) {
+        DEBUG_PRINTF("%s", "Error: NULL List* or Node* provided.");
+        return 1;
+    }
+
+    /* Make sure this node is actually within the list. */
+    for (CheckNode = List->Head; CheckNode != NULL && CheckNode != Node;
+         CheckNode = CheckNode->Next)
+        ;
+
+    if (NULL == CheckNode) {
+        DEBUG_PRINTF("%s", "Error: Given List_Node_t* is not within the List_t.");
+        return 1;
+    }
+
+    if (List->Head == Node) {
+        List->Head = List->Head->Next;
+    }
+
+    if (List->Tail == Node) {
+        List->Tail = List->Tail->Previous;
+    }
+
+    ListNode_Release(Node);
+    List->Length -= 1;
+
+    DEBUG_PRINTF("%s", "Successfully removed Node from List_t.");
+    return 0;
 }

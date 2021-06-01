@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 
 #endif
 
-    /* Otherwise, do the standard application logic... */
+    /* Otherwise, do the standard application logic */
 
     /* Placeholder code here to do *something* outwardly visible,
         and to suppress the 'w-unused-parameter' compiler warning for this
@@ -51,8 +51,6 @@ int main(int argc, char **argv) {
         printf(" %s", argv[i]);
     }
     printf("\n");
-
-    /* ... */
 
     return 0;
 }
