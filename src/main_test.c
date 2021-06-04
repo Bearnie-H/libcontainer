@@ -25,11 +25,13 @@
 #define LIBCONTAINER_ENABLE_ARRAY
 #define LIBCONTAINER_ENABLE_LIST
 #define LIBCONTAINER_ENABLE_HASHMAP
+#define LIBCONTAINER_ENABLE_BINARY_TREE
 
 #include "../include/libcontainer.h"
 #include "array/include/array.h"
 #include "hashmap/include/hashmap.h"
 #include "list/include/list.h"
+#include "tree/binary-tree/include/binary_tree.h"
 
 int Test_main(int argc, char **argv) {
 
@@ -52,6 +54,7 @@ int Test_main(int argc, char **argv) {
     FailedTests += Test_array();
     FailedTests += Test_list();
     FailedTests += Test_hashmap();
+    FailedTests += Test_binary_tree();
 
     /* Returning non-zero indicates to the Makefile during make to abort.
         This lets failing tests block further builds with the "all" target

@@ -1,14 +1,4 @@
 /*
-    libcontainer - A library for creating and working with generic containers in pure C.
-
-    This library contains a range of generic, useful "container" implementations
-    to help solve the problem of rebuilding common data structures, and to
-    provide a consistent and memory-safe basis for building upon. These containers
-    are designed to provide some of the benefits and power of the C++ standard library
-    container templates, but in a pure C environment.
-*/
-
-/*
     Copyright (c) 2021 Bearnie-H
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,6 +18,16 @@
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
+*/
+
+/*
+    libcontainer - A library for creating and working with generic containers in pure C.
+
+    This library contains a range of generic, useful "container" implementations
+    to help solve the problem of rebuilding common data structures, and to
+    provide a consistent and memory-safe basis for building upon. These containers
+    are designed to provide some of the benefits and power of the C++ standard library
+    container templates, but in a pure C environment.
 */
 
 #ifndef LIBCONTAINER_H
@@ -153,6 +153,33 @@ typedef unsigned int (HashFunc_t)(const void*, size_t);
 
 #endif
 
+#ifdef LIBCONTAINER_ENABLE_BINARY_TREE
+/* +++++++++ Public Binary Tree Typedefs +++++++++ */
+
+/*
+    Binary_Tree_t
+
+    A Binary_Tree_t is a self-balancing binary search tree structure. This
+    can hold arbitrary homogeneous elements. This can either own the memory
+    associated with the items it contains, or simply contain references
+    to resources held by the items themselves.
+
+    Duplicate items are not allowed, and insertion of a duplicate item
+    will overwrite the existing contents. If this is problematic, always
+    check if the key exists before performing an insert operation.
+
+    This struct is opaque to ensure all accesses are performed
+    through the functions provided in this library to ensure
+    safe access and operation.
+
+    See the functions prefixed with "Binary_Tree_" for the available operations
+    on these arrays.
+*/
+typedef struct Binary_Tree_t Binary_Tree_t;
+
+/* --------- Public Binary Tree Typedefs --------- */
+#endif
+
 /*
     ReleaseFunc_t
 
@@ -218,6 +245,7 @@ typedef int(CallbackArgFunc_t)(void*, void*);
 
 #ifdef LIBCONTAINER_ENABLE_ARRAY
 /* +++++ Array Functions +++++ */
+
 /*
     Array_Create
 
@@ -537,6 +565,7 @@ int Array_DoCallbackArg(Array_t* Array, CallbackArgFunc_t* Callback, void* Args)
 
 
 /* ----- Array Functions ----- */
+
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_LIST
@@ -1137,6 +1166,25 @@ void Hashmap_Release(Hashmap_t* Map);
 
 /* ----- Hashmap Functions ----- */
 
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_BINARY_TREE
+/* +++++++++ Binary Tree Functions +++++++++ */
+
+Binary_Tree_t* Binary_Tree_Create(size_t ValueSize, ReleaseFunc_t* ReleaseFunc);
+size_t Binary_Tree_Length(Binary_Tree_t* Tree);
+int Binary_Tree_Insert(Binary_Tree_t* Tree, int Key, const void* Value);
+bool Binary_Tree_KeyExists(Binary_Tree_t* Tree, int Key);
+void* Binary_Tree_Get(Binary_Tree_t* Tree, int Key);
+void* Binary_Tree_Pop(Binary_Tree_t* Tree, int Key);
+int* Binary_Tree_RootKey(Binary_Tree_t* Tree);
+void* Binary_Tree_Next_PreOrder(Binary_Tree_t* Tree, int* CurrentKey);
+void* Binary_Tree_Next_InOrder(Binary_Tree_t* Tree, int* CurrentKey);
+void* Binary_Tree_Next_PostOrder(Binary_Tree_t* Tree, int* CurrentKey);
+int Binary_Tree_Remove(Binary_Tree_t* Tree, int Key);
+void Binary_Tree_Release(Binary_Tree_t* Tree);
+
+/* --------- Binary Tree Functions --------- */
 #endif
 
 /* ---------- Exported Library Functions ---------- */

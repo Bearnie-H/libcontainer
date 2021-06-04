@@ -235,6 +235,7 @@ function CreateComponentSourceFiles() {
     local RefName="$ComponentName"
     local LicenseFile="LICENSE"
     local LicenseText=
+    local LoggingPrefix="$(echo "$ComponentPath/$ComponentName/" | sed 's/src\///g' | sed 's/[^/]*\//..\//g')"
 
     if [ ! -z "$ComponentSubFilename" ]; then
         RefName="$ComponentSubFilename"
@@ -285,7 +286,7 @@ $LicenseText
 #include <stdio.h>
 
 #include \"include/$RefName.h\"
-#include \"../logging/logging.h\"
+#include \"$LoggingPrefix""logging/logging.h\"
 
 int Test_$RefName(void) {
 

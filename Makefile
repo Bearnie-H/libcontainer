@@ -27,7 +27,7 @@
 
 #   Version Settings
 MAJOR_VERSION := 0
-MINOR_VERSION := 3
+MINOR_VERSION := 4
 PATCH_VERSION := 1
 VERSION       := v$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
 
@@ -73,7 +73,7 @@ TESTSUFFIX   := .out
 #    will only be built into the "test" and "debugger" targets.
 #   For something like a library, the "src" should be moved to the TESTCOMPONENTS
 #    to allow it to be used as driver code for running something like an internal test suite.
-COMPONENTS     := src/array src/list src/hashmap
+COMPONENTS     := src/array src/list src/hashmap src/tree/binary-tree
 TESTCOMPONENTS := src
 
 #   Additional Libraries to include when building the final applications

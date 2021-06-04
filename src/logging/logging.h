@@ -28,7 +28,16 @@
    appropriate
 */
 #ifdef __cplusplus
-extern C {
+extern "C" {
+#endif
+
+#if defined(LIBCONTAINER_ZERO_ON_RELEASE)
+#include <string.h>
+
+#define ZERO_CONTAINER(_name, _type) memset(_name, 0, sizeof(_type))
+
+#else
+#define ZERO_CONTAINER(_name, _type) ((void)0)
 #endif
 
 #if defined(DEBUG)
@@ -57,7 +66,9 @@ extern C {
             __func__, __VA_ARGS__)
 
 #define TEST_NOT_IMPLEMENTED TEST_PRINTF("%s", "Test Failure - Test not yet implemented!"); return 1
+
 #define TEST_SUCCESSFUL TEST_PRINTF("%s", "Test Successful."); return 0
+
 #define TEST_FAILURE return 1
 
 #else
@@ -85,7 +96,9 @@ extern C {
             __func__, __VA_ARGS__)
 
 #define TEST_NOT_IMPLEMENTED TEST_PRINTF("%s", "Test Failure - Test not yet implemented!"); return 1
+
 #define TEST_SUCCESSFUL TEST_PRINTF("%s", "Test Successful."); return 0
+
 #define TEST_FAILURE return 1
 
 #endif

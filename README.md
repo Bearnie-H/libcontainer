@@ -28,6 +28,7 @@ your specific application:
 
 | Macro Name | Description |
 | :----------: | :---------- |
+| `LIBCONTAINER_ZERO_ON_RELEASE`    |   memset() all containers to 0's after releasing |
 | `LIBCONTAINER_ARRAY_DEFAULT_CAPACITY` | Minimum Capacity of Array_t objects unless specified |
 | `LIBCONTAINER_HASHMAP_LOAD_FACTOR`    | Hashmap Load Factor threshold before a table rehash |
 | `LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY` | Hashmap default starting size |
@@ -60,7 +61,7 @@ Once installed, the file `libcontainer.a` and header `libcontainer.h` will be ac
 stable across library version upgrades.
 
 An additional, optional, step you may wish to perform is to add the library and header folders
-to the `INCLUDE_PATH` and `LD_LIBRARY_PATH` so these are visible without any compiler flags.
+to the `INCLUDE_PATH` and `LIBRARY_PATH` so these are visible without any compiler flags.
 More commonly, either these files will be linked into further projects, or these additional
 include and library paths can be passed to the compiler in the other project.
 
