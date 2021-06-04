@@ -55,6 +55,8 @@ int Test_hashmap(void) {
     FailedTests += Test_Hashmap_DoubleKey();
     FailedTests += Test_Hashmap_StringKey();
 
+    FailedTests += Test_hashmap_callbacks();
+
     return FailedTests;
 }
 

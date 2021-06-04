@@ -363,7 +363,7 @@ void Hashmap_rehash(Hashmap_t *Map) {
     double LoadFactor = 0;
     List_t *Bucket = NULL;
     Hashmap_Entry_t *Entry = NULL;
-    int BucketIndex = 0, BucketLength = 0, i = 0;
+    size_t BucketIndex = 0, BucketLength = 0, i = 0;
     size_t MapLength = 0;
 
     if (NULL == Map) {

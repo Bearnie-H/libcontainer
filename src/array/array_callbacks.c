@@ -27,30 +27,30 @@
 #include "../logging/logging.h"
 #include "include/array.h"
 
-int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback) {
+int Array_DoCallback(Array_t *Array, CallbackFunc_t *Callback) {
 
     int Index = 0;
-    void* ElementValue = NULL;
+    void *ElementValue = NULL;
     int RetValue = 0;
 
-    if ( NULL == Array ) {
+    if (NULL == Array) {
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
         return 1;
     }
 
-    if ( NULL == Callback ) {
+    if (NULL == Callback) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    for (Index = 0; (ssize_t)Index < Array_Length(Array); Index++ ) {
+    for (Index = 0; (size_t)Index < Array_Length(Array); Index++) {
         ElementValue = Array_GetElement(Array, Index);
-        if ( NULL == ElementValue ) {
+        if (NULL == ElementValue) {
             DEBUG_PRINTF("Error: Failed to get Array element at index [ %d ].", Index);
             RetValue = 1;
             continue;
         }
-        if ( 0 != Callback(ElementValue) ) {
+        if (0 != Callback(ElementValue)) {
             DEBUG_PRINTF("Note: Callback function failed for Index [ %d ].", Index);
             RetValue = 1;
         }
@@ -59,30 +59,30 @@ int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback) {
     return RetValue;
 }
 
-int Array_DoCallbackArg(Array_t* Array, CallbackArgFunc_t* Callback, void* Args) {
+int Array_DoCallbackArg(Array_t *Array, CallbackArgFunc_t *Callback, void *Args) {
 
     int Index = 0;
-    void* ElementValue = NULL;
+    void *ElementValue = NULL;
     int RetValue = 0;
 
-    if ( NULL == Array ) {
+    if (NULL == Array) {
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
         return 1;
     }
 
-    if ( NULL == Callback ) {
+    if (NULL == Callback) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    for (Index = 0; (ssize_t)Index < Array_Length(Array); Index++ ) {
+    for (Index = 0; (size_t)Index < Array_Length(Array); Index++) {
         ElementValue = Array_GetElement(Array, Index);
-        if ( NULL == ElementValue ) {
+        if (NULL == ElementValue) {
             DEBUG_PRINTF("Error: Failed to get Array element at index [ %d ].", Index);
             RetValue = 1;
             continue;
         }
-        if ( 0 != Callback(ElementValue, Args) ) {
+        if (0 != Callback(ElementValue, Args)) {
             DEBUG_PRINTF("Note: Callback function failed for Index [ %d ].", Index);
             RetValue = 1;
         }

@@ -333,12 +333,12 @@ void Array_Release(Array_t* Array);
     Array   -   The array to determine the length of.
 
     Outputs:
-    ssize_t -   The length of the array (0 inclusive) on success, 0 on failure.
+    size_t -   The length of the array (0 inclusive) on success, 0 on failure.
 
     Note:
     This operation is O(1) in the length of the array.
 */
-ssize_t Array_Length(Array_t* Array);
+size_t Array_Length(Array_t* Array);
 
 /*
     Array_Prepend
@@ -1073,6 +1073,51 @@ void* Hashmap_Pop(Hashmap_t *Map, const void *Key, size_t KeySize);
 */
 int Hashmap_Remove(Hashmap_t* Map, const void* Key, size_t KeySize);
 
+/*
+    Hashmap_DoCallback
+
+    This function will perform the given callback function on each of the elements of
+    the hashmap in sequence. This is helpful for things like printing or otherwise manipulating
+    the hashmap value.
+
+    Inputs:
+    Map         -   Pointer to the hashmap to operate on.
+    Callback    -   Pointer to the Callback function to call for each item of the hashmap.
+
+    Outputs:
+    int     -   Returns 0 if all callbacks execute successfully, non-zero if any fail.
+
+    Note:
+    For a Hashmap Callback function, the *Value* pointer provided to the callback
+    is actually an array of 2 void*, containing a pointer to the Key and the Value
+    respectively.
+*/
+
+int Hashmap_DoCallback(Hashmap_t* Map, CallbackFunc_t* Callback);
+/*
+    Hashmap_DoCallbackArg
+
+    This function will perform the given callback function on each of the elements
+    of the hashmap in sequence. This extends the Hashmap_DoCallback function by allowing
+    additional parameters to be passed in to this callback function to allow for
+    richer and more complex behaviour.
+
+    Inputs:
+    Map         -   Pointer to the hashmap to operate on.
+    Callback    -   Pointer to the Callback function to call for each item of the hashmap.
+    Args        -   Pointer to some additional argument(s), values, resources, etc. to pass
+                        in to the Callback function along with the item value.
+
+    Outputs:
+    int     -   Returns 0 if all callbacks execute successfully, non-zero if any fail.
+
+    Note:
+    For a Hashmap Callback function, the *Value* pointer provided to the callback
+    is actually an array of 2 void*, containing a pointer to the Key and the Value
+    respectively.
+*/
+
+int Hashmap_DoCallbackArg(Hashmap_t* Map, CallbackArgFunc_t* Callback, void* Args);
 /*
     Hashmap_Release
 

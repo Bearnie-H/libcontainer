@@ -27,30 +27,30 @@
 #include "../logging/logging.h"
 #include "include/list.h"
 
-int List_DoCallback(List_t* List, CallbackFunc_t* Callback) {
+int List_DoCallback(List_t *List, CallbackFunc_t *Callback) {
 
-    List_Node_t* Node = NULL;
-    void* NodeValue = NULL;
+    List_Node_t *Node = NULL;
+    void *NodeValue = NULL;
     int RetValue = 0;
 
-    if ( NULL == List ) {
+    if (NULL == List) {
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
         return 1;
     }
 
-    if ( NULL == Callback ) {
+    if (NULL == Callback) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    for ( Node = List->Head; NULL != Node; Node = Node->Next ) {
-        NodeValue = (void*)Node->Contents;
-        if ( NULL == NodeValue ) {
+    for (Node = List->Head; NULL != Node; Node = Node->Next) {
+        NodeValue = (void *)Node->Contents;
+        if (NULL == NodeValue) {
             DEBUG_PRINTF("%s", "Error: NULL Node Contents found in List.");
             RetValue = 1;
             continue;
         }
-        if ( 0 != Callback(NodeValue) ) {
+        if (0 != Callback(NodeValue)) {
             DEBUG_PRINTF("%s", "Error: Callback function returned non-zero.");
             RetValue = 1;
         }
@@ -59,30 +59,30 @@ int List_DoCallback(List_t* List, CallbackFunc_t* Callback) {
     return RetValue;
 }
 
-int List_DoCallbackArg(List_t* List, CallbackArgFunc_t* Callback, void* Args) {
+int List_DoCallbackArg(List_t *List, CallbackArgFunc_t *Callback, void *Args) {
 
-    List_Node_t* Node = NULL;
-    void* NodeValue = NULL;
+    List_Node_t *Node = NULL;
+    void *NodeValue = NULL;
     int RetValue = 0;
 
-    if ( NULL == List ) {
+    if (NULL == List) {
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
         return 1;
     }
 
-    if ( NULL == Callback ) {
+    if (NULL == Callback) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    for ( Node = List->Head; NULL != Node; Node = Node->Next ) {
-        NodeValue = (void*)Node->Contents;
-        if ( NULL == NodeValue ) {
+    for (Node = List->Head; NULL != Node; Node = Node->Next) {
+        NodeValue = (void *)Node->Contents;
+        if (NULL == NodeValue) {
             DEBUG_PRINTF("%s", "Error: NULL Node Contents found in List.");
             RetValue = 1;
             continue;
         }
-        if ( 0 != Callback(NodeValue, Args) ) {
+        if (0 != Callback(NodeValue, Args)) {
             DEBUG_PRINTF("%s", "Error: Callback function returned non-zero.");
             RetValue = 1;
         }

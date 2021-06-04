@@ -127,12 +127,12 @@ int Array_Grow(Array_t* Array, size_t AdditionalCapacity);
     Array   -   The array to determine the capacity of.
 
     Outputs:
-    ssize_t -   The capacity of the array (0 inclusive) on success, 0 on failure.
+    size_t -   The capacity of the array (0 inclusive) on success, 0 on failure.
 
     Note:
     This operation is O(1) in the capacity of the array.
 */
-ssize_t Array_Capacity(Array_t* Array);
+size_t Array_Capacity(Array_t* Array);
 
 #if defined(TESTING) || defined(DEBUGGER)
 

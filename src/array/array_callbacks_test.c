@@ -22,44 +22,44 @@
     SOFTWARE.
 */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define LIBCONTAINER_ENABLE_ARRAY
 
-#include "include/array.h"
 #include "../logging/logging.h"
+#include "include/array.h"
 
-static int TestCallbackFunc_PrintIntValue(void* Value) {
+static int TestCallbackFunc_PrintIntValue(void *Value) {
 
-    int* IntValue = (int*)Value;
+    int *IntValue = (int *)Value;
 
     /*
         Note, this will never be NULL, as promised by the library.
         This check is only here to suppress the compiler warning
         -Wunused-parameter.
     */
-    if ( NULL == IntValue) {
+    if (NULL == IntValue) {
         TEST_PRINTF("%s", "Error: NULL Value* provided.");
         return 1;
     }
 
-    DEBUG_PRINTF("%d ", *(int*)IntValue);
+    DEBUG_PRINTF("%d ", *(int *)IntValue);
 
     return 0;
 }
 
-static int TestCallbackArgFunc_PrintIntValue(void* Value, void* Args) {
+static int TestCallbackArgFunc_PrintIntValue(void *Value, void *Args) {
 
-    int* IntValue = (int*)Value;
-    int* Divisor = (int*)Args;
+    int *IntValue = (int *)Value;
+    int *Divisor = (int *)Args;
 
-    if ( NULL == Divisor ) {
+    if (NULL == Divisor) {
         TEST_PRINTF("%s", "Error: NULL Divisor* provided.");
         return 1;
     }
 
-    if ( 0 == (*IntValue % *Divisor)) {
+    if (0 == (*IntValue % *Divisor)) {
         DEBUG_PRINTF("Array value [ %d ] is divisible by [ %d ]!", *IntValue, *Divisor);
     } else {
         DEBUG_PRINTF("Array value [ %d ] is NOT divisible by [ %d ]!", *IntValue, *Divisor);
@@ -80,25 +80,25 @@ int Test_array_callbacks(void) {
 
 int Test_Array_DoCallback(void) {
 
-    Array_t* Array = NULL;
+    Array_t *Array = NULL;
     size_t Size = 64;
     int i = 0;
 
     Array = Array_Create(Size, sizeof(int));
-    if ( NULL == Array ) {
+    if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t for testing.");
         TEST_FAILURE;
     }
 
-    for ( i = 0; i<(int)Size;i++){
-        if(0!=Array_Append(Array,&i)){
-            TEST_PRINTF("Test Failure - Failed to append value [ %d ] to Array_t.",i);
+    for (i = 0; i < (int)Size; i++) {
+        if (0 != Array_Append(Array, &i)) {
+            TEST_PRINTF("Test Failure - Failed to append value [ %d ] to Array_t.", i);
             Array_Release(Array);
             TEST_FAILURE;
         }
     }
 
-    if ( 0 != Array_DoCallback(Array, TestCallbackFunc_PrintIntValue) ) {
+    if (0 != Array_DoCallback(Array, TestCallbackFunc_PrintIntValue)) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Callback on Array elements.");
         Array_Release(Array);
         TEST_FAILURE;
@@ -110,26 +110,26 @@ int Test_Array_DoCallback(void) {
 
 int Test_Array_DoCallbackArg(void) {
 
-    Array_t* Array = NULL;
+    Array_t *Array = NULL;
     size_t Size = 64;
     int i = 0;
     int Divisor = 5;
 
     Array = Array_Create(Size, sizeof(int));
-    if ( NULL == Array ) {
+    if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t for testing.");
         TEST_FAILURE;
     }
 
-    for ( i = 0; i<(int)Size;i++){
-        if(0!=Array_Append(Array,&i)){
-            TEST_PRINTF("Test Failure - Failed to append value [ %d ] to Array_t.",i);
+    for (i = 0; i < (int)Size; i++) {
+        if (0 != Array_Append(Array, &i)) {
+            TEST_PRINTF("Test Failure - Failed to append value [ %d ] to Array_t.", i);
             Array_Release(Array);
             TEST_FAILURE;
         }
     }
 
-    if ( 0 != Array_DoCallbackArg(Array, TestCallbackArgFunc_PrintIntValue, &Divisor) ) {
+    if (0 != Array_DoCallbackArg(Array, TestCallbackArgFunc_PrintIntValue, &Divisor)) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Callback on Array elements.");
         Array_Release(Array);
         TEST_FAILURE;

@@ -79,22 +79,22 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
     return 0;
 }
 
-ssize_t Array_Length(Array_t *Array) {
+size_t Array_Length(Array_t *Array) {
 
     if (NULL == Array) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t* provided.");
         return 0;
     }
 
-    return (ssize_t)Array->Length;
+    return Array->Length;
 }
 
-ssize_t Array_Capacity(Array_t *Array) {
+size_t Array_Capacity(Array_t *Array) {
 
     if (NULL == Array) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t* provided.");
         return 0;
     }
 
-    return (ssize_t)Array->Capacity;
+    return Array->Capacity;
 }

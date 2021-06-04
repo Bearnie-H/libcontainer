@@ -36,8 +36,10 @@ extern "C" {
 #define LIBCONTAINER_ENABLE_ARRAY
 #define LIBCONTAINER_ENABLE_LIST
 
-#include "../../../include/libcontainer.h"
 #include "hashmap_entry.h"
+#include "hashmap_callbacks.h"
+
+#include "../../../include/libcontainer.h"
 
 #ifndef LIBCONTAINER_HASHMAP_LOAD_FACTOR
 /*
