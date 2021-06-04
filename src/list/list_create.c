@@ -60,9 +60,7 @@ void List_Release(List_t *List) {
         Current = Next;
     }
 
-    List->Head = NULL;
-    List->Tail = NULL;
-    List->Length = 0;
+    ZERO_CONTAINER(List, List_t);
 
     free(List);
     DEBUG_PRINTF("%s", "Successfully release List_t* and all held contents.");

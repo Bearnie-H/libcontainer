@@ -164,19 +164,14 @@ void Array_Release(Array_t *Array) {
 
         /* Finally, release the memory known to be held by the array. */
         free(Array->Contents);
-        Array->Contents = NULL;
-        Array->ReleaseFunc = NULL;
 
     } else {
         DEBUG_PRINTF("%s", "Array_t has NULL contents pointer, no contents to release.");
     }
 
-    Array->Capacity = 0;
-    Array->Length = 0;
-    Array->IsReference = false;
-    Array->IsShadow = false;
-
+    ZERO_CONTAINER(Array, Array_t);
     free(Array);
+
     DEBUG_PRINTF("%s", "Successfully released Array_t*.");
     return;
 }

@@ -67,6 +67,13 @@ struct Binary_Tree_t {
     size_t Size;
 };
 
+/* ++++++++++ Private Functions ++++++++++ */
+
+/* TODO: Function Documentation */
+void Binary_Tree_recolour(Binary_Tree_t* Tree);
+
+/* ---------- Private Functions ---------- */
+
 #if defined(TESTING) || defined(DEBUGGER)
 
 #include "binary_tree_test.h"

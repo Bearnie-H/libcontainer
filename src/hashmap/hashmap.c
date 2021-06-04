@@ -278,9 +278,7 @@ void Hashmap_Release(Hashmap_t *Map) {
         Array_Release(Map->Buckets);
     }
 
-    Map->HashFunc = NULL;
-    Map->KeyReleaseFunc = NULL;
-    Map->ItemCount = 0;
+    ZERO_CONTAINER(Map, Hashmap_t);
     free(Map);
 
     DEBUG_PRINTF("%s", "Successfully released all resources for Hashmap_t.");

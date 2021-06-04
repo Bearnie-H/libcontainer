@@ -176,12 +176,7 @@ void ListNode_Delete(List_Node_t *Node) {
         Node->Next->Previous = Node->Previous;
     }
 
-    Node->Contents = NULL;
-    Node->IsReference = false;
-    Node->Next = NULL;
-    Node->Previous = NULL;
-    Node->Size = 0;
-    Node->ReleaseFunc = NULL;
+    ZERO_CONTAINER(Node, List_Node_t);
     free(Node);
 
     DEBUG_PRINTF("%s", "Successfully deleted List_Node_t but not its contents.");

@@ -22,11 +22,11 @@
     SOFTWARE.
 */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "include/binary_tree_node.h"
 #include "../../logging/logging.h"
+#include "include/binary_tree_node.h"
 
 int Test_binary_tree_node(void) {
 

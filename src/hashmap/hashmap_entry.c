@@ -183,13 +183,7 @@ void Hashmap_Entry_Release(Hashmap_Entry_t *Entry) {
         Entry->KeyReleaseFunc(Entry->Key);
     }
 
-    Entry->HashValue = 0;
-    Entry->Key = NULL;
-    Entry->KeyReleaseFunc = NULL;
-    Entry->KeySize = 0;
-    Entry->Value = NULL;
-    Entry->ValueReleaseFunc = NULL;
-    Entry->ValueSize = 0;
+    ZERO_CONTAINER(Entry, Hashmap_Entry_t);
 
     free(Entry);
     return;
