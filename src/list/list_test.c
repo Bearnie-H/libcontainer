@@ -54,6 +54,8 @@ int Test_list(void) {
     FailedTests += Test_List_PopFront();
     FailedTests += Test_List_PopBack();
 
+    FailedTests += Test_list_callbacks();
+
     return FailedTests;
 }
 

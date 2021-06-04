@@ -800,6 +800,41 @@ void* List_PopFront(List_t* List);
 */
 void* List_PopBack(List_t* List);
 
+/*
+    List_DoCallback
+
+    This function will perform the given callback function on each of the elements of
+    the list in sequence. This is helpful for things like printing or otherwise manipulating
+    the list value.
+
+    Inputs:
+    List        -   Pointer to the list to operate on.
+    Callback    -   Pointer to the Callback function to call for each item of the list.
+
+    Outputs:
+    int     -   Returns 0 if all callbacks execute successfully, non-zero if any fail.
+*/
+int List_DoCallback(List_t* List, CallbackFunc_t* Callback);
+
+/*
+    List_DoCallbackArg
+
+    This function will perform the given callback function on each of the elements
+    of the list in sequence. This extends the List_DoCallback function by allowing
+    additional parameters to be passed in to this callback function to allow for
+    richer and more complex behaviour.
+
+    Inputs:
+    List        -   Pointer to the list to operate on.
+    Callback    -   Pointer to the Callback function to call for each item of the list.
+    Args        -   Pointer to some additional argument(s), values, resources, etc. to pass
+                        in to the Callback function along with the item value.
+
+    Outputs:
+    int     -   Returns 0 if all callbacks execute successfully, non-zero if any fail.
+*/
+int List_DoCallbackArg(List_t* List, CallbackArgFunc_t* Callback, void* Args);
+
 /* ----- List Functions ----- */
 #endif
 

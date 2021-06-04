@@ -37,6 +37,7 @@ extern "C" {
 #define LIBCONTAINER_ENABLE_LIST
 
 #include "list_node.h"
+#include "list_callbacks.h"
 
 struct List_t {
 

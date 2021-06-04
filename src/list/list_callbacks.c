@@ -25,16 +25,16 @@
 #include <stdlib.h>
 
 #include "../logging/logging.h"
-#include "include/array.h"
+#include "include/list.h"
 
-int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback) {
+int List_DoCallback(List_t* List, CallbackFunc_t* Callback) {
 
-    int Index = 0;
-    void* ElementValue = NULL;
+    List_Node_t* Node = NULL;
+    void* NodeValue = NULL;
     int RetValue = 0;
 
-    if ( NULL == Array ) {
-        DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+    if ( NULL == List ) {
+        DEBUG_PRINTF("%s", "Error: NULL List* provided.");
         return 1;
     }
 
@@ -43,15 +43,15 @@ int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback) {
         return 0;
     }
 
-    for (Index = 0; (ssize_t)Index < Array_Length(Array); Index++ ) {
-        ElementValue = Array_GetElement(Array, Index);
-        if ( NULL == ElementValue ) {
-            DEBUG_PRINTF("Error: Failed to get Array element at index [ %d ].", Index);
+    for ( Node = List->Head; NULL != Node; Node = Node->Next ) {
+        NodeValue = (void*)Node->Contents;
+        if ( NULL == NodeValue ) {
+            DEBUG_PRINTF("%s", "Error: NULL Node Contents found in List.");
             RetValue = 1;
             continue;
         }
-        if ( 0 != Callback(ElementValue) ) {
-            DEBUG_PRINTF("Note: Callback function failed for Index [ %d ].", Index);
+        if ( 0 != Callback(NodeValue) ) {
+            DEBUG_PRINTF("%s", "Error: Callback function returned non-zero.");
             RetValue = 1;
         }
     }
@@ -59,14 +59,14 @@ int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback) {
     return RetValue;
 }
 
-int Array_DoCallbackArg(Array_t* Array, CallbackArgFunc_t* Callback, void* Args) {
+int List_DoCallbackArg(List_t* List, CallbackArgFunc_t* Callback, void* Args) {
 
-    int Index = 0;
-    void* ElementValue = NULL;
+    List_Node_t* Node = NULL;
+    void* NodeValue = NULL;
     int RetValue = 0;
 
-    if ( NULL == Array ) {
-        DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+    if ( NULL == List ) {
+        DEBUG_PRINTF("%s", "Error: NULL List* provided.");
         return 1;
     }
 
@@ -75,15 +75,15 @@ int Array_DoCallbackArg(Array_t* Array, CallbackArgFunc_t* Callback, void* Args)
         return 0;
     }
 
-    for (Index = 0; (ssize_t)Index < Array_Length(Array); Index++ ) {
-        ElementValue = Array_GetElement(Array, Index);
-        if ( NULL == ElementValue ) {
-            DEBUG_PRINTF("Error: Failed to get Array element at index [ %d ].", Index);
+    for ( Node = List->Head; NULL != Node; Node = Node->Next ) {
+        NodeValue = (void*)Node->Contents;
+        if ( NULL == NodeValue ) {
+            DEBUG_PRINTF("%s", "Error: NULL Node Contents found in List.");
             RetValue = 1;
             continue;
         }
-        if ( 0 != Callback(ElementValue, Args) ) {
-            DEBUG_PRINTF("Note: Callback function failed for Index [ %d ].", Index);
+        if ( 0 != Callback(NodeValue, Args) ) {
+            DEBUG_PRINTF("%s", "Error: Callback function returned non-zero.");
             RetValue = 1;
         }
     }

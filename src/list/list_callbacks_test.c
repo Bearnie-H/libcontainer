@@ -25,9 +25,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define LIBCONTAINER_ENABLE_ARRAY
-
-#include "include/array.h"
+#include "include/list.h"
 #include "../logging/logging.h"
 
 static int TestCallbackFunc_PrintIntValue(void* Value) {
@@ -60,81 +58,80 @@ static int TestCallbackArgFunc_PrintIntValue(void* Value, void* Args) {
     }
 
     if ( 0 == (*IntValue % *Divisor)) {
-        DEBUG_PRINTF("Array value [ %d ] is divisible by [ %d ]!", *IntValue, *Divisor);
+        DEBUG_PRINTF("List value [ %d ] is divisible by [ %d ]!", *IntValue, *Divisor);
     } else {
-        DEBUG_PRINTF("Array value [ %d ] is NOT divisible by [ %d ]!", *IntValue, *Divisor);
+        DEBUG_PRINTF("List value [ %d ] is NOT divisible by [ %d ]!", *IntValue, *Divisor);
     }
 
     return 0;
 }
 
-int Test_array_callbacks(void) {
+int Test_list_callbacks(void) {
 
     int FailedTests = 0;
 
-    FailedTests += Test_Array_DoCallback();
-    FailedTests += Test_Array_DoCallbackArg();
+    FailedTests += Test_List_DoCallback();
+    FailedTests += Test_List_DoCallbackArg();
 
     return FailedTests;
 }
 
-int Test_Array_DoCallback(void) {
+int Test_List_DoCallback(void) {
 
-    Array_t* Array = NULL;
+    List_t* List = NULL;
     size_t Size = 64;
     int i = 0;
 
-    Array = Array_Create(Size, sizeof(int));
-    if ( NULL == Array ) {
-        TEST_PRINTF("%s", "Test Failure - Failed to create Array_t for testing.");
+    List = List_Create();
+    if ( NULL == List ) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create List_t* for testing.");
         TEST_FAILURE;
     }
 
-    for ( i = 0; i<(int)Size;i++){
-        if(0!=Array_Append(Array,&i)){
-            TEST_PRINTF("Test Failure - Failed to append value [ %d ] to Array_t.",i);
-            Array_Release(Array);
+    for(i=0;i<(int)Size;i++){
+        if(0!=List_Append(List,&i,sizeof(i))){
+            TEST_PRINTF("%s","Test Failure - Failed to append value to List_t.");
+            List_Release(List);
             TEST_FAILURE;
         }
     }
 
-    if ( 0 != Array_DoCallback(Array, TestCallbackFunc_PrintIntValue) ) {
-        TEST_PRINTF("%s", "Test Failure - Failed to perform Callback on Array elements.");
-        Array_Release(Array);
+    if(0!=List_DoCallback(List,TestCallbackFunc_PrintIntValue)){
+        TEST_PRINTF("%s","Test Failure - Failed to perform List_DoCallback().");
+        List_Release(List);
         TEST_FAILURE;
     }
 
-    Array_Release(Array);
+    List_Release(List);
     TEST_SUCCESSFUL;
 }
 
-int Test_Array_DoCallbackArg(void) {
+int Test_List_DoCallbackArg(void) {
 
-    Array_t* Array = NULL;
+    List_t* List = NULL;
     size_t Size = 64;
-    int i = 0;
-    int Divisor = 5;
+    int i = 0, Divisor = 6;
 
-    Array = Array_Create(Size, sizeof(int));
-    if ( NULL == Array ) {
-        TEST_PRINTF("%s", "Test Failure - Failed to create Array_t for testing.");
+    List = List_Create();
+    if ( NULL == List ) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create List_t* for testing.");
         TEST_FAILURE;
     }
 
-    for ( i = 0; i<(int)Size;i++){
-        if(0!=Array_Append(Array,&i)){
-            TEST_PRINTF("Test Failure - Failed to append value [ %d ] to Array_t.",i);
-            Array_Release(Array);
+    for(i=0;i<(int)Size;i++){
+        if(0!=List_Append(List,&i,sizeof(i))){
+            TEST_PRINTF("%s","Test Failure - Failed to append value to List_t.");
+            List_Release(List);
             TEST_FAILURE;
         }
     }
 
-    if ( 0 != Array_DoCallbackArg(Array, TestCallbackArgFunc_PrintIntValue, &Divisor) ) {
-        TEST_PRINTF("%s", "Test Failure - Failed to perform Callback on Array elements.");
-        Array_Release(Array);
+    if(0!=List_DoCallbackArg(List,TestCallbackArgFunc_PrintIntValue,&Divisor)){
+        TEST_PRINTF("%s","Test Failure - Failed to perform List_DoCallbackArg().");
+        List_Release(List);
         TEST_FAILURE;
     }
 
-    Array_Release(Array);
+    List_Release(List);
     TEST_SUCCESSFUL;
 }
