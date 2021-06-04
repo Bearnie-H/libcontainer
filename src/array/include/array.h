@@ -37,6 +37,7 @@ extern "C" {
 #define LIBCONTAINER_ENABLE_ARRAY
 
 #include "../../../include/libcontainer.h"
+#include "array_callbacks.h"
 
 #ifndef LIBCONTAINER_ARRAY_DEFAULT_CAPACITY
 #define LIBCONTAINER_ARRAY_DEFAULT_CAPACITY 8 /* The default capacity of arrays unless otherwise specified. */

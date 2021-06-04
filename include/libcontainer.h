@@ -169,6 +169,49 @@ typedef unsigned int (HashFunc_t)(const void*, size_t);
 */
 typedef void(ReleaseFunc_t)(void*);
 
+/*
+    CallbackFunc_t
+
+    This is the generic form of a callback function used by this library.
+    Callbacks within this library are meant as something which can operate
+    on the value in some item of any of the containers. This specific form
+    of Callback is generally useful for printing, diagnostics, or other
+    operations which only need the value itself. For more complex callbacks,
+    see the CallbackArgFunc_t type.
+
+    Inputs:
+    Value   -   Untyped pointer to the value of the item in the container.
+
+    Outputs:
+    int -   Must return 0 on success, non-zero on failure.
+
+    Note:
+    The library will assert that Value is non-NULL.
+*/
+typedef int(CallbackFunc_t)(void*);
+
+/*
+    CallbackArgFunc_t
+
+    This is the generic form of a callback function which also takes
+    "external" arguments in this library. These external arguments
+    allow passing additional data each of the values in a given container,
+    providing more flexibility than what is provided by CallbackFunc_t.
+    These additional arguments must be formatted analogous to how they
+    would be in calls to something like pthread_create().
+
+    Inputs:
+    Value   -   Untyped pointer to the value of the item in the container.
+    Args    -   Untyped pointer to some memory to pass in addition to the
+                    item value.
+    Outputs:
+    int -   Must return 0 on success, non-zero on failure.
+
+    Note:
+    The library will assert that Value is non-NULL.
+*/
+typedef int(CallbackArgFunc_t)(void*, void*);
+
 /* ---------- Exported Library Types ---------- */
 
 /* ++++++++++ Exported Library Functions ++++++++++ */
@@ -456,6 +499,43 @@ int Array_SetElement(Array_t* Array, const void* Element, int Index);
     necessary for safe operation.
 */
 void* Array_PopElement(Array_t* Array, int Index);
+
+/*
+    Array_DoCallback
+
+    This function will perform the given callback function on each of the elements of
+    the array in sequence. This is helpful for things like printing or otherwise manipulating
+    the array value.
+
+    Inputs:
+    Array       -   Pointer to the array to operate on.
+    Callback    -   Pointer to the Callback function to call for each item of the array.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero if any errors occur.
+*/
+int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback);
+
+/*
+    Array_DoCallbackArg
+
+    This function will perform the given callback function on each of the elements
+    of the array in sequence. This extends the Array_DoCallback function by allowing
+    additional parameters to be passed in to this callback function to allow for
+    richer and more complex behaviour.
+
+    Inputs:
+    Array       -   Pointer to the array to operate on.
+    Callback    -   Pointer to the Callback function to call for each item of the array.
+    Args        -   Pointer to some additional argument(s), values, resources, etc. to pass
+                        in to the Callback function along with the item value.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero if any errors occur.
+*/
+int Array_DoCallbackArg(Array_t* Array, CallbackArgFunc_t* Callback, void* Args);
+
+
 /* ----- Array Functions ----- */
 #endif
 
