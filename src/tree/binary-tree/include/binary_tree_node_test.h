@@ -37,6 +37,9 @@ extern "C" {
 */
 int Test_binary_tree_node(void);
 
+int Test_Binary_Tree_Node_Create(void);
+int Test_Binary_Tree_Node_Update(void);
+
 #ifdef __cplusplus
 }
 #endif

@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../../logging/logging.h"
 #include "include/binary_tree_node.h"
@@ -32,8 +33,50 @@ int Test_binary_tree_node(void) {
 
     int FailedTests = 0;
 
-    /* Tests go here... */
-    TEST_PRINTF("Warning, no tests yet implemented for component [ %s ].", "binary_tree_node");
+    FailedTests += Test_Binary_Tree_Node_Create();
+    FailedTests += Test_Binary_Tree_Node_Update();
 
     return FailedTests;
+}
+
+int Test_Binary_Tree_Node_Create(void) {
+
+    Binary_Tree_Node_t *Node = NULL;
+    int Key = 0xBEEF, Value = 0xCAFE;
+
+    Node = Binary_Tree_Node_Create(Key, sizeof(Value), &Value, NULL);
+    if (NULL == Node) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create new Binary_Tree_Node_t for testing.");
+        TEST_FAILURE;
+    }
+
+    Binary_Tree_Node_Release(Node);
+    TEST_SUCCESSFUL;
+}
+int Test_Binary_Tree_Node_Update(void) {
+
+    Binary_Tree_Node_t *Node = NULL;
+    int Key = 0xBEEF, Value = 0xCAFE, NewValue = 0xBABE;
+
+    Node = Binary_Tree_Node_Create(Key, sizeof(Value), &Value, NULL);
+    if (NULL == Node) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create new Binary_Tree_Node_t for testing.");
+        TEST_FAILURE;
+    }
+
+    if (0 != Binary_Tree_Node_Update(Node, &NewValue, sizeof(NewValue))) {
+        TEST_PRINTF("%s", "Test Failure - Failed to update Node value.");
+        Binary_Tree_Node_Release(Node);
+        TEST_FAILURE;
+    }
+
+    if (0 != memcmp(Node->Value, &NewValue, sizeof(NewValue))) {
+        TEST_PRINTF("Test Failure - Node value (%d) not equal to expected value (%d).",
+                    *(int *)Node->Value, NewValue);
+        Binary_Tree_Node_Release(Node);
+        TEST_FAILURE;
+    }
+
+    Binary_Tree_Node_Release(Node);
+    TEST_SUCCESSFUL;
 }

@@ -32,17 +32,8 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
 #include "../../../../include/libcontainer.h"
-
-/*
-    RedBlack_Tree_Colour_t
-
-    Simple Enum type to hold the two colours required for Red-Black tree implementation.
-*/
-typedef enum RedBlack_Tree_Colour_t {
-    Black,
-    Red
-} RedBlack_Tree_Colour_t;
 
 /*
     Binary_Tree_Node_t
@@ -68,17 +59,15 @@ struct Binary_Tree_Node_t {
     /*
         Is restricting this to an integer a reasonable compromise?
         For generic keys and generic values, the Hashmap container
-        is a better choice.
+        is a better choice?
     */
     int Key;
-
-    RedBlack_Tree_Colour_t Colour;
 };
 
 Binary_Tree_Node_t* Binary_Tree_Node_Create(int Key, size_t ValueSize, const void* Value, ReleaseFunc_t* ReleaseFunc);
-Binary_Tree_Node_t* Binary_Tree_Node_FindParent(Binary_Tree_Node_t* Root, int Key);
-Binary_Tree_Node_t* Binary_Tree_Node_Find(Binary_Tree_Node_t* Root, int Key);
+size_t Binary_Tree_Node_Height(Binary_Tree_Node_t* Root);
 int Binary_Tree_Node_Update(Binary_Tree_Node_t* Node, const void* NewValue, size_t ValueSize);
+Binary_Tree_Node_t* Binary_Tree_Node_Replace(Binary_Tree_Node_t* Old, Binary_Tree_Node_t* New);
 void Binary_Tree_Node_Release(Binary_Tree_Node_t* Node);
 
 #if defined(TESTING) || defined(DEBUGGER)

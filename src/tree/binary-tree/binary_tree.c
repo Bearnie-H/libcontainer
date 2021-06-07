@@ -27,6 +27,7 @@
 
 #include "../../logging/logging.h"
 #include "include/binary_tree.h"
+#include "include/tree_rotations.h"
 
 Binary_Tree_t *Binary_Tree_Create(size_t ValueSize, ReleaseFunc_t *ReleaseFunc) {
 
@@ -50,7 +51,7 @@ Binary_Tree_t *Binary_Tree_Create(size_t ValueSize, ReleaseFunc_t *ReleaseFunc) 
 
     Tree->ReleaseFunc = ReleaseFunc;
     Tree->Root = NULL;
-    Tree->Size = 0;
+    Tree->TreeSize = 0;
     Tree->ValueSize = ValueSize;
 
     DEBUG_PRINTF("%s", "Successfully created new Binary_Tree_t.");
@@ -64,13 +65,12 @@ size_t Binary_Tree_Length(Binary_Tree_t *Tree) {
         return 0;
     }
 
-    return Tree->Size;
+    return Tree->TreeSize;
 }
 
 int Binary_Tree_Insert(Binary_Tree_t *Tree, int Key, const void *Value) {
 
-    Binary_Tree_Node_t *NewNode = NULL;
-    Binary_Tree_Node_t *Parent = NULL;
+    Binary_Tree_Node_t *NewRoot = NULL, *NewNode = NULL;
 
     if (NULL == Tree) {
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided, cannot insert new value.");
@@ -82,55 +82,22 @@ int Binary_Tree_Insert(Binary_Tree_t *Tree, int Key, const void *Value) {
         return 0;
     }
 
-    /* Case 1: The tree is empty. Any node must become the root. */
-    if (NULL == Tree->Root) {
-        DEBUG_PRINTF("Successfully inserted new Value with Key [ %d ] as the Root Node.", Key);
-        Tree->Root = NewNode;
-        Tree->Size += 1;
-        return 0;
-    }
-
-    /*
-        Otherwise, the node has to be inserted based on it's ordering so find the parent it
-        must be added under.
-    */
-    Parent = Binary_Tree_Node_FindParent(Tree->Root, Key);
-    if (NULL == Parent) {
-        DEBUG_PRINTF("Error: Failed to find suitable parent for new Value with Key [ %d ].", Key);
-        return 1;
-    }
-
-    /* If the parent we found already has a child with the Key we want to insert, update this
-     * existing Node. */
-    if ((NULL != Parent->LeftChild) && (Key == Parent->LeftChild->Key)) {
-        DEBUG_PRINTF("%s",
-                     "Note: Item with Key [ %d ] already in Tree, overwriting with new Value.");
-        return Binary_Tree_Node_Update(Parent->LeftChild, Value, Tree->ValueSize);
-    } else if ((NULL != Parent->RightChild) && (Key == Parent->RightChild->Key)) {
-        DEBUG_PRINTF("%s",
-                     "Note: Item with Key [ %d ] already in Tree, overwriting with new Value.");
-        return Binary_Tree_Node_Update(Parent->LeftChild, Value, Tree->ValueSize);
-    }
-
-    /* Finally, this is a new Key, and must be added to the tree as a new Node. */
+    /* Otherwise, this is a new Key, and must be added to the tree as a new Node. */
     NewNode = Binary_Tree_Node_Create(Key, Tree->ValueSize, Value, Tree->ReleaseFunc);
     if (NULL == NewNode) {
         DEBUG_PRINTF("Error: Failed to create new Binary_Tree_Node_t with Key [ %d ].", Key);
         return 1;
     }
 
-    /* Add this new Node to the tree. */
-    if (Key < Parent->Key) {
-        Parent->LeftChild = NewNode;
-    } else {
-        Parent->RightChild = NewNode;
+    NewRoot = Binary_Tree_insertNode(Tree->Root, NewNode);
+    if (NULL == NewRoot) {
+        DEBUG_PRINTF("Error: Failed to insert new Binary_Tree_Node_t with Key [ %d ].", Key);
+        Binary_Tree_Node_Release(NewNode);
+        return 1;
     }
 
-    /* Finally, re-colour the tree, ensuring it satisfies the necessary Red-Black criteria. */
-    Binary_Tree_recolour(Tree);
-
-    DEBUG_PRINTF("%s", "Successfully inserted new Key-Value pair into Binary_Tree_t.");
-    Tree->Size += 1;
+    Tree->Root = NewRoot;
+    Tree->TreeSize += 1;
     return 0;
 }
 
@@ -147,13 +114,13 @@ void *Binary_Tree_Get(Binary_Tree_t *Tree, int Key) {
         return NULL;
     }
 
-    Node = Binary_Tree_Node_Find(Tree->Root, Key);
+    Node = Binary_Tree_find(Tree->Root, Key);
     if (NULL == Node) {
         DEBUG_PRINTF("%s", "Error: Failed to find Key in Tree.");
         return NULL;
     }
 
-    DEBUG_PRINTF("%s", "Successfully returned Value from Binary_Tree_t.");
+    DEBUG_PRINTF("Successfully returned Value with Key [ %d ] from Binary_Tree_t.", Key);
     return (void *)(Node->Value);
 }
 
@@ -167,7 +134,7 @@ void *Binary_Tree_Pop(Binary_Tree_t *Tree, int Key) {
         return NULL;
     }
 
-    Node = Binary_Tree_Node_Find(Tree->Root, Key);
+    Node = Binary_Tree_find(Tree->Root, Key);
     if (NULL == Node) {
         DEBUG_PRINTF("%s", "Error: Failed to find Key in Tree.");
         return NULL;
@@ -176,81 +143,56 @@ void *Binary_Tree_Pop(Binary_Tree_t *Tree, int Key) {
     NodeContents = Node->Value;
     Node->Value = NULL;
 
-    /* To-Do: Figure out how best to remove the node... */
+    if (0 != Binary_Tree_removeNode(Tree, Node)) {
+        DEBUG_PRINTF("Error: Failed to delete Node with Key [ %d ] from Binary Tree.", Key);
+        Node->Value = NodeContents;
+        return NULL;
+    }
 
+    Tree->TreeSize -= 1;
+    Tree->Root = Binary_Tree_rebalance(Tree->Root);
     DEBUG_PRINTF("Successfully popped Value with Key [ %d ] from Binary Tree.", Key);
-    Tree->Size -= 1;
-    return NULL;
+    return NodeContents;
 }
 
-int *Binary_Tree_RootKey(Binary_Tree_t *Tree) {
+int Binary_Tree_DoCallback(Binary_Tree_t *Tree, CallbackFunc_t *Callback) {
 
     if (NULL == Tree) {
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
-        return NULL;
+        return 1;
     }
 
     if (NULL == Tree->Root) {
-        DEBUG_PRINTF("%s", "Error: NULL Root, no key to return.");
-        return NULL;
+        DEBUG_PRINTF("%s", "Note: Tree is empty, no items to call Callback with.");
+        return 0;
     }
 
-    DEBUG_PRINTF("%s", "Successfully returned Key for Binary Tree root.");
-    return &(Tree->Root->Key);
+    if (NULL == Callback) {
+        DEBUG_PRINTF("%s", "Note: NULL Callback* provided, nothing to call.");
+        return 0;
+    }
+
+    return Binary_Tree_doCallback(Tree->Root, Callback);
 }
 
-void *Binary_Tree_Next_PreOrder(Binary_Tree_t *Tree, int *CurrentKey) {
+int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, CallbackArgFunc_t *Callback, void *Args) {
 
     if (NULL == Tree) {
-        DEBUG_PRINTF("%s", "Error: NULL Tree* provided, no Next item.");
-        return NULL;
+        DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
+        return 1;
     }
 
-    if (NULL == CurrentKey) {
-        DEBUG_PRINTF("%s",
-                     "Error: NULL CurrentKey* provided, maybe try Binary_Tree_RootKey() first?");
-        return NULL;
+    if (NULL == Tree->Root) {
+        DEBUG_PRINTF("%s", "Note: Tree is empty, no items to call Callback with.");
+        return 0;
     }
 
-    /* ... */
-
-    return NULL;
-}
-
-void *Binary_Tree_Next_InOrder(Binary_Tree_t *Tree, int *CurrentKey) {
-
-    if (NULL == Tree) {
-        DEBUG_PRINTF("%s", "Error: NULL Tree* provided, no Next item.");
-        return NULL;
+    if (NULL == Callback) {
+        DEBUG_PRINTF("%s", "Note: NULL Callback* provided, nothing to call.");
+        return 0;
     }
 
-    if (NULL == CurrentKey) {
-        DEBUG_PRINTF("%s",
-                     "Error: NULL CurrentKey* provided, maybe try Binary_Tree_RootKey() first?");
-        return NULL;
-    }
-
-    /* ... */
-
-    return NULL;
-}
-
-void *Binary_Tree_Next_PostOrder(Binary_Tree_t *Tree, int *CurrentKey) {
-
-    if (NULL == Tree) {
-        DEBUG_PRINTF("%s", "Error: NULL Tree* provided, no Next item.");
-        return NULL;
-    }
-
-    if (NULL == CurrentKey) {
-        DEBUG_PRINTF("%s",
-                     "Error: NULL CurrentKey* provided, maybe try Binary_Tree_RootKey() first?");
-        return NULL;
-    }
-
-    /* ... */
-
-    return NULL;
+    return Binary_Tree_doCallbackArg(Tree->Root, Callback, Args);
 }
 
 int Binary_Tree_Remove(Binary_Tree_t *Tree, int Key) {
@@ -262,17 +204,21 @@ int Binary_Tree_Remove(Binary_Tree_t *Tree, int Key) {
         return 1;
     }
 
-    Node = Binary_Tree_Node_Find(Tree->Root, Key);
+    Node = Binary_Tree_find(Tree->Root, Key);
     if (NULL == Node) {
         DEBUG_PRINTF("%s", "Error: Failed to find Key in Tree.");
         return 1;
     }
 
-    /* To-Do: Figure out how best to remove the node. */
-    /* ... */
+    if (0 != Binary_Tree_removeNode(Tree, Node)) {
+        DEBUG_PRINTF("Error: Failed to remove Node with Key [ %d ] from Binary Tree.", Key);
+        return 1;
+    }
 
-    Tree->Size -= 1;
-    return 0;
+    Tree->TreeSize -= 1;
+    Tree->Root = Binary_Tree_rebalance(Tree->Root);
+    DEBUG_PRINTF("Successfully removed item with Key [ %d ] from Tree.", Key);
+    return 1;
 }
 
 void Binary_Tree_Release(Binary_Tree_t *Tree) {
@@ -293,18 +239,112 @@ void Binary_Tree_Release(Binary_Tree_t *Tree) {
 
 /* ++++++++++ Private Functions ++++++++++ */
 
-void Binary_Tree_recolour(Binary_Tree_t *Tree) {
+Binary_Tree_Node_t *Binary_Tree_insertNode(Binary_Tree_Node_t *Root, Binary_Tree_Node_t *Node) {
 
-    if (NULL == Tree) {
-        DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
-        return;
+    if (NULL == Root) {
+        return Node;
+    } else if (Root->Key > Node->Key) {
+        Root->LeftChild = Binary_Tree_insertNode(Root->LeftChild, Node);
+    } else if (Root->Key < Node->Key) {
+        Root->RightChild = Binary_Tree_insertNode(Root->RightChild, Node);
+    } else {
+        Binary_Tree_Node_Update(Root, Node->Value, Node->ValueSize);
+        Binary_Tree_Node_Release(Node);
     }
 
-    /* ... */
-
-    return;
+    return Binary_Tree_rebalance(Root);
 }
 
-/* ... */
+Binary_Tree_Node_t *Binary_Tree_find(Binary_Tree_Node_t *Root, int Key) {
+
+    if (NULL == Root) {
+        DEBUG_PRINTF("%s", "Warning: NULL Node reached without finding Key.");
+        return NULL;
+    }
+
+    if (Key == Root->Key) {
+        DEBUG_PRINTF("%s", "Successfully found Key within Tree.");
+        return Root;
+    } else if (Key < Root->Key) {
+        return Binary_Tree_find(Root->LeftChild, Key);
+    } else {
+        return Binary_Tree_find(Root->RightChild, Key);
+    }
+}
+
+Binary_Tree_Node_t *Binary_Tree_findMinimum(Binary_Tree_Node_t *Root) {
+    for (; NULL != Root->LeftChild; Root = Root->LeftChild) {
+        ;
+    };
+    return Root;
+}
+
+int Binary_Tree_removeNode(Binary_Tree_t *Tree, Binary_Tree_Node_t *Node) {
+
+    // Binary_Tree_Node_t *Child = NULL;
+
+    if ((NULL == Tree) || (NULL == Node)) {
+        DEBUG_PRINTF("%s", "NULL Tree* or Node* provided.");
+        return 1;
+    }
+
+    /*
+        If the node has no children, simply delete it.
+
+        If the node has one child, simply replace the node with that child.
+
+        If the node has two children:
+            Find the minimum node in the right sub-tree.
+            Replace Node with this minimum node.
+            Delete the original minumum node, recursing if necessary
+    */
+    if ((NULL == Node->LeftChild) && (NULL == Node->RightChild)) {
+        /* ... */
+    } else if ((NULL != Node->LeftChild) && (NULL == Node->RightChild)) {
+        /* ... */
+    } else if ((NULL == Node->LeftChild) && (NULL != Node->RightChild)) {
+        /* ... */
+    } else {
+        /* ... */
+    }
+
+    return 1;
+}
+
+int Binary_Tree_doCallback(Binary_Tree_Node_t *Root, CallbackFunc_t *Callback) {
+
+    void **KeyValuePair[2] = {NULL, NULL};
+    int RetVal = 0;
+
+    if (NULL != Root) {
+
+        KeyValuePair[0] = (void *)&(Root->Key);
+        KeyValuePair[1] = (void *)(Root->Value);
+
+        RetVal |= Binary_Tree_doCallback(Root->LeftChild, Callback);
+        RetVal |= Callback(KeyValuePair);
+        RetVal |= Binary_Tree_doCallback(Root->RightChild, Callback);
+    }
+
+    return RetVal;
+}
+
+int Binary_Tree_doCallbackArg(Binary_Tree_Node_t *Root, CallbackArgFunc_t *Callback, void *Args) {
+
+    void **KeyValuePair[2] = {NULL, NULL};
+    int RetVal = 0;
+
+    if (NULL != Root) {
+
+        KeyValuePair[0] = (void *)&(Root->Key);
+        KeyValuePair[1] = (void *)(Root->Value);
+
+        RetVal |= Binary_Tree_doCallbackArg(Root->LeftChild, Callback, Args);
+        RetVal |= Callback(KeyValuePair, Args);
+        RetVal |= Binary_Tree_doCallbackArg(Root->RightChild, Callback, Args);
+    }
+
+    return RetVal;
+}
 
 /* ---------- Private Functions ---------- */

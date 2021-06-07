@@ -22,8 +22,8 @@
     SOFTWARE.
 */
 
-#ifndef LIBCONTAINER_BINARY_TREE_TEST_H
-#define LIBCONTAINER_BINARY_TREE_TEST_H
+#ifndef LIBCONTAINER_TREE_ROTATIONS_TEST_H
+#define LIBCONTAINER_TREE_ROTATIONS_TEST_H
 
 /*
     If this header should export C-compatible symbols, rearrange these ifdefs as appropriate
@@ -35,15 +35,10 @@ extern "C" {
 /*
     Top-level testing entry-point for the component.
 */
-int Test_binary_tree(void);
+int Test_tree_rotations(void);
 
-int Test_Binary_Tree_Create(void);
-int Test_Binary_Tree_Insert(void);
-int Test_Binary_Tree_Get(void);
-int Test_Binary_Tree_Pop(void);
-int Test_Binary_Tree_DoCallback(void);
-int Test_Binary_Tree_DoCallbackArg(void);
-int Test_Binary_Tree_Remove(void);
+int Test_Binary_Tree_rotateLeft(void);
+int Test_Binary_Tree_rotateRight(void);
 
 #ifdef __cplusplus
 }

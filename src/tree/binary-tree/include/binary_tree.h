@@ -35,6 +35,20 @@ extern "C" {
 #define LIBCONTAINER_ENABLE_BINARY_TREE
 #include "../../../../include/libcontainer.h"
 #include "binary_tree_node.h"
+#include "tree_rotations.h"
+
+/*
+    Binary_Tree_Direction_t
+
+    This ...
+
+    <UNUSED - Kept in case I can figure out resumable traversals>
+*/
+typedef enum Binary_Tree_Direction_t {
+    Direction_PreOrder,
+    Direction_InOrder,
+    Direction_PostOrder
+} Binary_Tree_Direction_t;
 
 struct Binary_Tree_t {
 
@@ -55,22 +69,39 @@ struct Binary_Tree_t {
     ReleaseFunc_t* ReleaseFunc;
 
     /*
+        The total number of elements in the tree.
+    */
+    size_t TreeSize;
+
+    /*
         ValueSize caches the size of the values held by this tree. If this is set to 0,
         the tree will only hold references to the items, and not own the resources itself.
     */
     size_t ValueSize;
-
-    /*
-        The count of how many nodes exist within the tree. This allows O(1)
-        checks for the length of the tree.
-    */
-    size_t Size;
 };
 
 /* ++++++++++ Private Functions ++++++++++ */
 
-/* TODO: Function Documentation */
-void Binary_Tree_recolour(Binary_Tree_t* Tree);
+/*
+    TODO: Function Documentation
+*/
+Binary_Tree_Node_t* Binary_Tree_find(Binary_Tree_Node_t* Root, int Key);
+
+Binary_Tree_Node_t* Binary_Tree_findMinimum(Binary_Tree_Node_t* Root);
+
+/*
+    TODO: Function Documentation
+*/
+Binary_Tree_Node_t* Binary_Tree_insertNode(Binary_Tree_Node_t* Root, Binary_Tree_Node_t* Node);
+
+/*
+    TODO: Function Documentation
+*/
+int Binary_Tree_removeNode(Binary_Tree_t* Tree, Binary_Tree_Node_t* Node);
+
+int Binary_Tree_doCallback(Binary_Tree_Node_t* Root, CallbackFunc_t* Callback);
+int Binary_Tree_doCallbackArg(Binary_Tree_Node_t* Root, CallbackArgFunc_t* Callback, void* Args);
+
 
 /* ---------- Private Functions ---------- */
 

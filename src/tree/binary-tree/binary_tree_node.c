@@ -34,6 +34,11 @@ Binary_Tree_Node_t *Binary_Tree_Node_Create(int Key, size_t ValueSize, const voi
     Binary_Tree_Node_t *Node = NULL;
     uint8_t *Contents = NULL;
 
+    if (NULL == ReleaseFunc) {
+        DEBUG_PRINTF("%s", "Note: NULL ReleaseFunc provided, defaulting to free().");
+        ReleaseFunc = free;
+    }
+
     Node = (Binary_Tree_Node_t *)calloc(1, sizeof(Binary_Tree_Node_t));
     if (NULL == Node) {
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Binary_Tree_Node_t.");
@@ -52,7 +57,6 @@ Binary_Tree_Node_t *Binary_Tree_Node_Create(int Key, size_t ValueSize, const voi
         memcpy(Contents, Value, ValueSize);
     }
 
-    Node->Colour = Red;
     Node->Key = Key;
 
     Node->Parent = NULL;
@@ -67,46 +71,21 @@ Binary_Tree_Node_t *Binary_Tree_Node_Create(int Key, size_t ValueSize, const voi
     return Node;
 }
 
-Binary_Tree_Node_t *Binary_Tree_Node_FindParent(Binary_Tree_Node_t *Root, int Key) {
+size_t Binary_Tree_Node_Height(Binary_Tree_Node_t *Root) {
+
+    size_t LeftHeight = 0, RightHeight = 0;
 
     if (NULL == Root) {
-        DEBUG_PRINTF("%s", "Warning: NULL Node reached without finding Key.");
-        return NULL;
+        return 0;
     }
 
-    if (Key == Root->Key) {
-        DEBUG_PRINTF("%s", "Successfully found both Key and Parent.");
-        return Root->Parent;
-    } else if (Key < Root->Key) {
-        if (NULL == Root->LeftChild) {
-            DEBUG_PRINTF("%s", "Successfully found Parent, and Key does not exist.");
-            return Root;
-        } else {
-            return Binary_Tree_Node_FindParent(Root->LeftChild, Key);
-        }
+    LeftHeight = Binary_Tree_Node_Height(Root->LeftChild);
+    RightHeight = Binary_Tree_Node_Height(Root->RightChild);
+
+    if (LeftHeight >= RightHeight) {
+        return 1 + LeftHeight;
     } else {
-        if (NULL == Root->RightChild) {
-            return Root;
-        } else {
-            return Binary_Tree_Node_FindParent(Root->RightChild, Key);
-        }
-    }
-}
-
-Binary_Tree_Node_t *Binary_Tree_Node_Find(Binary_Tree_Node_t *Root, int Key) {
-
-    if (NULL == Root) {
-        DEBUG_PRINTF("%s", "Warning: NULL Node reached without finding Key.");
-        return NULL;
-    }
-
-    if (Key == Root->Key) {
-        DEBUG_PRINTF("%s", "Successfully found Key within Tree.");
-        return Root;
-    } else if (Key < Root->Key) {
-        return Binary_Tree_Node_Find(Root->LeftChild, Key);
-    } else {
-        return Binary_Tree_Node_Find(Root->RightChild, Key);
+        return 1 + RightHeight;
     }
 }
 
@@ -136,10 +115,43 @@ int Binary_Tree_Node_Update(Binary_Tree_Node_t *Node, const void *NewValue, size
     return 0;
 }
 
+Binary_Tree_Node_t *Binary_Tree_Node_Replace(Binary_Tree_Node_t *Old, Binary_Tree_Node_t *New) {
+
+    Binary_Tree_Node_t *Parent = NULL;
+
+    if (NULL == Old) {
+        DEBUG_PRINTF("%s", "Error: NULL Old* provided, cannot swap.");
+        return Old;
+    }
+
+    if (NULL == New) {
+        DEBUG_PRINTF("%s", "Error: NULL New* provided, cannot swap.");
+        return Old;
+    }
+
+    Parent = Old->Parent;
+
+    if (Old == Parent->LeftChild) {
+
+        /* ... */
+
+    } else if (Old == Parent->RightChild) {
+
+        /* ... */
+
+    } else {
+        DEBUG_PRINTF("%s", "Error: Old* is not a child of it's parent!");
+        return Old;
+    }
+
+    /* ... */
+
+    return Old;
+}
+
 void Binary_Tree_Node_Release(Binary_Tree_Node_t *Node) {
 
     if (NULL == Node) {
-        DEBUG_PRINTF("%s", "Note: NULL Node* provided, nothing to release.");
         return;
     }
 

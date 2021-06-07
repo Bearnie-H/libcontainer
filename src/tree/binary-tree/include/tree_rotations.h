@@ -22,8 +22,8 @@
     SOFTWARE.
 */
 
-#ifndef LIBCONTAINER_BINARY_TREE_TEST_H
-#define LIBCONTAINER_BINARY_TREE_TEST_H
+#ifndef LIBCONTAINER_TREE_ROTATIONS_H
+#define LIBCONTAINER_TREE_ROTATIONS_H
 
 /*
     If this header should export C-compatible symbols, rearrange these ifdefs as appropriate
@@ -32,18 +32,44 @@
 extern "C" {
 #endif
 
-/*
-    Top-level testing entry-point for the component.
-*/
-int Test_binary_tree(void);
+#include "binary_tree.h"
 
-int Test_Binary_Tree_Create(void);
-int Test_Binary_Tree_Insert(void);
-int Test_Binary_Tree_Get(void);
-int Test_Binary_Tree_Pop(void);
-int Test_Binary_Tree_DoCallback(void);
-int Test_Binary_Tree_DoCallbackArg(void);
-int Test_Binary_Tree_Remove(void);
+/*
+    TODO: Function Documentation
+*/
+int Binary_Tree_balanceFactor(Binary_Tree_Node_t* Root);
+
+/*
+    TODO: Function Documentation
+*/
+Binary_Tree_Node_t* Binary_Tree_rebalance(Binary_Tree_Node_t* TreeRoot);
+
+/*
+    TODO: Function Documentation
+*/
+Binary_Tree_Node_t* Binary_Tree_rotateLeft(Binary_Tree_Node_t* TreeRoot);
+
+/*
+    TODO: Function Documentation
+*/
+Binary_Tree_Node_t* Binary_Tree_rotateRight(Binary_Tree_Node_t* TreeRoot);
+
+/*
+    TODO: Function Documentation
+*/
+Binary_Tree_Node_t* Binary_Tree_rotateDoubleLeft(Binary_Tree_Node_t* TreeRoot);
+
+/*
+    TODO: Function Documentation
+*/
+Binary_Tree_Node_t* Binary_Tree_rotateDoubleRight(Binary_Tree_Node_t* TreeRoot);
+
+
+#if defined(TESTING) || defined(DEBUGGER)
+
+#include "tree_rotations_test.h"
+
+#endif
 
 #ifdef __cplusplus
 }

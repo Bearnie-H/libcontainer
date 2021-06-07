@@ -207,7 +207,9 @@ typedef void(ReleaseFunc_t)(void*);
     see the CallbackArgFunc_t type.
 
     Inputs:
-    Value   -   Untyped pointer to the value of the item in the container.
+    Value   -   Untyped pointer to the "value" of the item in the container.
+                    See the specific *_DoCallback() function for a container
+                    for specifics about what exactly this points to.
 
     Outputs:
     int -   Must return 0 on success, non-zero on failure.
@@ -229,6 +231,8 @@ typedef int(CallbackFunc_t)(void*);
 
     Inputs:
     Value   -   Untyped pointer to the value of the item in the container.
+                    See the specific *_DoCallbackArg() function for a container
+                    for specifics about what exactly this points to.
     Args    -   Untyped pointer to some memory to pass in addition to the
                     item value.
     Outputs:
@@ -236,6 +240,7 @@ typedef int(CallbackFunc_t)(void*);
 
     Note:
     The library will assert that Value is non-NULL.
+    Args may or may not be NULL; this is left entirely up to the caller.
 */
 typedef int(CallbackArgFunc_t)(void*, void*);
 
@@ -541,6 +546,10 @@ void* Array_PopElement(Array_t* Array, int Index);
 
     Outputs:
     int     -   Returns 0 on success, non-zero if any errors occur.
+
+    Note:
+    The "Value*" pointer provided to the Callback is a pointer to each element
+    of the array.
 */
 int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback);
 
@@ -560,6 +569,10 @@ int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback);
 
     Outputs:
     int     -   Returns 0 on success, non-zero if any errors occur.
+
+    Note:
+    The "Value*" pointer provided to the Callback is a pointer to each element
+    of the array.
 */
 int Array_DoCallbackArg(Array_t* Array, CallbackArgFunc_t* Callback, void* Args);
 
@@ -842,6 +855,10 @@ void* List_PopBack(List_t* List);
 
     Outputs:
     int     -   Returns 0 if all callbacks execute successfully, non-zero if any fail.
+
+    Note:
+    The "Value*" pointer provided to the Callback points to the Value of the items
+    in the list.
 */
 int List_DoCallback(List_t* List, CallbackFunc_t* Callback);
 
@@ -861,6 +878,10 @@ int List_DoCallback(List_t* List, CallbackFunc_t* Callback);
 
     Outputs:
     int     -   Returns 0 if all callbacks execute successfully, non-zero if any fail.
+
+    Note:
+    The "Value*" pointer provided to the Callback points to the Value of the items
+    in the list.
 */
 int List_DoCallbackArg(List_t* List, CallbackArgFunc_t* Callback, void* Args);
 
@@ -1177,10 +1198,8 @@ int Binary_Tree_Insert(Binary_Tree_t* Tree, int Key, const void* Value);
 bool Binary_Tree_KeyExists(Binary_Tree_t* Tree, int Key);
 void* Binary_Tree_Get(Binary_Tree_t* Tree, int Key);
 void* Binary_Tree_Pop(Binary_Tree_t* Tree, int Key);
-int* Binary_Tree_RootKey(Binary_Tree_t* Tree);
-void* Binary_Tree_Next_PreOrder(Binary_Tree_t* Tree, int* CurrentKey);
-void* Binary_Tree_Next_InOrder(Binary_Tree_t* Tree, int* CurrentKey);
-void* Binary_Tree_Next_PostOrder(Binary_Tree_t* Tree, int* CurrentKey);
+int Binary_Tree_DoCallback(Binary_Tree_t* Tree, CallbackFunc_t* Callback);
+int Binary_Tree_DoCallbackArg(Binary_Tree_t* Tree, CallbackArgFunc_t* Callback, void* Args);
 int Binary_Tree_Remove(Binary_Tree_t* Tree, int Key);
 void Binary_Tree_Release(Binary_Tree_t* Tree);
 
