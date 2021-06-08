@@ -94,10 +94,7 @@ Binary_Tree_Node_t* Binary_Tree_findMinimum(Binary_Tree_Node_t* Root);
 */
 Binary_Tree_Node_t* Binary_Tree_insertNode(Binary_Tree_Node_t* Root, Binary_Tree_Node_t* Node);
 
-/*
-    TODO: Function Documentation
-*/
-int Binary_Tree_removeNode(Binary_Tree_t* Tree, Binary_Tree_Node_t* Node);
+Binary_Tree_Node_t* Binary_Tree_removeNode(Binary_Tree_Node_t *Root, int Key);
 
 int Binary_Tree_doCallback(Binary_Tree_Node_t* Root, CallbackFunc_t* Callback);
 int Binary_Tree_doCallbackArg(Binary_Tree_Node_t* Root, CallbackArgFunc_t* Callback, void* Args);

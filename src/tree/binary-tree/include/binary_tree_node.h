@@ -67,7 +67,6 @@ struct Binary_Tree_Node_t {
 Binary_Tree_Node_t* Binary_Tree_Node_Create(int Key, size_t ValueSize, const void* Value, ReleaseFunc_t* ReleaseFunc);
 size_t Binary_Tree_Node_Height(Binary_Tree_Node_t* Root);
 int Binary_Tree_Node_Update(Binary_Tree_Node_t* Node, const void* NewValue, size_t ValueSize);
-Binary_Tree_Node_t* Binary_Tree_Node_Replace(Binary_Tree_Node_t* Old, Binary_Tree_Node_t* New);
 void Binary_Tree_Node_Release(Binary_Tree_Node_t* Node);
 
 #if defined(TESTING) || defined(DEBUGGER)

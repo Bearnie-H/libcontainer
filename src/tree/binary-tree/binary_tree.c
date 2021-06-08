@@ -71,6 +71,7 @@ size_t Binary_Tree_Length(Binary_Tree_t *Tree) {
 int Binary_Tree_Insert(Binary_Tree_t *Tree, int Key, const void *Value) {
 
     Binary_Tree_Node_t *NewRoot = NULL, *NewNode = NULL;
+    bool IncrementSize = false;
 
     if (NULL == Tree) {
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided, cannot insert new value.");
@@ -89,6 +90,8 @@ int Binary_Tree_Insert(Binary_Tree_t *Tree, int Key, const void *Value) {
         return 1;
     }
 
+    IncrementSize = !(Binary_Tree_KeyExists(Tree, Key));
+
     NewRoot = Binary_Tree_insertNode(Tree->Root, NewNode);
     if (NULL == NewRoot) {
         DEBUG_PRINTF("Error: Failed to insert new Binary_Tree_Node_t with Key [ %d ].", Key);
@@ -97,7 +100,7 @@ int Binary_Tree_Insert(Binary_Tree_t *Tree, int Key, const void *Value) {
     }
 
     Tree->Root = NewRoot;
-    Tree->TreeSize += 1;
+    Tree->TreeSize += (1 && IncrementSize);
     return 0;
 }
 
@@ -140,19 +143,32 @@ void *Binary_Tree_Pop(Binary_Tree_t *Tree, int Key) {
         return NULL;
     }
 
-    NodeContents = Node->Value;
+    NodeContents = (void *)Node->Value;
     Node->Value = NULL;
 
-    if (0 != Binary_Tree_removeNode(Tree, Node)) {
-        DEBUG_PRINTF("Error: Failed to delete Node with Key [ %d ] from Binary Tree.", Key);
-        Node->Value = NodeContents;
-        return NULL;
+    Tree->Root = Binary_Tree_removeNode(Tree->Root, Key);
+
+    DEBUG_PRINTF("Successfully removed item with Key [ %d ] from Tree.", Key);
+    Tree->TreeSize -= 1;
+    return NodeContents;
+}
+
+int Binary_Tree_Remove(Binary_Tree_t *Tree, int Key) {
+
+    bool DecrementSize = false;
+
+    if (NULL == Tree) {
+        DEBUG_PRINTF("%s", "Error: NULL Tree* provided, cannot remove Key.");
+        return 1;
     }
 
-    Tree->TreeSize -= 1;
-    Tree->Root = Binary_Tree_rebalance(Tree->Root);
-    DEBUG_PRINTF("Successfully popped Value with Key [ %d ] from Binary Tree.", Key);
-    return NodeContents;
+    DecrementSize = Binary_Tree_KeyExists(Tree, Key);
+
+    Tree->Root = Binary_Tree_removeNode(Tree->Root, Key);
+
+    DEBUG_PRINTF("Successfully removed item with Key [ %d ] from Tree.", Key);
+    Tree->TreeSize -= (1 && DecrementSize);
+    return 0;
 }
 
 int Binary_Tree_DoCallback(Binary_Tree_t *Tree, CallbackFunc_t *Callback) {
@@ -195,32 +211,6 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, CallbackArgFunc_t *Callback, 
     return Binary_Tree_doCallbackArg(Tree->Root, Callback, Args);
 }
 
-int Binary_Tree_Remove(Binary_Tree_t *Tree, int Key) {
-
-    Binary_Tree_Node_t *Node = NULL;
-
-    if (NULL == Tree) {
-        DEBUG_PRINTF("%s", "Error: NULL Tree* provided, cannot remove Key.");
-        return 1;
-    }
-
-    Node = Binary_Tree_find(Tree->Root, Key);
-    if (NULL == Node) {
-        DEBUG_PRINTF("%s", "Error: Failed to find Key in Tree.");
-        return 1;
-    }
-
-    if (0 != Binary_Tree_removeNode(Tree, Node)) {
-        DEBUG_PRINTF("Error: Failed to remove Node with Key [ %d ] from Binary Tree.", Key);
-        return 1;
-    }
-
-    Tree->TreeSize -= 1;
-    Tree->Root = Binary_Tree_rebalance(Tree->Root);
-    DEBUG_PRINTF("Successfully removed item with Key [ %d ] from Tree.", Key);
-    return 1;
-}
-
 void Binary_Tree_Release(Binary_Tree_t *Tree) {
 
     if (NULL == Tree) {
@@ -255,6 +245,86 @@ Binary_Tree_Node_t *Binary_Tree_insertNode(Binary_Tree_Node_t *Root, Binary_Tree
     return Binary_Tree_rebalance(Root);
 }
 
+Binary_Tree_Node_t *Binary_Tree_removeNode(Binary_Tree_Node_t *Root, int Key) {
+
+    Binary_Tree_Node_t *Parent = NULL, *Child = NULL, *Successor = NULL;
+
+    if (NULL == Root) {
+        DEBUG_PRINTF("%s", "Error: NULL Node* provided.");
+        return NULL;
+    }
+
+    if (Key < Root->Key) {
+        Root->LeftChild = Binary_Tree_removeNode(Root->LeftChild, Key);
+    } else if (Key > Root->Key) {
+        Root->RightChild = Binary_Tree_removeNode(Root->RightChild, Key);
+    } else {
+
+        Parent = Root->Parent;
+        if ((NULL != Root->LeftChild) && (NULL != Root->RightChild)) {
+            /*
+                The node has 2 children.
+
+                Replace the node with it's in-order successor, then remove the in-order successor
+                with a recursive call to this function.
+            */
+            Successor = Binary_Tree_findMinimum(Root->RightChild);
+            Root->Key = Successor->Key;
+            Root->ReleaseFunc = Successor->ReleaseFunc;
+            Binary_Tree_Node_Update(Root, Successor->Value, Successor->ValueSize);
+            Root->RightChild = Binary_Tree_removeNode(Root->RightChild, Successor->Key);
+        } else if ((NULL != Root->LeftChild) && (NULL == Root->RightChild)) {
+            /*
+                The node has 1 child.
+
+                Replace the node with its child. Update the child's parent to be Root's parent,
+                and update the required Child pointer in the parent. Then release the Root.
+            */
+            Child = Root->LeftChild;
+            Child->Parent = Root->Parent;
+            if (NULL != Parent) {
+                if (Root == Parent->LeftChild) {
+                    Parent->LeftChild = Child;
+                } else if (Root == Parent->RightChild) {
+                    Parent->RightChild = Child;
+                }
+            }
+            Root->LeftChild = NULL;
+            Binary_Tree_Node_Release(Root);
+            Root = Child;
+        } else if ((NULL == Root->LeftChild) && (NULL != Root->RightChild)) {
+            /*
+                The node has 1 child.
+
+                Replace the node with its child. Update the child's parent to be Root's parent,
+                and update the required Child pointer in the parent. Then release the Root.
+            */
+            Child = Root->RightChild;
+            Child->Parent = Root->Parent;
+            if (NULL != Parent) {
+                if (Root == Parent->LeftChild) {
+                    Parent->LeftChild = Child;
+                } else if (Root == Parent->RightChild) {
+                    Parent->RightChild = Child;
+                }
+            }
+            Root->RightChild = NULL;
+            Binary_Tree_Node_Release(Root);
+            Root = Child;
+        } else {
+            /*
+                The node has 0 children.
+
+                Simply delete the node and clear all references to it.
+            */
+            Binary_Tree_Node_Release(Root);
+            Root = NULL;
+        }
+    }
+
+    return Binary_Tree_rebalance(Root);
+}
+
 Binary_Tree_Node_t *Binary_Tree_find(Binary_Tree_Node_t *Root, int Key) {
 
     if (NULL == Root) {
@@ -277,38 +347,6 @@ Binary_Tree_Node_t *Binary_Tree_findMinimum(Binary_Tree_Node_t *Root) {
         ;
     };
     return Root;
-}
-
-int Binary_Tree_removeNode(Binary_Tree_t *Tree, Binary_Tree_Node_t *Node) {
-
-    // Binary_Tree_Node_t *Child = NULL;
-
-    if ((NULL == Tree) || (NULL == Node)) {
-        DEBUG_PRINTF("%s", "NULL Tree* or Node* provided.");
-        return 1;
-    }
-
-    /*
-        If the node has no children, simply delete it.
-
-        If the node has one child, simply replace the node with that child.
-
-        If the node has two children:
-            Find the minimum node in the right sub-tree.
-            Replace Node with this minimum node.
-            Delete the original minumum node, recursing if necessary
-    */
-    if ((NULL == Node->LeftChild) && (NULL == Node->RightChild)) {
-        /* ... */
-    } else if ((NULL != Node->LeftChild) && (NULL == Node->RightChild)) {
-        /* ... */
-    } else if ((NULL == Node->LeftChild) && (NULL != Node->RightChild)) {
-        /* ... */
-    } else {
-        /* ... */
-    }
-
-    return 1;
 }
 
 int Binary_Tree_doCallback(Binary_Tree_Node_t *Root, CallbackFunc_t *Callback) {

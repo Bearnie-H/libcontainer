@@ -112,44 +112,13 @@ int Binary_Tree_Node_Update(Binary_Tree_Node_t *Node, const void *NewValue, size
 
     DEBUG_PRINTF("%s", "Successfully updated value of Binary_Tree_Node_t.");
     Node->Value = TempValue;
+    Node->ValueSize = ValueSize;
     return 0;
 }
 
-Binary_Tree_Node_t *Binary_Tree_Node_Replace(Binary_Tree_Node_t *Old, Binary_Tree_Node_t *New) {
+void Binary_Tree_Node_Release(Binary_Tree_Node_t *Node) {
 
     Binary_Tree_Node_t *Parent = NULL;
-
-    if (NULL == Old) {
-        DEBUG_PRINTF("%s", "Error: NULL Old* provided, cannot swap.");
-        return Old;
-    }
-
-    if (NULL == New) {
-        DEBUG_PRINTF("%s", "Error: NULL New* provided, cannot swap.");
-        return Old;
-    }
-
-    Parent = Old->Parent;
-
-    if (Old == Parent->LeftChild) {
-
-        /* ... */
-
-    } else if (Old == Parent->RightChild) {
-
-        /* ... */
-
-    } else {
-        DEBUG_PRINTF("%s", "Error: Old* is not a child of it's parent!");
-        return Old;
-    }
-
-    /* ... */
-
-    return Old;
-}
-
-void Binary_Tree_Node_Release(Binary_Tree_Node_t *Node) {
 
     if (NULL == Node) {
         return;
@@ -160,6 +129,17 @@ void Binary_Tree_Node_Release(Binary_Tree_Node_t *Node) {
 
     if (NULL != Node->Value) {
         Node->ReleaseFunc(Node->Value);
+    }
+
+    Parent = Node->Parent;
+    if (NULL != Parent) {
+        if (Node == Parent->LeftChild) {
+            Parent->LeftChild = NULL;
+        } else if (Node == Parent->RightChild) {
+            Parent->RightChild = NULL;
+        } else {
+            DEBUG_PRINTF("%s", "Error: Node* is not a child of its Parent!");
+        }
     }
 
     ZERO_CONTAINER(Node, Binary_Tree_Node_t);

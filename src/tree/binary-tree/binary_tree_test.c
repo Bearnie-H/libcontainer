@@ -183,11 +183,6 @@ int Test_Binary_Tree_Insert() {
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
-        /*
-            PrettyPrintBinaryTree("", Tree->Root, false);
-            printf(
-                "\n────────────────────────────────────────────────────────────────────────────────\n");
-        */
     }
 
     /* This test is fully validated by the successful execution of the Get, Pop, and Remove tests.
@@ -259,10 +254,10 @@ int Test_Binary_Tree_Pop() {
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
+    while (Binary_Tree_Length(Tree) != Count) {
 
-        Key = i;
-        Value = i * 2;
+        Key = rand() % Count;
+        Value = Key * 2;
 
         if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
             TEST_PRINTF(
@@ -273,9 +268,13 @@ int Test_Binary_Tree_Pop() {
         }
     }
 
-    for (i = 0; i < Count; i++) {
-        Key = i;
-        Value = i * 2;
+    while (0 != Binary_Tree_Length(Tree)) {
+
+        Key = rand() % Count;
+        if (!Binary_Tree_KeyExists(Tree, Key)) {
+            continue;
+        }
+        Value = Key * 2;
 
         CheckValue = (int *)Binary_Tree_Pop(Tree, Key);
         if (NULL == CheckValue) {
@@ -293,6 +292,12 @@ int Test_Binary_Tree_Pop() {
             TEST_FAILURE;
         }
         free(CheckValue);
+    }
+
+    if (NULL != Tree->Root) {
+        TEST_PRINTF("%s", "Test Failure - Empty Tree has non-NULL Root.");
+        Binary_Tree_Release(Tree);
+        TEST_FAILURE;
     }
 
     Binary_Tree_Release(Tree);
@@ -383,9 +388,9 @@ int Test_Binary_Tree_Remove() {
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
+    while (Binary_Tree_Length(Tree) != Count) {
 
-        Key = i;
+        Key = rand() % Count;
         Value = i * 2;
 
         if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
@@ -397,9 +402,12 @@ int Test_Binary_Tree_Remove() {
         }
     }
 
-    for (i = 0; i < Count; i++) {
+    while (0 != Binary_Tree_Length(Tree)) {
 
-        Key = i;
+        Key = rand() % Count;
+        if (!Binary_Tree_KeyExists(Tree, Key)) {
+            continue;
+        }
 
         if (0 != Binary_Tree_Remove(Tree, Key)) {
             TEST_PRINTF("Test Failure - Failed to remove item with Key [ %d ] from Tree.", Key);
@@ -412,6 +420,12 @@ int Test_Binary_Tree_Remove() {
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
+    }
+
+    if (NULL != Tree->Root) {
+        TEST_PRINTF("%s", "Test Failure - Empty Tree has non-NULL Root.");
+        Binary_Tree_Release(Tree);
+        TEST_FAILURE;
     }
 
     Binary_Tree_Release(Tree);
