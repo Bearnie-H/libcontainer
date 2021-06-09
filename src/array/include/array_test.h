@@ -37,6 +37,7 @@ int Test_array(void);
 
 int Test_Array_Create(void);
 int Test_Array_RefCreate(void);
+int Test_Array_Clear(void);
 
 int Test_Array_Grow(void);
 int Test_Array_Resize(void);

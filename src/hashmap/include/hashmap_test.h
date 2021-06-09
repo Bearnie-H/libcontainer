@@ -47,6 +47,7 @@ int Test_Hashmap_Retrieve_DoubleKey(void);
 int Test_Hashmap_KeyExists_DoubleKey(void);
 int Test_Hashmap_Remove_DoubleKey(void);
 int Test_Hashmap_Pop_DoubleKey(void);
+int Test_Hashmap_Clear_DoubleKey(void);
 
 int Test_Hashmap_Create_StringKey(void);
 int Test_Hashmap_Insert_StringKey(void);
@@ -55,6 +56,7 @@ int Test_Hashmap_Retrieve_StringKey(void);
 int Test_Hashmap_KeyExists_StringKey(void);
 int Test_Hashmap_Remove_StringKey(void);
 int Test_Hashmap_Pop_StringKey(void);
+int Test_Hashmap_Clear_StringKey(void);
 
 #ifdef __cplusplus
 }

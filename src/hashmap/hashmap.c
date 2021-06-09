@@ -267,6 +267,23 @@ void *Hashmap_Pop(Hashmap_t *Map, const void *Key, size_t KeySize) {
     return NULL;
 }
 
+int Hashmap_Clear(Hashmap_t *Map) {
+
+    if (NULL == Map) {
+        DEBUG_PRINTF("%s", "NULL Map* provided, nothing to clear.");
+        return 0;
+    }
+
+    if (0 != Array_DoCallback(Map->Buckets, (CallbackFunc_t *)List_Clear)) {
+        DEBUG_PRINTF("%s", "Error: Failed to clear all buckets within Hashmap.");
+        return 1;
+    }
+
+    Map->ItemCount = 0;
+    DEBUG_PRINTF("%s", "Successfully cleared Hashmap_t of all contents.");
+    return 0;
+}
+
 void Hashmap_Release(Hashmap_t *Map) {
 
     if (NULL == Map) {
@@ -290,7 +307,7 @@ void Hashmap_Release(Hashmap_t *Map) {
 List_t *Hashmap_getBucket(Hashmap_t *Map, const void *Key, size_t KeySize,
                           unsigned int *HashValue) {
 
-    int BucketIndex = 0;
+    size_t BucketIndex = 0;
 
     if (0 == *HashValue) {
         *HashValue = Map->HashFunc(Key, KeySize);
@@ -298,7 +315,7 @@ List_t *Hashmap_getBucket(Hashmap_t *Map, const void *Key, size_t KeySize,
         DEBUG_PRINTF("%s", "Note: Using cached HashValue instead of recomputing.");
     }
 
-    BucketIndex = *HashValue % Array_Length(Map->Buckets);
+    BucketIndex = (size_t)(*HashValue % Array_Length(Map->Buckets));
 
     return (List_t *)Array_GetElement(Map->Buckets, BucketIndex);
 }

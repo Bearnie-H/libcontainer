@@ -44,6 +44,24 @@ List_t *List_Create(void) {
     return List;
 }
 
+int List_Clear(List_t *List) {
+
+    if (NULL == List) {
+        DEBUG_PRINTF("%s", "NULL List* provided, nothing to remove.");
+        return 0;
+    }
+
+    while (0 != List_Length(List)) {
+        if (0 != List_Remove(List, 0)) {
+            DEBUG_PRINTF("%s", "Error: Failed to remove item during List_Clear().");
+            return 1;
+        }
+    }
+
+    DEBUG_PRINTF("%s", "Successfully removed all entries from List_t.");
+    return 0;
+}
+
 void List_Release(List_t *List) {
 
     List_Node_t *Current = NULL;

@@ -36,7 +36,7 @@ size_t List_Length(List_t *List) {
     return List->Length;
 }
 
-int List_Insert(List_t *List, const void *Element, size_t ElementSize, int Index) {
+int List_Insert(List_t *List, const void *Element, size_t ElementSize, size_t Index) {
 
     List_Node_t *NewNode = NULL;
     List_Node_t *BaseNode = NULL;
@@ -46,8 +46,8 @@ int List_Insert(List_t *List, const void *Element, size_t ElementSize, int Index
         return 1;
     }
 
-    if ((Index < 0) || (List->Length < (size_t)Index)) {
-        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", Index);
+    if ((List->Length < Index)) {
+        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return 1;
     }
 
@@ -102,7 +102,7 @@ int List_Append(List_t *List, const void *Element, size_t ElementSize) {
     return List_Insert(List, Element, ElementSize, List->Length);
 }
 
-int List_RefInsert(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc, int Index) {
+int List_RefInsert(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc, size_t Index) {
 
     List_Node_t *NewNode = NULL;
     List_Node_t *BaseNode = NULL;
@@ -112,8 +112,8 @@ int List_RefInsert(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc
         return 1;
     }
 
-    if ((Index < 0) || (List->Length < (size_t)Index)) {
-        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", Index);
+    if ((List->Length < Index)) {
+        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return 1;
     }
 
@@ -163,11 +163,11 @@ int List_RefAppend(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc
     return List_RefInsert(List, Element, ReleaseFunc, List->Length);
 }
 
-int List_Remove(List_t *List, int Index) {
+int List_Remove(List_t *List, size_t Index) {
     return List_removeNode(List, List_findNode(List, Index));
 }
 
-void *List_GetElement(List_t *List, int Index) {
+void *List_GetElement(List_t *List, size_t Index) {
 
     List_Node_t *Node = NULL;
 
@@ -176,18 +176,18 @@ void *List_GetElement(List_t *List, int Index) {
         return NULL;
     }
 
-    if ((0 == List->Length) || (Index < 0) || (List->Length <= (size_t)Index)) {
-        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", Index);
+    if ((0 == List->Length) || (List->Length <= Index)) {
+        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return NULL;
     }
 
     Node = List_findNode(List, Index);
 
-    DEBUG_PRINTF("Successfully retrieved pointer to List_t item at index [ %d ].", Index);
+    DEBUG_PRINTF("Successfully retrieved pointer to List_t item at index [ %d ].", (int)Index);
     return (void *)Node->Contents;
 }
 
-int List_SetElement(List_t *List, const void *Element, size_t ElementSize, int Index) {
+int List_SetElement(List_t *List, const void *Element, size_t ElementSize, size_t Index) {
 
     List_Node_t *Node = NULL;
 
@@ -196,8 +196,8 @@ int List_SetElement(List_t *List, const void *Element, size_t ElementSize, int I
         return 1;
     }
 
-    if ((0 == List->Length) || (Index < 0) || (List->Length <= (size_t)Index)) {
-        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", Index);
+    if ((0 == List->Length) || (List->Length <= (size_t)Index)) {
+        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return 1;
     }
 
@@ -215,11 +215,12 @@ int List_SetElement(List_t *List, const void *Element, size_t ElementSize, int I
         return 1;
     }
 
-    DEBUG_PRINTF("Successfully updated contents of item at index [ %d ].", Index);
+    DEBUG_PRINTF("Successfully updated contents of item at index [ %d ].", (int)Index);
     return 0;
 }
 
-int List_RefSetElement(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc, int Index) {
+int List_RefSetElement(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc,
+                       size_t Index) {
 
     List_Node_t *Node = NULL;
 
@@ -228,8 +229,8 @@ int List_RefSetElement(List_t *List, const void *Element, ReleaseFunc_t *Release
         return 1;
     }
 
-    if ((0 == List->Length) || (Index < 0) || (List->Length <= (size_t)Index)) {
-        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", Index);
+    if ((0 == List->Length) || (List->Length <= (size_t)Index)) {
+        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return 1;
     }
 
@@ -245,11 +246,11 @@ int List_RefSetElement(List_t *List, const void *Element, ReleaseFunc_t *Release
         return 1;
     }
 
-    DEBUG_PRINTF("Successfully updated contents of item at index [ %d ].", Index);
+    DEBUG_PRINTF("Successfully updated contents of item at index [ %d ].", (int)Index);
     return 0;
 }
 
-void *List_PopElement(List_t *List, int Index) {
+void *List_PopElement(List_t *List, size_t Index) {
 
     List_Node_t *Node = NULL;
     void *NodeContents = NULL;
@@ -259,8 +260,8 @@ void *List_PopElement(List_t *List, int Index) {
         return NULL;
     }
 
-    if ((0 == List->Length) || (Index < 0) || (List->Length <= (size_t)Index)) {
-        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", Index);
+    if ((0 == List->Length) || (List->Length <= (size_t)Index)) {
+        DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return NULL;
     }
 
@@ -279,7 +280,7 @@ void *List_PopElement(List_t *List, int Index) {
 
     List->Length -= 1;
 
-    DEBUG_PRINTF("Successfully popped and returned contents for Node at index [ %d ].", Index);
+    DEBUG_PRINTF("Successfully popped and returned contents for Node at index [ %d ].", (int)Index);
     return NodeContents;
 }
 
@@ -288,14 +289,14 @@ void *List_PopFront(List_t *List) { return List_PopElement(List, 0); }
 void *List_PopBack(List_t *List) { return List_PopElement(List, List->Length - 1); }
 
 /* Private Function Definitions. */
-List_Node_t *List_findNode(List_t *List, int Index) {
+List_Node_t *List_findNode(List_t *List, size_t Index) {
 
-    int i = 0;
+    size_t i = 0;
     List_Node_t *Node = NULL;
 
     if (0 == Index) {
         return List->Head;
-    } else if ((List->Length - 1) == (size_t)Index) {
+    } else if ((List->Length - 1) == Index) {
         return List->Tail;
     }
 

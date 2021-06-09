@@ -45,6 +45,7 @@ int Test_Binary_Tree_DoCallback(void);
 int Test_Binary_Tree_DoCallbackArg(void);
 int Test_Binary_Tree_Remove(void);
 int Test_Binary_Tree_Balancing(void);
+int Test_Binary_Tree_Clear(void);
 
 #ifdef __cplusplus
 }

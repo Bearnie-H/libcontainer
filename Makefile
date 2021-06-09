@@ -28,12 +28,12 @@
 #   Version Settings
 MAJOR_VERSION := 0
 MINOR_VERSION := 4
-PATCH_VERSION := 1
+PATCH_VERSION := 2
 VERSION       := v$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
 
 #   Standard Compiler Settings
 CC              := gcc
-WARNINGS        := -Wall -Werror -Wpedantic -Wextra
+WARNINGS        := -Wall -Werror -Wpedantic -Wextra -Wsign-conversion
 WARNINGS_IGNORE :=
 CFLAGS          := -std=c99 $(WARNINGS) $(WARNINGS_IGNORE)
 LIBTOOL         := ar -rcs

@@ -96,7 +96,7 @@ typedef struct Hashmap_Entry_t {
     Outputs:
     Hashmap_Entry_t*    -   Pointer to the newly constructed Hashmap_Entry_t value, or NULL on failure.
 */
-Hashmap_Entry_t* Hashmap_Entry_Create(const void* Key, const void* Value, size_t KeySize, size_t ValueSize, int HashValue, ReleaseFunc_t* KeyReleaseFunc, ReleaseFunc_t* ValueReleaseFunc);
+Hashmap_Entry_t* Hashmap_Entry_Create(const void* Key, const void* Value, size_t KeySize, size_t ValueSize, unsigned int HashValue, ReleaseFunc_t* KeyReleaseFunc, ReleaseFunc_t* ValueReleaseFunc);
 
 /*
     Hashmap_Entry_Update

@@ -29,7 +29,7 @@
 
 int Array_DoCallback(Array_t *Array, CallbackFunc_t *Callback) {
 
-    int Index = 0;
+    size_t Index = 0;
     void *ElementValue = NULL;
     int RetValue = 0;
 
@@ -43,15 +43,15 @@ int Array_DoCallback(Array_t *Array, CallbackFunc_t *Callback) {
         return 0;
     }
 
-    for (Index = 0; (size_t)Index < Array_Length(Array); Index++) {
+    for (Index = 0; Index < Array_Length(Array); Index++) {
         ElementValue = Array_GetElement(Array, Index);
         if (NULL == ElementValue) {
-            DEBUG_PRINTF("Error: Failed to get Array element at index [ %d ].", Index);
+            DEBUG_PRINTF("Error: Failed to get Array element at index [ %d ].", (int)Index);
             RetValue = 1;
             continue;
         }
         if (0 != Callback(ElementValue)) {
-            DEBUG_PRINTF("Note: Callback function failed for Index [ %d ].", Index);
+            DEBUG_PRINTF("Note: Callback function failed for Index [ %d ].", (int)Index);
             RetValue = 1;
         }
     }
@@ -61,7 +61,7 @@ int Array_DoCallback(Array_t *Array, CallbackFunc_t *Callback) {
 
 int Array_DoCallbackArg(Array_t *Array, CallbackArgFunc_t *Callback, void *Args) {
 
-    int Index = 0;
+    size_t Index = 0;
     void *ElementValue = NULL;
     int RetValue = 0;
 
@@ -75,15 +75,15 @@ int Array_DoCallbackArg(Array_t *Array, CallbackArgFunc_t *Callback, void *Args)
         return 0;
     }
 
-    for (Index = 0; (size_t)Index < Array_Length(Array); Index++) {
+    for (Index = 0; Index < Array_Length(Array); Index++) {
         ElementValue = Array_GetElement(Array, Index);
         if (NULL == ElementValue) {
-            DEBUG_PRINTF("Error: Failed to get Array element at index [ %d ].", Index);
+            DEBUG_PRINTF("Error: Failed to get Array element at index [ %d ].", (int)Index);
             RetValue = 1;
             continue;
         }
         if (0 != Callback(ElementValue, Args)) {
-            DEBUG_PRINTF("Note: Callback function failed for Index [ %d ].", Index);
+            DEBUG_PRINTF("Note: Callback function failed for Index [ %d ].", (int)Index);
             RetValue = 1;
         }
     }

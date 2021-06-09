@@ -142,6 +142,7 @@ int Test_binary_tree(void) {
     FailedTests += Test_Binary_Tree_DoCallbackArg();
     FailedTests += Test_Binary_Tree_Remove();
     FailedTests += Test_Binary_Tree_Balancing();
+    FailedTests += Test_Binary_Tree_Clear();
 
     return FailedTests;
 }
@@ -174,7 +175,7 @@ int Test_Binary_Tree_Insert() {
 
     for (i = Count; i > 0; i--) {
 
-        Key = i;
+        Key = (int)i;
         Value = rand() % Modulo;
 
         if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
@@ -207,8 +208,8 @@ int Test_Binary_Tree_Get() {
 
     for (i = 0; i < Count; i++) {
 
-        Key = i;
-        Value = i * 2;
+        Key = (int)i;
+        Value = (int)i * 2;
 
         if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
             TEST_PRINTF(
@@ -220,8 +221,8 @@ int Test_Binary_Tree_Get() {
     }
 
     for (i = 0; i < Count; i++) {
-        Key = i;
-        Value = i * 2;
+        Key = (int)i;
+        Value = (int)i * 2;
 
         CheckValue = (int *)Binary_Tree_Get(Tree, Key);
         if (NULL == CheckValue) {
@@ -257,7 +258,7 @@ int Test_Binary_Tree_Pop() {
 
     while (Binary_Tree_Length(Tree) != Count) {
 
-        Key = rand() % Count;
+        Key = rand() % (int)Count;
         Value = Key * 2;
 
         if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
@@ -271,7 +272,7 @@ int Test_Binary_Tree_Pop() {
 
     while (0 != Binary_Tree_Length(Tree)) {
 
-        Key = rand() % Count;
+        Key = rand() % (int)Count;
         if (!Binary_Tree_KeyExists(Tree, Key)) {
             continue;
         }
@@ -319,7 +320,7 @@ int Test_Binary_Tree_DoCallback() {
 
     for (i = 0; i < Count; i++) {
 
-        Key = i;
+        Key = (int)i;
         Value = rand() % Modulo;
 
         if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
@@ -355,7 +356,7 @@ int Test_Binary_Tree_DoCallbackArg() {
 
     for (i = 0; i < Count; i++) {
 
-        Key = i;
+        Key = (int)i;
         Value = rand() % Modulo;
 
         if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
@@ -391,8 +392,8 @@ int Test_Binary_Tree_Remove() {
 
     while (Binary_Tree_Length(Tree) != Count) {
 
-        Key = rand() % Count;
-        Value = i * 2;
+        Key = rand() % (int)Count;
+        Value = (int)i * 2;
 
         if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
             TEST_PRINTF(
@@ -405,7 +406,7 @@ int Test_Binary_Tree_Remove() {
 
     while (0 != Binary_Tree_Length(Tree)) {
 
-        Key = rand() % Count;
+        Key = rand() % (int)Count;
         if (!Binary_Tree_KeyExists(Tree, Key)) {
             continue;
         }
@@ -487,6 +488,49 @@ int Test_Binary_Tree_Balancing() {
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
+    }
+
+    Binary_Tree_Release(Tree);
+    TEST_SUCCESSFUL;
+}
+
+int Test_Binary_Tree_Clear(void) {
+
+    Binary_Tree_t *Tree = NULL;
+    size_t Count = 16, i = 0;
+    int Key = 0, Value = 0, Modulo = 1000;
+
+    Tree = Binary_Tree_Create(sizeof(Value), NULL);
+    if (NULL == Tree) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
+        TEST_FAILURE;
+    }
+
+    for (i = Count; i > 0; i--) {
+
+        Key = (int)i;
+        Value = rand() % Modulo;
+
+        if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
+            TEST_PRINTF(
+                "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
+                Key, Value, (unsigned long)i);
+            Binary_Tree_Release(Tree);
+            TEST_FAILURE;
+        }
+    }
+
+    if (0 != Binary_Tree_Clear(Tree)) {
+        TEST_PRINTF("%s", "Test Failure - Failed to clear Binary tree.");
+        Binary_Tree_Release(Tree);
+        TEST_FAILURE;
+    }
+
+    if (0 != Binary_Tree_Length(Tree)) {
+        TEST_PRINTF("%s",
+                    "Test Failure - Binary Tree contains non-zero items after being cleared.");
+        Binary_Tree_Release(Tree);
+        TEST_FAILURE;
     }
 
     Binary_Tree_Release(Tree);

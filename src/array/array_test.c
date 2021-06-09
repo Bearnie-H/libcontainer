@@ -30,6 +30,7 @@ int Test_array(void) {
     /*  Test the creation functions. */
     FailedTests += Test_Array_Create();
     FailedTests += Test_Array_RefCreate();
+    FailedTests += Test_Array_Clear();
 
     /* Test the resizing or reallocation functions. */
     FailedTests += Test_Array_Grow();

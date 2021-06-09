@@ -37,7 +37,9 @@ extern "C" {
 #define ZERO_CONTAINER(_name, _type) memset(_name, 0, sizeof(_type))
 
 #else
+
 #define ZERO_CONTAINER(_name, _type) ((void)0)
+
 #endif
 
 #if defined(DEBUG)

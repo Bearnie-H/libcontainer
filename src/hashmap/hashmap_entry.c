@@ -30,7 +30,7 @@
 #include "include/hashmap_entry.h"
 
 Hashmap_Entry_t *Hashmap_Entry_Create(const void *Key, const void *Value, size_t KeySize,
-                                      size_t ValueSize, int HashValue,
+                                      size_t ValueSize, unsigned int HashValue,
                                       ReleaseFunc_t *KeyReleaseFunc,
                                       ReleaseFunc_t *ValueReleaseFunc) {
 
@@ -66,11 +66,6 @@ Hashmap_Entry_t *Hashmap_Entry_Create(const void *Key, const void *Value, size_t
                                "defaulting to free().");
             ValueReleaseFunc = free;
         }
-    }
-
-    if (0 > HashValue) {
-        DEBUG_PRINTF("%s", "Error: Illegal negative HashValue provided.");
-        return NULL;
     }
 
     Entry = (Hashmap_Entry_t *)calloc(1, sizeof(Hashmap_Entry_t));

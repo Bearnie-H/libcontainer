@@ -37,6 +37,7 @@ int Test_list(void);
 
 int Test_List_Create(void);
 int Test_List_RefCreate(void);
+int Test_List_Clear(void);
 
 int Test_List_Insert(void);
 int Test_List_RefInsert(void);

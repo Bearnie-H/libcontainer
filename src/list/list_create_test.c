@@ -38,3 +38,39 @@ int Test_List_Create(void) {
     List_Release(List);
     TEST_SUCCESSFUL;
 }
+
+int Test_List_Clear(void) {
+
+    List_t *List = NULL;
+    size_t Count = 32, i = 0;
+    int Value = 0;
+
+    List = List_Create();
+    if (NULL == List) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create List_t* for testing.");
+        TEST_FAILURE;
+    }
+
+    for (i = 0; i < Count; i++) {
+        if (0 != List_Append(List, &Value, sizeof(Value))) {
+            TEST_PRINTF("%s", "Test Failure - Failed to add item to List_t.");
+            List_Release(List);
+            TEST_FAILURE;
+        }
+    }
+
+    if (0 != List_Clear(List)) {
+        TEST_PRINTF("%s", "Test Failure - Failed to clear List_t.");
+        List_Release(List);
+        TEST_FAILURE;
+    }
+
+    if (0 != List_Length(List)) {
+        TEST_PRINTF("%s", "Test Failure - List_t length not 0 after being cleared.");
+        List_Release(List);
+        TEST_FAILURE;
+    }
+
+    List_Release(List);
+    TEST_SUCCESSFUL;
+}

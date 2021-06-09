@@ -348,6 +348,20 @@ Array_t* Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFun
 Array_t* Array_Duplicate(Array_t* Source);
 
 /*
+    Array_Clear
+
+    This function will remove all the items from the Array, without
+    releasing the full array.
+
+    Inputs:
+    Array   -   Pointer to the Array_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Array_Clear(Array_t* Array);
+
+/*
     Array_Release
 
     This function will fully and safely release the resources held by an Array_t,
@@ -435,7 +449,7 @@ int Array_Append(Array_t* Array, const void* Element);
     An implicit assumption of this function is that it is able to read ElementSize bytes
     from the Element pointer.
 */
-int Array_Insert(Array_t* Array, const void* Element, int Index);
+int Array_Insert(Array_t* Array, const void* Element, size_t Index);
 
 /*
     Array_InsertN
@@ -458,7 +472,7 @@ int Array_Insert(Array_t* Array, const void* Element, int Index);
     Additionally, this will place the elements into the array in the same order as in
     the Elements pointer.
 */
-int Array_InsertN(Array_t* Array, const void* Elements, int Index, int Count);
+int Array_InsertN(Array_t* Array, const void* Elements, size_t Index, size_t Count);
 
 /*
     Array_Remove
@@ -472,7 +486,7 @@ int Array_InsertN(Array_t* Array, const void* Elements, int Index, int Count);
     Outputs:
     int -   Returns 0 on success, non-zero on failure.
 */
-int Array_Remove(Array_t* Array, int Index);
+int Array_Remove(Array_t* Array, size_t Index);
 
 /*
     Array_RemoveN
@@ -487,7 +501,7 @@ int Array_Remove(Array_t* Array, int Index);
     Outputs:
     int -   Returns 0 on success, non-zero on failure.
 */
-int Array_RemoveN(Array_t* Array, int Index, int Count);
+int Array_RemoveN(Array_t* Array, size_t Index, size_t Count);
 
 /*
     Array_GetElement
@@ -503,7 +517,7 @@ int Array_RemoveN(Array_t* Array, int Index, int Count);
     the specified address. For non-reference type arrays, this is a pointer within the
     array itself to the element requested. On failure, this returns NULL.
 */
-void* Array_GetElement(Array_t* Array, int Index);
+void* Array_GetElement(Array_t* Array, size_t Index);
 
 /*
     Array_SetElement
@@ -518,7 +532,7 @@ void* Array_GetElement(Array_t* Array, int Index);
     Outputs:
     int     -   Returns 0 on success, non-zero on failure.
 */
-int Array_SetElement(Array_t* Array, const void* Element, int Index);
+int Array_SetElement(Array_t* Array, const void* Element, size_t Index);
 
 /*
     Array_PopElement
@@ -539,7 +553,7 @@ int Array_SetElement(Array_t* Array, const void* Element, int Index);
     by using this function. Furthermore, correct casting of the return value is
     necessary for safe operation.
 */
-void* Array_PopElement(Array_t* Array, int Index);
+void* Array_PopElement(Array_t* Array, size_t Index);
 
 /*
     Array_DoCallback
@@ -610,6 +624,20 @@ int Array_DoCallbackArg(Array_t* Array, CallbackArgFunc_t* Callback, void* Args)
 List_t* List_Create(void);
 
 /*
+    List_Clear
+
+    This function will release all entries from the List, without
+    releasing the list itself.
+
+    Inputs:
+    List    -   Pointer to the List_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int List_Clear(List_t* List);
+
+/*
     List_Release
 
     This function will fully and safely release the List_t, as well as all
@@ -654,7 +682,7 @@ size_t List_Length(List_t* List);
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_Insert(List_t* List, const void* Element, size_t ElementSize, int Index);
+int List_Insert(List_t* List, const void* Element, size_t ElementSize, size_t Index);
 
 /*
     List_RefInsert
@@ -672,7 +700,7 @@ int List_Insert(List_t* List, const void* Element, size_t ElementSize, int Index
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_RefInsert(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc, int Index);
+int List_RefInsert(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc, size_t Index);
 
 /*
     List_Prepend
@@ -750,7 +778,7 @@ int List_RefAppend(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_Remove(List_t* List, int Index);
+int List_Remove(List_t* List, size_t Index);
 
 /*
     List_GetElement
@@ -770,7 +798,7 @@ int List_Remove(List_t* List, int Index);
     It is the responsibility of the caller to ensure the return value is cast to the correct
     type.
 */
-void* List_GetElement(List_t* List, int Index);
+void* List_GetElement(List_t* List, size_t Index);
 
 /*
     List_SetElement
@@ -788,7 +816,7 @@ void* List_GetElement(List_t* List, int Index);
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_SetElement(List_t* List, const void* Element, size_t ElementSize, int Index);
+int List_SetElement(List_t* List, const void* Element, size_t ElementSize, size_t Index);
 
 /*
     List_RefSetElement
@@ -806,7 +834,7 @@ int List_SetElement(List_t* List, const void* Element, size_t ElementSize, int I
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_RefSetElement(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc, int Index);
+int List_RefSetElement(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc, size_t Index);
 
 /*
     List_PopElement
@@ -822,7 +850,7 @@ int List_RefSetElement(List_t* List, const void* Element, ReleaseFunc_t* Release
     Outputs:
     void*   -   Returns an untyped pointer to the requested item contents on success, or NULL on failure.
 */
-void* List_PopElement(List_t* List, int Index);
+void* List_PopElement(List_t* List, size_t Index);
 
 /*
     List_PopFront
@@ -1176,6 +1204,21 @@ int Hashmap_DoCallback(Hashmap_t* Map, CallbackFunc_t* Callback);
 */
 
 int Hashmap_DoCallbackArg(Hashmap_t* Map, CallbackArgFunc_t* Callback, void* Args);
+
+/*
+    Hashmap_Clear
+
+    This function will release all entries from the Hashmap, without releasing
+    the Hashmap itself.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Hashmap_Clear(Hashmap_t* Map);
+
 /*
     Hashmap_Release
 
@@ -1373,6 +1416,20 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t* Tree, CallbackArgFunc_t* Callback, 
     int     -   Returns 0 on success, non-zero on failure.
 */
 int Binary_Tree_Remove(Binary_Tree_t* Tree, int Key);
+
+/*
+    Binary_Tree_Clear
+
+    This function releases all items within the Tree, without releasing
+    the tree itself.
+
+    Inputs:
+    Tree    -   Pointer to the tree to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Binary_Tree_Clear(Binary_Tree_t* Tree);
 
 /*
     Binary_Tree_Release

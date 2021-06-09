@@ -103,7 +103,7 @@ int Test_Array_Insert(void) {
 
     Array_t *Array = NULL;
     const char Elements[] = "Hello World!";
-    const int InsertIndex = 5;
+    const size_t InsertIndex = 5;
     const char Expected[] = "HelloH World!";
 
     Array = Array_Create(0, sizeof(char));
@@ -140,7 +140,7 @@ int Test_Array_InsertN(void) {
 
     Array_t *Array = NULL;
     const char Elements[] = "Hello World!";
-    const int InsertIndex = 5;
+    const size_t InsertIndex = 5;
     const char Expected[] = "HelloHello World! World!";
 
     Array = Array_Create(0, sizeof(char));
@@ -177,7 +177,7 @@ int Test_Array_Remove(void) {
 
     Array_t *Array = NULL;
     const char Elements[] = "Hello World!";
-    const int RemoveIndex = 5;
+    const size_t RemoveIndex = 5;
     const char Expected[] = "HelloWorld!";
 
     Array = Array_Create(0, sizeof(char));
@@ -195,7 +195,7 @@ int Test_Array_Remove(void) {
     if (0 != Array_Remove(Array, RemoveIndex)) {
         TEST_PRINTF("Test Failure - Failed to remove element at "
                     "index [ %d ] from Array_t.",
-                    RemoveIndex);
+                    (int)RemoveIndex);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -216,7 +216,7 @@ int Test_Array_RemoveN(void) {
 
     Array_t *Array = NULL;
     const char Elements[] = "Hello World!";
-    const int RemoveIndex = 5;
+    const size_t RemoveIndex = 5;
     const char Expected[] = "Hello";
 
     Array = Array_Create(0, sizeof(char));
@@ -234,7 +234,7 @@ int Test_Array_RemoveN(void) {
     if (0 != Array_RemoveN(Array, RemoveIndex, Array_Length(Array))) {
         TEST_PRINTF("Test Failure - Failed to remove elements starting at "
                     "index [ %d ] from Array_t.",
-                    RemoveIndex);
+                    (int)RemoveIndex);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -256,7 +256,7 @@ int Test_Array_GetElement(void) {
     Array_t *Array = NULL;
     const char Contents[] = "Hello World!";
     char *Element = NULL;
-    int Index = 5;
+    size_t Index = 5;
     const char Expected = ' ';
 
     Array = Array_Create(0, sizeof(char));
@@ -273,7 +273,7 @@ int Test_Array_GetElement(void) {
 
     Element = (char *)Array_GetElement(Array, Index);
     if (NULL == Element) {
-        TEST_PRINTF("Test Failure - Failed to retrieve element at index [ %d ].", Index);
+        TEST_PRINTF("Test Failure - Failed to retrieve element at index [ %d ].", (int)Index);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -294,7 +294,7 @@ int Test_Array_SetElement(void) {
 
     Array_t *Array = NULL;
     const char Contents[] = "Hello World!";
-    int Index = 5;
+    size_t Index = 5;
     const char NewValue = '?';
     const char Expected[] = "Hello?World!";
 
@@ -311,7 +311,7 @@ int Test_Array_SetElement(void) {
     }
 
     if (0 != Array_SetElement(Array, &(NewValue), Index)) {
-        TEST_PRINTF("Test Failure - Failed to set element at index [ %d ].", Index);
+        TEST_PRINTF("Test Failure - Failed to set element at index [ %d ].", (int)Index);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -333,8 +333,8 @@ int Test_Array_Ref_InsertN(void) {
     Array_t *Outer = NULL;
     Array_t *Inner = NULL;
     char Contents[3] = "";
-    int Index = 0;
-    int SubArrayCount = 16;
+    size_t Index = 0;
+    size_t SubArrayCount = 16;
 
     Outer = Array_RefCreate(0, sizeof(Array_t *), (ReleaseFunc_t *)Array_Release);
     if (NULL == Outer) {
@@ -345,15 +345,15 @@ int Test_Array_Ref_InsertN(void) {
     for (Index = 0; Index < SubArrayCount; Index++) {
         Inner = Array_Create(0, sizeof(char));
         if (NULL == Inner) {
-            TEST_PRINTF("Test Failure - Failed to create inner Array_t [ %d ].", Index);
+            TEST_PRINTF("Test Failure - Failed to create inner Array_t [ %d ].", (int)Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
 
-        snprintf(Contents, sizeof(Contents), "%d", Index);
+        snprintf(Contents, sizeof(Contents), "%d", (int)Index);
 
         if (0 != Array_InsertN(Inner, Contents, 0, strlen(Contents))) {
-            TEST_PRINTF("Test Failure - Failed to set contents for Array_t [ %d ].", Index);
+            TEST_PRINTF("Test Failure - Failed to set contents for Array_t [ %d ].", (int)Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
@@ -361,7 +361,7 @@ int Test_Array_Ref_InsertN(void) {
         if (0 != Array_InsertN(Outer, &(Inner), ((Index >= 1) ? (1) : (0)), 1)) {
             TEST_PRINTF("Test Failure - Failed to insert inner Array_t [ %d ] "
                         "into outer Array_t.",
-                        Index);
+                        (int)Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
@@ -372,21 +372,21 @@ int Test_Array_Ref_InsertN(void) {
         if (NULL == Inner) {
             TEST_PRINTF("Test Failure - Failed to retrieve inner Array_t at "
                         "index [ %d ].",
-                        Index);
+                        (int)Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
 
         if (0 == Index) {
-            snprintf(Contents, sizeof(Contents), "%d", Index);
+            snprintf(Contents, sizeof(Contents), "%d", (int)Index);
         } else {
-            snprintf(Contents, sizeof(Contents), "%d", SubArrayCount - Index);
+            snprintf(Contents, sizeof(Contents), "%d", (int)(SubArrayCount - Index));
         }
 
         if (0 != memcmp(Contents, (char *)Inner->Contents, strlen(Contents))) {
             TEST_PRINTF("Test Failure - Array_t at index [ %d ] contents (%s) "
                         "does not match expectation (%s).",
-                        Index, Inner->Contents, Contents);
+                        (int)Index, Inner->Contents, Contents);
             Array_Release(Outer);
             TEST_FAILURE;
         }
@@ -401,9 +401,9 @@ int Test_Array_Ref_RemoveN(void) {
     Array_t *Outer = NULL;
     Array_t *Inner = NULL;
     char Contents[3] = "";
-    int Index = 0;
-    int RemoveIndex = 5;
-    int SubArrayCount = 16;
+    size_t Index = 0;
+    size_t RemoveIndex = 5;
+    size_t SubArrayCount = 16;
 
     Outer = Array_RefCreate(0, sizeof(Array_t *), (ReleaseFunc_t *)Array_Release);
     if (NULL == Outer) {
@@ -414,15 +414,15 @@ int Test_Array_Ref_RemoveN(void) {
     for (Index = 0; Index < SubArrayCount; Index++) {
         Inner = Array_Create(0, sizeof(char));
         if (NULL == Inner) {
-            TEST_PRINTF("Test Failure - Failed to create inner Array_t [ %d ].", Index);
+            TEST_PRINTF("Test Failure - Failed to create inner Array_t [ %d ].", (int)Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
 
-        snprintf(Contents, sizeof(Contents), "%d", Index);
+        snprintf(Contents, sizeof(Contents), "%d", (int)Index);
 
         if (0 != Array_InsertN(Inner, Contents, 0, strlen(Contents))) {
-            TEST_PRINTF("Test Failure - Failed to set contents for Array_t [ %d ].", Index);
+            TEST_PRINTF("Test Failure - Failed to set contents for Array_t [ %d ].", (int)Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
@@ -430,7 +430,7 @@ int Test_Array_Ref_RemoveN(void) {
         if (0 != Array_InsertN(Outer, &(Inner), ((Index >= 1) ? (1) : (0)), 1)) {
             TEST_PRINTF("Test Failure - Failed to insert inner Array_t [ %d ] "
                         "into outer Array_t.",
-                        Index);
+                        (int)Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
@@ -443,28 +443,28 @@ int Test_Array_Ref_RemoveN(void) {
         TEST_FAILURE;
     }
 
-    for (Index = 0; Index < (int)Array_Length(Outer); Index++) {
+    for (Index = 0; Index < Array_Length(Outer); Index++) {
         Inner = Array_GetElement(Outer, Index);
         if (NULL == Inner) {
             TEST_PRINTF("Test Failure - Failed to retrieve inner Array_t at "
                         "index [ %d ].",
-                        Index);
+                        (int)Index);
             Array_Release(Outer);
             TEST_FAILURE;
         }
 
         if (0 == Index) {
-            snprintf(Contents, sizeof(Contents), "%d", Index);
+            snprintf(Contents, sizeof(Contents), "%d", (int)Index);
         } else if (Index >= RemoveIndex) {
-            snprintf(Contents, sizeof(Contents), "%d", SubArrayCount - Index - 1);
+            snprintf(Contents, sizeof(Contents), "%d", (int)(SubArrayCount - Index - 1));
         } else {
-            snprintf(Contents, sizeof(Contents), "%d", SubArrayCount - Index);
+            snprintf(Contents, sizeof(Contents), "%d", (int)(SubArrayCount - Index));
         }
 
         if (0 != memcmp(Contents, (char *)Inner->Contents, strlen(Contents))) {
             TEST_PRINTF("Test Failure - Array_t at index [ %d ] contents (%s) "
                         "does not match expectation (%s).",
-                        Index, Inner->Contents, Contents);
+                        (int)Index, Inner->Contents, Contents);
             Array_Release(Outer);
             TEST_FAILURE;
         }

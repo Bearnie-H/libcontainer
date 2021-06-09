@@ -54,6 +54,8 @@ int Test_list(void) {
     FailedTests += Test_List_PopFront();
     FailedTests += Test_List_PopBack();
 
+    FailedTests += Test_List_Clear();
+
     FailedTests += Test_list_callbacks();
 
     return FailedTests;
@@ -62,7 +64,7 @@ int Test_list(void) {
 int Test_List_Insert(void) {
 
     List_t *List = NULL;
-    int Count = 10, i = 0;
+    size_t Count = 10, i = 0;
     List_Node_t *Node = NULL;
 
     List = List_Create();
@@ -76,17 +78,17 @@ int Test_List_Insert(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
 
     for (i = 0, Node = List->Head; i < Count; i++, Node = Node->Next) {
-        if (i != *(int *)(Node->Contents)) {
+        if (i != *(size_t *)(Node->Contents)) {
             List_Release(List);
             TEST_PRINTF("Test Failure - List element at index [ %d ] not equal to expected value, "
                         "Got: [ %d ], Expected: [ %d ].",
-                        i, i, i);
+                        (int)i, (int)i, (int)i);
             TEST_FAILURE;
         }
     }
@@ -98,8 +100,8 @@ int Test_List_Insert(void) {
 int Test_List_RefInsert(void) {
 
     List_t *List = NULL;
-    int i = 0;
-    const int Count = 10, RefIndex = 5;
+    size_t i = 0;
+    const size_t Count = 10, RefIndex = 5;
     char *RefItem = NULL;
     const char RefContents[] = "Hello.";
     List_Node_t *Node = NULL;
@@ -115,7 +117,7 @@ int Test_List_RefInsert(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
@@ -133,7 +135,7 @@ int Test_List_RefInsert(void) {
     if (0 != List_RefInsert(List, RefItem, (ReleaseFunc_t *)free, RefIndex)) {
         List_Release(List);
         TEST_PRINTF("Test Failure - Failed to insert element [ %s ] at index [ %d ] of List_t.",
-                    RefItem, RefIndex);
+                    RefItem, (int)RefIndex);
         TEST_FAILURE;
     }
 
@@ -143,7 +145,7 @@ int Test_List_RefInsert(void) {
     if (0 != memcmp(RefItem, Node->Contents, sizeof(RefContents))) {
         TEST_PRINTF(
             "Test Failure - Contents at index [ %d ] (%s) do not match expected value (%s).",
-            RefIndex, RefItem, (char *)Node->Contents);
+            (int)RefIndex, RefItem, (char *)Node->Contents);
         List_Release(List);
         TEST_FAILURE;
     }
@@ -155,8 +157,8 @@ int Test_List_RefInsert(void) {
 int Test_List_Prepend(void) {
 
     List_t *List = NULL;
-    int Count = 10, i = 0;
-    int NewItem = 0xBEEF;
+    size_t Count = 10, i = 0;
+    size_t NewItem = 0xBEEF;
 
     List = List_Create();
     if (NULL == List) {
@@ -169,20 +171,20 @@ int Test_List_Prepend(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
 
     if (0 != List_Prepend(List, &NewItem, sizeof(NewItem))) {
         List_Release(List);
-        TEST_PRINTF("Test Failure - Failed to prepend [ %d ] to List_t.", NewItem);
+        TEST_PRINTF("Test Failure - Failed to prepend [ %d ] to List_t.", (int)NewItem);
         TEST_FAILURE;
     }
 
-    if (NewItem != *(int *)List->Head->Contents) {
+    if (NewItem != *(size_t *)List->Head->Contents) {
         TEST_PRINTF("Test Failure - List_t Head contents (%d) not equal to expected value (%d).",
-                    *(int *)List->Head->Contents, NewItem);
+                    (int)*(size_t *)List->Head->Contents, (int)NewItem);
         List_Release(List);
         TEST_FAILURE;
     }
@@ -194,8 +196,8 @@ int Test_List_Prepend(void) {
 int Test_List_RefPrepend(void) {
 
     List_t *List = NULL;
-    int i = 0;
-    const int Count = 10;
+    size_t i = 0;
+    const size_t Count = 10;
     char *RefItem = NULL;
     const char RefContents[] = "Hello.";
     List_Node_t *Node = NULL;
@@ -211,7 +213,7 @@ int Test_List_RefPrepend(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
@@ -248,8 +250,8 @@ int Test_List_RefPrepend(void) {
 int Test_List_Append(void) {
 
     List_t *List = NULL;
-    int Count = 10, i = 0;
-    int NewItem = 0xBEEF;
+    size_t Count = 10, i = 0;
+    size_t NewItem = 0xBEEF;
 
     List = List_Create();
     if (NULL == List) {
@@ -262,20 +264,20 @@ int Test_List_Append(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
 
     if (0 != List_Append(List, &NewItem, sizeof(NewItem))) {
         List_Release(List);
-        TEST_PRINTF("Test Failure - Failed to append [ %d ] to List_t.", NewItem);
+        TEST_PRINTF("Test Failure - Failed to append [ %d ] to List_t.", (int)NewItem);
         TEST_FAILURE;
     }
 
-    if (NewItem != *(int *)List->Tail->Contents) {
+    if (NewItem != *(size_t *)List->Tail->Contents) {
         TEST_PRINTF("Test Failure - List_t Tail contents (%d) not equal to expected value (%d).",
-                    *(int *)List->Tail->Contents, NewItem);
+                    (int)*(size_t *)List->Tail->Contents, (int)NewItem);
         List_Release(List);
         TEST_FAILURE;
     }
@@ -287,8 +289,8 @@ int Test_List_Append(void) {
 int Test_List_RefAppend(void) {
 
     List_t *List = NULL;
-    int i = 0;
-    const int Count = 10;
+    size_t i = 0;
+    const size_t Count = 10;
     char *RefItem = NULL;
     const char RefContents[] = "Hello.";
     List_Node_t *Node = NULL;
@@ -304,7 +306,7 @@ int Test_List_RefAppend(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
@@ -341,8 +343,8 @@ int Test_List_RefAppend(void) {
 int Test_List_Remove(void) {
 
     List_t *List = NULL;
-    int Count = 10, i = 0, RemoveIndex = 8;
-    int *CheckItem = NULL;
+    size_t Count = 10, i = 0, RemoveIndex = 8;
+    size_t *CheckItem = NULL;
 
     List = List_Create();
     if (NULL == List) {
@@ -355,20 +357,20 @@ int Test_List_Remove(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
 
     if (0 != List_Remove(List, RemoveIndex)) {
         List_Release(List);
-        TEST_PRINTF("Test Failure - Failed to remove item at index [ %d ].", RemoveIndex);
+        TEST_PRINTF("Test Failure - Failed to remove item at index [ %d ].", (int)RemoveIndex);
         TEST_FAILURE;
     }
 
     CheckItem = List_GetElement(List, RemoveIndex);
     if (NULL == CheckItem) {
-        TEST_PRINTF("Test Failure - Failed to get new item at index [ %d ].", RemoveIndex);
+        TEST_PRINTF("Test Failure - Failed to get new item at index [ %d ].", (int)RemoveIndex);
         List_Release(List);
         TEST_FAILURE;
     }
@@ -376,7 +378,7 @@ int Test_List_Remove(void) {
     if (*CheckItem != RemoveIndex + 1) {
         TEST_PRINTF(
             "Test Failure - New item at index [ %d ] (%d) not equal to expected value (%d).",
-            RemoveIndex, *CheckItem, RemoveIndex + 1);
+            (int)RemoveIndex, (int)*CheckItem, (int)(RemoveIndex + 1));
         List_Release(List);
         TEST_FAILURE;
     }
@@ -388,7 +390,7 @@ int Test_List_Remove(void) {
 int Test_List_RemoveAll(void) {
 
     List_t *List = NULL;
-    int Count = 10, i = 0, RemoveIndex = 0;
+    size_t Count = 10, i = 0, RemoveIndex = 0;
 
     List = List_Create();
     if (NULL == List) {
@@ -401,7 +403,7 @@ int Test_List_RemoveAll(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
@@ -410,7 +412,7 @@ int Test_List_RemoveAll(void) {
         if (0 != List_Remove(List, RemoveIndex)) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to remove item at index [ %d ] (%d/%d).",
-                        RemoveIndex, i, Count);
+                        (int)RemoveIndex, (int)i, (int)Count);
             TEST_FAILURE;
         }
     }
@@ -424,8 +426,8 @@ int Test_List_RemoveAll(void) {
 
     if (0 != List_Remove(List, RemoveIndex)) {
         List_Release(List);
-        TEST_PRINTF("Test Failure - Failed to remove item at index [ %d ] (%d/%d).", RemoveIndex, i,
-                    Count);
+        TEST_PRINTF("Test Failure - Failed to remove item at index [ %d ] (%d/%d).",
+                    (int)RemoveIndex, (int)i, (int)Count);
         TEST_FAILURE;
     }
 
@@ -443,9 +445,7 @@ int Test_List_RemoveAll(void) {
 int Test_List_GetElement(void) {
 
     List_t *List = NULL;
-    int Count = 10, i = 0;
-    int CheckIndex = 4;
-    int *ElementValue = NULL;
+    size_t Count = 10, i = 0, CheckIndex = 4, *ElementValue = NULL;
 
     List = List_Create();
     if (NULL == List) {
@@ -458,21 +458,21 @@ int Test_List_GetElement(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
 
-    ElementValue = (int *)List_GetElement(List, CheckIndex);
+    ElementValue = (size_t *)List_GetElement(List, CheckIndex);
     if (NULL == ElementValue) {
         List_Release(List);
-        TEST_PRINTF("Test Failure - Failed to get element at index [ %d ].", CheckIndex);
+        TEST_PRINTF("Test Failure - Failed to get element at index [ %d ].", (int)CheckIndex);
         TEST_FAILURE;
     }
 
     if (*ElementValue != CheckIndex) {
         TEST_PRINTF("Test Failure - Value at index [ %d ] (%d) not equal to expected value (%d).",
-                    CheckIndex, *ElementValue, CheckIndex);
+                    (int)CheckIndex, (int)*ElementValue, (int)CheckIndex);
         List_Release(List);
         TEST_FAILURE;
     }
@@ -484,9 +484,7 @@ int Test_List_GetElement(void) {
 int Test_List_SetElement(void) {
 
     List_t *List = NULL;
-    int Count = 10, i = 0;
-    int NewItem = 0xBEEF, UpdateIndex = 6;
-    int *Element = NULL;
+    size_t Count = 10, i = 0, NewItem = 0xBEEF, UpdateIndex = 6, *Element = NULL;
 
     List = List_Create();
     if (NULL == List) {
@@ -499,28 +497,28 @@ int Test_List_SetElement(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
 
     if (0 != List_SetElement(List, &NewItem, sizeof(NewItem), UpdateIndex)) {
         List_Release(List);
-        TEST_PRINTF("Test Failure - Failed to update value at index [ %d ].", UpdateIndex);
+        TEST_PRINTF("Test Failure - Failed to update value at index [ %d ].", (int)UpdateIndex);
         TEST_FAILURE;
     }
 
-    Element = (int *)List_GetElement(List, UpdateIndex);
+    Element = (size_t *)List_GetElement(List, UpdateIndex);
     if (NULL == Element) {
         List_Release(List);
         TEST_PRINTF("Test Failure - Failed to get item at index [ %d ] to check value.",
-                    UpdateIndex);
+                    (int)UpdateIndex);
         TEST_FAILURE;
     }
 
     if (*Element != NewItem) {
         TEST_PRINTF("Test Failure - Item at index [ %d ] (%d) does not match expected value (%d).",
-                    UpdateIndex, *Element, NewItem);
+                    (int)UpdateIndex, (int)*Element, (int)NewItem);
         List_Release(List);
         TEST_FAILURE;
     }
@@ -532,8 +530,7 @@ int Test_List_SetElement(void) {
 int Test_List_RefSetElement(void) {
 
     List_t *List = NULL;
-    int i = 0;
-    const int Count = 10, UpdateIndex = 6;
+    size_t i = 0, Count = 10, UpdateIndex = 6;
     char *RefItem = NULL;
     const char RefContents[] = "Hello.";
     char *CheckItem = NULL;
@@ -549,7 +546,7 @@ int Test_List_RefSetElement(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
@@ -566,21 +563,22 @@ int Test_List_RefSetElement(void) {
 
     if (0 != List_RefSetElement(List, RefItem, (ReleaseFunc_t *)free, UpdateIndex)) {
         TEST_PRINTF("Test Failure - Failed to update element at index [ %d ] (%s) in List_t.",
-                    UpdateIndex, RefItem);
+                    (int)UpdateIndex, RefItem);
         List_Release(List);
         TEST_FAILURE;
     }
 
     CheckItem = (char *)List_GetElement(List, UpdateIndex);
     if (NULL == CheckItem) {
-        TEST_PRINTF("Test Failure - Failed to get pointer to item at index [ %d ].", UpdateIndex);
+        TEST_PRINTF("Test Failure - Failed to get pointer to item at index [ %d ].",
+                    (int)UpdateIndex);
         List_Release(List);
         TEST_FAILURE;
     }
 
     if (0 != memcmp(CheckItem, RefItem, sizeof(RefContents))) {
         TEST_PRINTF("Test Failure - Item at index [ %d ] (%s) not equal to expected value (%s).",
-                    UpdateIndex, CheckItem, RefItem);
+                    (int)UpdateIndex, CheckItem, RefItem);
         List_Release(List);
         TEST_FAILURE;
     }
@@ -592,8 +590,7 @@ int Test_List_RefSetElement(void) {
 int Test_List_PopElement(void) {
 
     List_t *List = NULL;
-    int Count = 10, i = 0, PopIndex = 5;
-    int *PoppedValue = NULL;
+    size_t Count = 10, i = 0, PopIndex = 5, *PoppedValue = NULL;
 
     List = List_Create();
     if (NULL == List) {
@@ -606,7 +603,7 @@ int Test_List_PopElement(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
@@ -614,14 +611,14 @@ int Test_List_PopElement(void) {
     PoppedValue = List_PopElement(List, PopIndex);
     if (NULL == PoppedValue) {
         List_Release(List);
-        TEST_PRINTF("Test Failure - Failed to pop item at index [ %d ].", PopIndex);
+        TEST_PRINTF("Test Failure - Failed to pop item at index [ %d ].", (int)PopIndex);
         TEST_FAILURE;
     }
 
     if (*PoppedValue != PopIndex) {
         TEST_PRINTF(
             "Test Failure - Value popped from index [ %d ] (%d) does not equal expectation (%d).",
-            PopIndex, *PoppedValue, PopIndex);
+            (int)PopIndex, (int)*PoppedValue, (int)PopIndex);
         List_Release(List);
         free(PoppedValue);
         TEST_FAILURE;
@@ -642,8 +639,7 @@ int Test_List_PopElement(void) {
 int Test_List_PopFront(void) {
 
     List_t *List = NULL;
-    int Count = 10, i = 0;
-    int *PoppedValue = NULL;
+    size_t Count = 10, i = 0, *PoppedValue = NULL;
 
     List = List_Create();
     if (NULL == List) {
@@ -656,7 +652,7 @@ int Test_List_PopFront(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
@@ -670,7 +666,7 @@ int Test_List_PopFront(void) {
 
     if (*PoppedValue != 0) {
         TEST_PRINTF("Test Failure - Value popped from front (%d) does not equal expectation (%d).",
-                    *PoppedValue, 0);
+                    (int)*PoppedValue, 0);
         List_Release(List);
         free(PoppedValue);
         TEST_FAILURE;
@@ -691,8 +687,7 @@ int Test_List_PopFront(void) {
 int Test_List_PopBack(void) {
 
     List_t *List = NULL;
-    int Count = 10, i = 0;
-    int *PoppedValue = NULL;
+    size_t Count = 10, i = 0, *PoppedValue = NULL;
 
     List = List_Create();
     if (NULL == List) {
@@ -705,7 +700,7 @@ int Test_List_PopBack(void) {
             List_Release(List);
             TEST_PRINTF("Test Failure - Failed to insert element [ %d ] at index [ %d ] to "
                         "initialize List_t.",
-                        i, i);
+                        (int)i, (int)i);
             TEST_FAILURE;
         }
     }
@@ -720,7 +715,7 @@ int Test_List_PopBack(void) {
     if (*PoppedValue != (Count - 1)) {
         TEST_PRINTF(
             "Test Failure - Value popped from back of List_t (%d) does not equal expectation (%d).",
-            *PoppedValue, (Count - 1));
+            (int)*PoppedValue, (int)(Count - 1));
         List_Release(List);
         free(PoppedValue);
         TEST_FAILURE;

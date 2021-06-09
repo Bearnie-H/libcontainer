@@ -138,6 +138,22 @@ Array_t *Array_Duplicate(Array_t *Source) {
     return Destination;
 }
 
+int Array_Clear(Array_t *Array) {
+
+    if (NULL == Array) {
+        DEBUG_PRINTF("%s", "NULL Array*, nothing to clear.");
+        return 0;
+    }
+
+    if (0 != Array_RemoveN(Array, 0, Array_Length(Array))) {
+        DEBUG_PRINTF("%s", "Error: Failed to remove all entries from Array.");
+        return 1;
+    }
+
+    DEBUG_PRINTF("%s", "Successfully cleared Array_t contents.");
+    return 0;
+}
+
 void Array_Release(Array_t *Array) {
 
     size_t Index = 0;

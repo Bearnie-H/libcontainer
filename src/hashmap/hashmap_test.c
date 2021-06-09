@@ -32,7 +32,7 @@
 /* Temporary function for visualizing the distribution properties of the hash function used. */
 void PrintHashmapBucketUtilization(Hashmap_t *Map) {
 
-    int BucketCount = 0, i = 0;
+    size_t BucketCount = 0, i = 0;
     List_t *Bucket = NULL;
 
     printf("Hashmap Bucket Lengths: [ ");
@@ -71,6 +71,7 @@ int Test_Hashmap_DoubleKey(void) {
     FailedTests += Test_Hashmap_KeyExists_DoubleKey();
     FailedTests += Test_Hashmap_Remove_DoubleKey();
     FailedTests += Test_Hashmap_Pop_DoubleKey();
+    FailedTests += Test_Hashmap_Clear_DoubleKey();
 
     return FailedTests;
 }
@@ -86,6 +87,7 @@ int Test_Hashmap_StringKey(void) {
     FailedTests += Test_Hashmap_KeyExists_StringKey();
     FailedTests += Test_Hashmap_Remove_StringKey();
     FailedTests += Test_Hashmap_Pop_StringKey();
+    FailedTests += Test_Hashmap_Clear_StringKey();
 
     return FailedTests;
 }
@@ -349,6 +351,52 @@ int Test_Hashmap_Pop_DoubleKey(void) {
     TEST_SUCCESSFUL;
 }
 
+int Test_Hashmap_Clear_DoubleKey(void) {
+
+    Hashmap_t *Map = NULL;
+    double KeyValue = 3.1415, TempKey = 0.0;
+    int Value = 0xBEEF, TempValue = 0;
+    int Count = 256, i = 0;
+
+    Map = Hashmap_Create(HashFunc_Double, 0, NULL);
+    if (NULL == Map) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create Hashmap_t.");
+        TEST_FAILURE;
+    }
+
+    for (i = 0; i < Count; i++) {
+        TempKey = i * KeyValue;
+        TempValue = i * Value;
+        if (0 != Hashmap_Insert(Map, &TempKey, &TempValue, 0, sizeof(Value), NULL)) {
+            TEST_PRINTF("%s", "Test Failure - Failed to perform Insert operation.");
+            Hashmap_Release(Map);
+            TEST_FAILURE;
+        }
+    }
+
+    if ((size_t)Count != Hashmap_Length(Map)) {
+        TEST_PRINTF("Test Failure - Hashmap Length (%ld) not equal to expected value (%d).",
+                    (unsigned long)Hashmap_Length(Map), 1);
+        Hashmap_Release(Map);
+        TEST_FAILURE;
+    }
+
+    if (0 != Hashmap_Clear(Map)) {
+        TEST_PRINTF("%s", "Test Failure - Failed to clear Hashmap_t.");
+        Hashmap_Release(Map);
+        TEST_FAILURE;
+    }
+
+    if (0 != Hashmap_Length(Map)) {
+        TEST_PRINTF("%s", "Test Failure - Hashmap Length not equal to 0 after being cleared.");
+        Hashmap_Release(Map);
+        TEST_FAILURE;
+    }
+
+    Hashmap_Release(Map);
+    TEST_SUCCESSFUL;
+}
+
 int Test_Hashmap_Create_StringKey(void) {
 
     Hashmap_t *Map = NULL;
@@ -599,6 +647,53 @@ int Test_Hashmap_Pop_StringKey(void) {
     }
 
     free(PoppedValue);
+    Hashmap_Release(Map);
+    TEST_SUCCESSFUL;
+}
+
+int Test_Hashmap_Clear_StringKey(void) {
+
+    Hashmap_t *Map = NULL;
+    char KeyValue[16] = {0x00};
+    int Value = 0xBEEF, TempValue = 0, Count = 256, i = 0;
+
+    Map = Hashmap_Create(NULL, 0, NULL);
+    if (NULL == Map) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create Hashmap_t.");
+        TEST_FAILURE;
+    }
+
+    for (i = 0; i < Count; i++) {
+        snprintf(KeyValue, sizeof(KeyValue) - 1, "Key %d", i);
+        TempValue = Value * i;
+        if (0 !=
+            Hashmap_Insert(Map, KeyValue, &TempValue, strlen(KeyValue), sizeof(TempValue), NULL)) {
+            TEST_PRINTF("Test Failure - Failed to insert key (%s) and value (%d) to Hashmap",
+                        KeyValue, TempValue);
+            Hashmap_Release(Map);
+            TEST_FAILURE;
+        }
+    }
+
+    if ((size_t)Count != Hashmap_Length(Map)) {
+        TEST_PRINTF("Test Failure - Hashmap Length(%ld) not equal to expected value (%ld)",
+                    (unsigned long)Hashmap_Length(Map), (unsigned long)Count);
+        Hashmap_Release(Map);
+        TEST_FAILURE;
+    }
+
+    if (0 != Hashmap_Clear(Map)) {
+        TEST_PRINTF("%s", "Test Failure - Failed to clear Hashmap_t.");
+        Hashmap_Release(Map);
+        TEST_FAILURE;
+    }
+
+    if (0 != Hashmap_Length(Map)) {
+        TEST_PRINTF("%s", "Test Failure - Hashmap Length not equal to 0 after being cleared.");
+        Hashmap_Release(Map);
+        TEST_FAILURE;
+    }
+
     Hashmap_Release(Map);
     TEST_SUCCESSFUL;
 }

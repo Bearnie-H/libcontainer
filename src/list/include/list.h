@@ -81,7 +81,7 @@ struct List_t {
     a Node within the List as long as the List_t itself is structured
     correctly. As such, no input validation is needed.
 */
-List_Node_t* List_findNode(List_t* List, int Index);
+List_Node_t* List_findNode(List_t* List, size_t Index);
 
 /*
     List_removeNode

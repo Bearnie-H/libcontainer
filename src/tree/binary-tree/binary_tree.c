@@ -210,6 +210,21 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, CallbackArgFunc_t *Callback, 
     return Binary_Tree_doCallbackArg(Tree->Root, Callback, Args);
 }
 
+int Binary_Tree_Clear(Binary_Tree_t *Tree) {
+
+    if (NULL == Tree) {
+        DEBUG_PRINTF("%s", "NULL Tree* provided, nothing to clear.");
+        return 0;
+    }
+
+    Binary_Tree_Node_Release(Tree->Root);
+    Tree->Root = NULL;
+    Tree->TreeSize = 0;
+
+    DEBUG_PRINTF("%s", "Successfully released all items from Binary_Tree.");
+    return 0;
+}
+
 void Binary_Tree_Release(Binary_Tree_t *Tree) {
 
     if (NULL == Tree) {
