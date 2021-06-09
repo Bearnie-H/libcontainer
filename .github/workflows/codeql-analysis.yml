@@ -17,8 +17,6 @@ on:
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ master ]
-  schedule:
-    - cron: '34 21 * * 2'
 
 jobs:
   analyze:
@@ -64,6 +62,6 @@ jobs:
     #    uses a compiled language
 
     - run: |
-        make release
+        make FMTTOOL= release
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1

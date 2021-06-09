@@ -37,7 +37,7 @@ WARNINGS        := -Wall -Werror -Wpedantic -Wextra
 WARNINGS_IGNORE :=
 CFLAGS          := -std=c99 $(WARNINGS) $(WARNINGS_IGNORE)
 LIBTOOL         := ar -rcs
-FMTTOOL         :=$(shell which clang-format)
+FMTTOOL         ?=$(shell which clang-format)
 
 include Build_Tuning.mk
 
