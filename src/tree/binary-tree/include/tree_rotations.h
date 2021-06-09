@@ -35,35 +35,84 @@ extern "C" {
 #include "binary_tree.h"
 
 /*
-    TODO: Function Documentation
+    Binary_Tree_balanceFactor
+
+    This function computes the AVL balance factor for the given sub-tree.
+
+    Inputs:
+    Root    -   The node to compute the balance factor at.
+
+    Outputs:
+    int     -   The balance factor of the given Node.
 */
 int Binary_Tree_balanceFactor(Binary_Tree_Node_t* Root);
 
 /*
-    TODO: Function Documentation
+    Binary_Tree_rebalance
+
+    This function performs the necessary rotations to rebalance the AVL tree
+    at the given Root node. This computes the balance factor at the node,
+    determines the necessary rotations, and then performs them.
+
+    Inputs:
+    TreeRoot    -   Pointer to the current root to perform the tree rotation on.
+
+    Outputs:
+    Binary_Tree_Node_t*     -   Pointer to the (possibly new) subtree root Node.
 */
 Binary_Tree_Node_t* Binary_Tree_rebalance(Binary_Tree_Node_t* TreeRoot);
 
 /*
-    TODO: Function Documentation
+    Binary_Tree_rotateLeft
+
+    This function performs a Left rotation, based at the given Node.
+
+    Inputs:
+    TreeRoot    -   Pointer to the current root to perform the tree rotation on.
+
+    Outputs:
+    Binary_Tree_Node_t*     -   Pointer to the (possibly new) subtree root Node.
 */
 Binary_Tree_Node_t* Binary_Tree_rotateLeft(Binary_Tree_Node_t* TreeRoot);
 
 /*
-    TODO: Function Documentation
+    Binary_Tree_rotateRight
+
+    This function performs a Right rotation, based at the given Node.
+
+    Inputs:
+    TreeRoot    -   Pointer to the current root to perform the tree rotation on.
+
+    Outputs:
+    Binary_Tree_Node_t*     -   Pointer to the (possibly new) subtree root Node.
 */
 Binary_Tree_Node_t* Binary_Tree_rotateRight(Binary_Tree_Node_t* TreeRoot);
 
 /*
-    TODO: Function Documentation
+    Binary_Tree_rotateDoubleLeft
+
+    This function performs a Double-Left rotation, based at the given Node.
+
+    Inputs:
+    TreeRoot    -   Pointer to the current root to perform the tree rotation on.
+
+    Outputs:
+    Binary_Tree_Node_t*     -   Pointer to the (possibly new) subtree root Node.
 */
 Binary_Tree_Node_t* Binary_Tree_rotateDoubleLeft(Binary_Tree_Node_t* TreeRoot);
 
 /*
-    TODO: Function Documentation
+    Binary_Tree_rotateDoubleRight
+
+    This function performs a Double-Right rotation, based at the given Node.
+
+    Inputs:
+    TreeRoot    -   Pointer to the current root to perform the tree rotation on.
+
+    Outputs:
+    Binary_Tree_Node_t*     -   Pointer to the (possibly new) subtree root Node.
 */
 Binary_Tree_Node_t* Binary_Tree_rotateDoubleRight(Binary_Tree_Node_t* TreeRoot);
-
 
 #if defined(TESTING) || defined(DEBUGGER)
 

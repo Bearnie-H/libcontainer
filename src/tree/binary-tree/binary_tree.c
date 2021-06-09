@@ -79,8 +79,7 @@ int Binary_Tree_Insert(Binary_Tree_t *Tree, int Key, const void *Value) {
     }
 
     if (NULL == Value) {
-        DEBUG_PRINTF("%s", "Note: NULL Value* provided, nothing to insert.");
-        return 0;
+        DEBUG_PRINTF("%s", "Note: NULL Value* provided, just inserting Key.");
     }
 
     /* Otherwise, this is a new Key, and must be added to the tree as a new Node. */
@@ -383,6 +382,23 @@ int Binary_Tree_doCallbackArg(Binary_Tree_Node_t *Root, CallbackArgFunc_t *Callb
     }
 
     return RetVal;
+}
+
+bool Binary_Tree_isAVLTree(Binary_Tree_Node_t *Root) {
+
+    int BalanceFactor = 0;
+
+    if (NULL == Root) {
+        return true;
+    }
+
+    BalanceFactor = Binary_Tree_balanceFactor(Root);
+
+    if ((BalanceFactor >= 2) || (BalanceFactor <= -2)) {
+        return false;
+    }
+
+    return Binary_Tree_isAVLTree(Root->LeftChild) && Binary_Tree_isAVLTree(Root->RightChild);
 }
 
 /* ---------- Private Functions ---------- */

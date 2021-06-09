@@ -167,13 +167,21 @@ typedef unsigned int (HashFunc_t)(const void*, size_t);
     Duplicate items are not allowed, and insertion of a duplicate item
     will overwrite the existing contents. If this is problematic, always
     check if the key exists before performing an insert operation.
+    Note, This API may change in the future to allow choosing a policy for
+    handling duplicate items.
+
+    Currently, this container can ONLY operate with keys of type "int".
+    This may change in the future to allow arbitrary Key types with a
+    provided comparison function, leaving it up to the user to ensure
+    a Key type which defines a total pre-order over the set of possible
+    values.
 
     This struct is opaque to ensure all accesses are performed
     through the functions provided in this library to ensure
     safe access and operation.
 
     See the functions prefixed with "Binary_Tree_" for the available operations
-    on these arrays.
+    on this container.
 */
 typedef struct Binary_Tree_t Binary_Tree_t;
 
@@ -1192,15 +1200,193 @@ void Hashmap_Release(Hashmap_t* Map);
 #ifdef LIBCONTAINER_ENABLE_BINARY_TREE
 /* +++++++++ Binary Tree Functions +++++++++ */
 
+/*
+    Binary_Tree_Create
+
+    This function will create and initialize a new self-balancing binary search tree container.
+    All entries within a single Tree must be of the same type, so the ValueSize and ReleaseFunc
+    provided here are cached for when items are added.
+
+    Inputs:
+    ValueSize   -   The size (in bytes) of the Value associated with a given item. If 0,
+                        this indicates a Reference-Type item, and the Tree will not own
+                        the memory associated with the item.
+    ReleaseFunc -   The function to call to release the resources associated with an item
+                        in the Tree. If NULL, the free() function from stdlib.h will be used.
+
+    Outputs:
+    Binary_Tree_t*  -   Pointer to a fully constructed and initialized Binary Tree, or NULL
+                            on failure.
+*/
 Binary_Tree_t* Binary_Tree_Create(size_t ValueSize, ReleaseFunc_t* ReleaseFunc);
+
+/*
+    Binary_Tree_Length
+
+    This function will return the "length" of the Tree, i.e. the number of items it contains.
+    This is called *_Length() purely for consistency with the other containers in this library.
+
+    Inputs:
+    Tree    -   Pointer to the Tree to return the length of.
+
+    Outputs:
+    size_t  -   The number of items contained in the Tree. 0 if a NULL tree is provided.
+
+    Note:
+    This is an O(1) operation on the Tree. No traversal is performed to count the items.
+*/
 size_t Binary_Tree_Length(Binary_Tree_t* Tree);
+
+/*
+    Binary_Tree_Insert
+
+    This function adds a new Key/Value pair to the Tree. If the given Key is already
+    found within the Tree, the existing item will be overwritten with the new Value.
+
+    Inputs:
+    Tree    -   Pointer to the Tree to operate on.
+    Key     -   The Key value of the item to operate on.
+    Value   -   Pointer to the Value to associate with the given Key. Can be NULL,
+                    in which case the item only contains a Key.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+
+    Note:
+    The policy for handling duplicate Keys may change in the future to allow user-specification
+    for how to handle duplicates.
+*/
 int Binary_Tree_Insert(Binary_Tree_t* Tree, int Key, const void* Value);
+
+/*
+    Binary_Tree_KeyExists
+
+    This function will check if the given Key exists within the Tree.
+    If this returns true, and no *_Remove() or *_Pop() are performed,
+    the next *_Get() or *_Pop() will guarantee a non-NULL return value.
+
+    Inputs:
+    Tree    -   Pointer to the Tree to operate on.
+    Key     -   The Key value of the item to operate on.
+
+    Outputs:
+    bool    -   Returns true if the Key exists within the tree, false if it does not.
+*/
 bool Binary_Tree_KeyExists(Binary_Tree_t* Tree, int Key);
+
+/*
+    Binary_Tree_Get
+
+    This function returns a pointer to the value associated with the given Key,
+    if it exists within the Tree.
+
+    Inputs:
+    Tree    -   Pointer to the Tree to operate on.
+    Key     -   The Key value of the item to operate on.
+
+    Outputs:
+    void*   -   Pointer to the value of the item registered with the given Key, or NULL if
+                    the Key does not exist in the Tree.
+
+    Note:
+    This simply provides a pointer to the value still within the tree. Modifications
+    through this pointer will affect the value in the Tree.
+*/
 void* Binary_Tree_Get(Binary_Tree_t* Tree, int Key);
+
+/*
+    Binary_Tree_Pop
+
+    This function returns the value associated with the given Key,
+    if it exists within the Tree. The Key and Value are removed from
+    the Tree, having been transferred to the caller.
+
+    Inputs:
+    Tree    -   Pointer to the Tree to operate on.
+    Key     -   The Key value of the item to operate on.
+
+    Outputs:
+    void*   -   Pointer to the value of the item registered with the given Key, or NULL if
+                    the Key does not exist in the Tree.
+
+    Note:
+    Ownership of the resources of the Value popped from the tree are transferred to the
+    caller.
+*/
 void* Binary_Tree_Pop(Binary_Tree_t* Tree, int Key);
+
+/*
+    Binary_Tree_DoCallback
+
+    This function traverses the Tree, calling the given Callback function on
+    each of the items. The tree is traversed in-order.
+
+    Inputs:
+    Tree        -   Pointer to the Tree to operate on.
+    Callback    -   Pointer to the Callback function to call for each item
+                        in the Tree.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero if any Callback fails.
+
+    Note:
+    The "Value*" provided to the Callback function consists of a
+        void*[2] = { Key, Value }
+    A pointer to the Key, and the pointer to the Value of each item.
+*/
 int Binary_Tree_DoCallback(Binary_Tree_t* Tree, CallbackFunc_t* Callback);
+
+/*
+    Binary_Tree_DoCallbackArg
+
+    This function traverses the Tree, calling the given Callback function on
+    each of the items. The tree is traversed in-order.
+
+    Inputs:
+    Tree        -   Pointer to the Tree to operate on.
+    Callback    -   Pointer to the Callback function to call for each item
+                        in the Tree.
+    Args        -   Optional additional arguments to pass to the Callback
+                        function along with the Key-Value pair.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero if any Callback fails.
+
+    Note:
+    The "Value*" provided to the Callback function consists of a
+        void*[2] = { Key, Value }
+    A pointer to the Key, and the pointer to the Value of each item.
+*/
 int Binary_Tree_DoCallbackArg(Binary_Tree_t* Tree, CallbackArgFunc_t* Callback, void* Args);
+
+/*
+    Binary_Tree_Remove
+
+    This function will remove the item associated with the given Key from the Tree,
+    if it exists. If the key does not exist, this does nothing.
+
+    Inputs:
+    Tree    -   Pointer to the Tree to operate on.
+    Key     -   The Key value of the item to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
 int Binary_Tree_Remove(Binary_Tree_t* Tree, int Key);
+
+/*
+    Binary_Tree_Release
+
+    This function fully releases the tree and all of the items added to it.
+    As long as the provided ReleaseFunc correctly releases the Values passed
+    to this container, this will fully release everything safely.
+
+    Inputs:
+    Tree    -   Pointer to the Tree to operate on.
+
+    Outputs:
+    None, The Tree and all contents are fully released.
+*/
 void Binary_Tree_Release(Binary_Tree_t* Tree);
 
 /* --------- Binary Tree Functions --------- */

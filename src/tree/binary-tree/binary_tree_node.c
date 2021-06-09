@@ -45,7 +45,7 @@ Binary_Tree_Node_t *Binary_Tree_Node_Create(int Key, size_t ValueSize, const voi
         return NULL;
     }
 
-    if (ValueSize == 0) {
+    if ((NULL == Value) || (ValueSize == 0)) {
         Contents = (uint8_t *)Value;
     } else {
         Contents = (uint8_t *)calloc(ValueSize, sizeof(uint8_t));
@@ -93,7 +93,7 @@ int Binary_Tree_Node_Update(Binary_Tree_Node_t *Node, const void *NewValue, size
 
     uint8_t *TempValue = NULL;
 
-    if (0 == ValueSize) {
+    if ((NULL == NewValue) || (0 == ValueSize)) {
         TempValue = (uint8_t *)NewValue;
     } else {
         TempValue = (uint8_t *)calloc(ValueSize, sizeof(uint8_t));
@@ -107,7 +107,6 @@ int Binary_Tree_Node_Update(Binary_Tree_Node_t *Node, const void *NewValue, size
     if (Node->Value != NULL) {
         DEBUG_PRINTF("%s", "Binary_Tree_Node_t has non-NULL value, releasing.");
         Node->ReleaseFunc(Node->Value);
-        Node->Value = NULL;
     }
 
     DEBUG_PRINTF("%s", "Successfully updated value of Binary_Tree_Node_t.");

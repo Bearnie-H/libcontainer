@@ -141,6 +141,7 @@ int Test_binary_tree(void) {
     FailedTests += Test_Binary_Tree_DoCallback();
     FailedTests += Test_Binary_Tree_DoCallbackArg();
     FailedTests += Test_Binary_Tree_Remove();
+    FailedTests += Test_Binary_Tree_Balancing();
 
     return FailedTests;
 }
@@ -426,6 +427,66 @@ int Test_Binary_Tree_Remove() {
         TEST_PRINTF("%s", "Test Failure - Empty Tree has non-NULL Root.");
         Binary_Tree_Release(Tree);
         TEST_FAILURE;
+    }
+
+    Binary_Tree_Release(Tree);
+    TEST_SUCCESSFUL;
+}
+
+int Test_Binary_Tree_Balancing() {
+
+    Binary_Tree_t *Tree = NULL;
+    size_t OperationCount = 1 << 10, i = 0;
+    int Key = 0, Value = 0, OperationType = 0;
+
+    Tree = Binary_Tree_Create(sizeof(Value), NULL);
+    if (NULL == Tree) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
+        TEST_FAILURE;
+    }
+
+    for (i = 0; i < OperationCount; i++) {
+        OperationType = rand() & 0x01;
+        if (0 == OperationType) {
+            /* Do Insert operation. */
+            Key = rand();
+            Value = rand();
+            if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
+                TEST_PRINTF("Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree.",
+                            Key, Value);
+                Binary_Tree_Release(Tree);
+                TEST_FAILURE;
+            }
+            if (!Binary_Tree_KeyExists(Tree, Key)) {
+                TEST_PRINTF("Test Failure - Insertion of item with Key [ %d ] reported success, "
+                            "but failed to be found in Tree.",
+                            Key);
+                Binary_Tree_Release(Tree);
+                TEST_FAILURE;
+            }
+        } else {
+            /* Do Remove operation. */
+            Key = rand();
+            if (0 != Binary_Tree_Remove(Tree, Key)) {
+                TEST_PRINTF("Test Failure - Error while attempting to remove item with Key [ %d ] "
+                            "from Tree.",
+                            Key);
+                Binary_Tree_Release(Tree);
+                TEST_FAILURE;
+            }
+            if (Binary_Tree_KeyExists(Tree, Key)) {
+                TEST_PRINTF("Test Failure - Removal of item with Key [ %d ] reported success, but "
+                            "key was found in Tree.",
+                            Key);
+                Binary_Tree_Release(Tree);
+                TEST_FAILURE;
+            }
+        }
+        if (!Binary_Tree_isAVLTree(Tree->Root)) {
+            TEST_PRINTF("%s", "Test Failure - Tree failed to satisfy AVL criteria.");
+            Binary_Tree_Release(Tree);
+            TEST_FAILURE;
+        }
     }
 
     Binary_Tree_Release(Tree);
