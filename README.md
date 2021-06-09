@@ -1,6 +1,8 @@
 # libcontainer
 
 This library provides a set of generic containers in a pure C (C99) implementation.
+This library is intended to be portable, and suitable for building larger tooling
+or applications on top of.
 
 ## Purpose
 
@@ -27,11 +29,11 @@ If building from source, there are a handful of additional macros which can be t
 your specific application:
 
 | Macro Name | Description |
-| :----------: | :---------- |
-| `LIBCONTAINER_ZERO_ON_RELEASE`    |   memset() all containers to 0's after releasing |
-| `LIBCONTAINER_ARRAY_DEFAULT_CAPACITY` | Minimum Capacity of Array_t objects unless specified |
-| `LIBCONTAINER_HASHMAP_LOAD_FACTOR`    | Hashmap Load Factor threshold before a table rehash |
-| `LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY` | Hashmap default starting size |
+| :--- | :--- |
+| `LIBCONTAINER_ZERO_ON_RELEASE`          | `memset()` all containers to 0's after releasing     |
+| `LIBCONTAINER_ARRAY_DEFAULT_CAPACITY`   | Minimum Capacity of Array_t objects unless specified |
+| `LIBCONTAINER_HASHMAP_LOAD_FACTOR`      | Hashmap Load Factor threshold before a table rehash  |
+| `LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY` | Hashmap default starting size                        |
 
 To specify non-default values for any of these tunable parameters, simply set the variable as desired
 when calling the `make` program, e.g. `make LIBCONTAINER_ARRAY_DEFAULT_CAPACITY=16 release`.
@@ -77,6 +79,21 @@ before `#include`-ing the library header to only bring the `Array_t` type and fu
 The library binary itself contains all of the implemented containers, and this mechanism provides
 a way to ensure only the containers you want end up compiled into your project.
 
+## Available Containers
+
+Currently, this library provides the following containers for use:
+
+| Container       | Enable Macro                      | Description                                          |
+| :---            | :---                              | :---                                                 |
+| `Array_t`       | `LIBCONTAINER_ENABLE_ARRAY`       | Auto-resizing linear contiguous storage              |
+| `List_t`        | `LIBCONTAINER_ENABLE_LIST`        | Doubly-Linked dynamic list                           |
+| `Hashmap_t`     | `LIBCONTAINER_ENABLE_HASHMAP`     | Auto-balancing key-value associative array           |
+| `Binary_Tree_t` | `LIBCONTAINER_ENABLE_BINARY_TREE` | Self-balancing binary search tree of key-value pairs |
+
+The internal implementations of these containers should not be a concern for their use. For example,
+currently the Binary_Tree_t implementation is based on an [AVL Tree](https://en.wikipedia.org/wiki/AVL_tree),
+but no part of this implementation is externally visible. This library will always ensure
+the public interface does not rely on the specific implementation of the underlying container.
 ## License
 
 Copyright (c) 2021 Bearnie-H
