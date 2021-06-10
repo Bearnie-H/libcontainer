@@ -188,6 +188,34 @@ typedef struct Binary_Tree_t Binary_Tree_t;
 /* --------- Public Binary Tree Typedefs --------- */
 #endif
 
+#ifdef LIBCONTAINER_ENABLE_STACK
+/* ++++++++++ Public Stack Typedefs ++++++++++ */
+
+/*
+    Stack_t
+
+    This container provides a Last-In First-Out (LIFO) interface for arbitrary,
+    homogeneous items. This container can either own the memory associated with
+    the contents it holds, or it can simply hold references to items which manage
+    their own resources.
+
+    This interface provides the standard Push/Peek/Pop expected for a Stack,
+    as well as the additional DoCallback() and DoCallbackArg() interface
+    provided by other containers in this library for performing an action
+    with each of the items in the container.
+
+    This struct is opaque to ensure all accesses are performed
+    through the functions provided in this library to ensure
+    safe access and operation.
+
+    See the functions prefixed with "Stack_" for the available operations
+    on this container.
+*/
+typedef struct Stack_t Stack_t;
+
+/* ---------- Public Stack Typedefs ---------- */
+#endif
+
 /*
     ReleaseFunc_t
 
@@ -1447,6 +1475,180 @@ int Binary_Tree_Clear(Binary_Tree_t* Tree);
 void Binary_Tree_Release(Binary_Tree_t* Tree);
 
 /* --------- Binary Tree Functions --------- */
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_STACK
+/* ++++++++++ Public Stack Functions ++++++++++ */
+
+/*
+    Stack_Create
+
+    This function creates and initializes a new Stack_t object for use. All items
+    within a single Stack_t must be of the same type and size. For Reference-Type items,
+    simply pass 0 as the ValueSize to indicate that their resources are held elsewhere.
+    If passing string literals, these must be treated as non-reference types to avoid
+    attempting to free() or otherwise release them.
+
+    Inputs:
+    ValueSize   -   The size (in bytes) of the items to contain. A 0 value indicates Reference
+                        values.
+    ReleaseFunc -   Pointer to the function to call to release the resources associated with
+                        each item. Defaults to free() from libstd.h if NULL is given.
+
+    Outputs:
+    Stack_t*    -   Pointer to a fully initialized Stack_t object, or NULL on failure.
+*/
+Stack_t* Stack_Create(size_t ValueSize, ReleaseFunc_t* ReleaseFunc);
+
+/*
+    Stack_Length
+
+    This function returns the "length", or number of items in the Stack.
+
+    Inputs:
+    Stack   -   Pointer to the Stack_t to operate on.
+
+    Outputs:
+    size_t  -   The count of items in the Stack. Returns 0 if given NULL.
+*/
+size_t Stack_Length(Stack_t* Stack);
+
+/*
+    Stack_IsEmpty
+
+    This function returns a boolean indicating whether or not the stack is empty.
+
+    Inputs:
+    Stack   -   Pointer to the Stack_t to operate on.
+
+    Outputs:
+    bool    -   True if Stack is non-NULL and contains at least one item, false otherwise.
+*/
+bool Stack_IsEmpty(Stack_t* Stack);
+
+/*
+    Stack_Push
+
+    This function pushes the given item to the top of the stack, adding it.
+
+    Inputs:
+    Stack   -   Pointer to the Stack_t to operate on.
+    Value   -   Pointer to the value to push to the Stack.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Stack_Push(Stack_t* Stack, const void* Value);
+
+/*
+    Stack_Peek
+
+    This function returns a pointer to the item at the top of the stack, without removing
+    it from the Stack.
+
+    Inputs:
+    Stack   -   Pointer to the Stack_t to operate on.
+
+    Outputs:
+    void*   -   Pointer to the item currently at the top of the Stack.
+                    NULL on failure or if the Stack is empty.
+*/
+void* Stack_Peek(Stack_t* Stack);
+
+/*
+    Stack_Pop
+
+    This function removes the item from the top of the stack, returning it to the caller
+    and transferring ownership to the caller.
+
+    Inputs:
+    Stack   -   Pointer to the Stack_t to operate on.
+
+    Outputs:
+    void*   -   Pointer to the item currently at the top of the Stack.
+                    NULL on failure or if the Stack is empty.
+
+    Note:
+    Memory and resource ownership of the popped item is transferred to the caller,
+    and must be safely handled and released to ensure no resource leaks.
+*/
+void* Stack_Pop(Stack_t* Stack);
+
+/*
+    Stack_DoCallback
+
+    This function calls the given Callback function on each item contained in the Stack.
+
+    Inputs:
+    Stack       -   Pointer to the Stack_t to operate on.
+    Callback    -   Pointer to the Callback function to apply to each item in the Stack.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero if the Callback returns non-zero for any item
+                    in the Stack.
+
+    Note:
+    The "Value*" pointer passed in to the Callback function is a pointer to the raw value
+    of each item of the stack, as added by the Stack_Push() function.
+*/
+int Stack_DoCallback(Stack_t* Stack, CallbackFunc_t* Callback);
+
+/*
+    Stack_DoCallbackArg
+
+    This function calls the given Callback function on each item contained in the Stack.
+    This function additionally passes in the Args pointer to the callback.
+
+    Inputs:
+    Stack       -   Pointer to the Stack_t to operate on.
+    Callback    -   Pointer to the Callback function to apply to each item in the Stack.
+    Args        -   (Optional) Pointer to additional arguments/values to pass in to the Callback function.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero if the Callback returns non-zero for any item
+                    in the Stack.
+
+    Note:
+    The "Value*" pointer passed in to the Callback function is a pointer to the raw value
+    of each item of the stack, as added by the Stack_Push() function.
+*/
+int Stack_DoCallbackArg(Stack_t* Stack, CallbackArgFunc_t* Callback, void* Args);
+
+/*
+    Stack_Clear
+
+    This function removes and releases all items from the Stack, while retaining
+    the Stack itself to be used again.
+
+    Inputs:
+    Stack   -   Pointer to the Stack_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Stack_Clear(Stack_t* Stack);
+
+/*
+    Stack_Release
+
+    This function fully and safely releases all items held by the Stack, as well
+    as the Stack itself.
+
+    Inputs:
+    Stack   -   Pointer to the Stack_t to operate on.
+
+    Outputs:
+    None, the Stack and all items it held are released. The pointer given is no longer
+    valid for use after calling this function.
+
+    Note:
+    For this function to satisfy the promise of fully releasing all items
+    it holds, the ReleaseFunc it is initialized with must safely and fully
+    release all resources held by a given item.
+*/
+void Stack_Release(Stack_t* Stack);
+
+/* ---------- Public Stack Functions ---------- */
 #endif
 
 /* ---------- Exported Library Functions ---------- */
