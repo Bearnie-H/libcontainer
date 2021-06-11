@@ -30,8 +30,8 @@
 int Test_Array_Prepend(void) {
 
     Array_t *Array = NULL;
-    const char Elements[] = "Hello World!";
-    const char Expected[] = "HHello World!";
+    char Elements[] = "Hello World!";
+    char Expected[] = "HHello World!";
 
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
@@ -51,10 +51,10 @@ int Test_Array_Prepend(void) {
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
+    if (0 != memcmp(Array->Contents.ContentBytes, Expected, Array_Length(Array))) {
         TEST_PRINTF("Test Failure - Array contents [ %s ] does not match "
                     "expected value [ %s ].",
-                    (char *)Array->Contents, Expected);
+                    (char *)Array->Contents.ContentBytes, Expected);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -66,8 +66,8 @@ int Test_Array_Prepend(void) {
 int Test_Array_Append(void) {
 
     Array_t *Array = NULL;
-    const char Elements[] = "Hello World!";
-    const char Expected[] = "Hello World!H";
+    char Elements[] = "Hello World!";
+    char Expected[] = "Hello World!H";
 
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
@@ -87,10 +87,10 @@ int Test_Array_Append(void) {
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
+    if (0 != memcmp(Array->Contents.ContentBytes, Expected, Array_Length(Array))) {
         TEST_PRINTF("Test Failure - Array contents [ %s ] does not match "
                     "expected value [ %s ].",
-                    (char *)Array->Contents, Expected);
+                    (char *)Array->Contents.ContentBytes, Expected);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -102,9 +102,9 @@ int Test_Array_Append(void) {
 int Test_Array_Insert(void) {
 
     Array_t *Array = NULL;
-    const char Elements[] = "Hello World!";
+    char Elements[] = "Hello World!";
     const size_t InsertIndex = 5;
-    const char Expected[] = "HelloH World!";
+    char Expected[] = "HelloH World!";
 
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
@@ -124,10 +124,10 @@ int Test_Array_Insert(void) {
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
+    if (0 != memcmp(Array->Contents.ContentBytes, Expected, Array_Length(Array))) {
         TEST_PRINTF("Test Failure - Array contents [ %s ] does not match "
                     "expected value [ %s ].",
-                    (char *)Array->Contents, Expected);
+                    (char *)Array->Contents.ContentBytes, Expected);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -139,9 +139,9 @@ int Test_Array_Insert(void) {
 int Test_Array_InsertN(void) {
 
     Array_t *Array = NULL;
-    const char Elements[] = "Hello World!";
+    char Elements[] = "Hello World!";
     const size_t InsertIndex = 5;
-    const char Expected[] = "HelloHello World! World!";
+    char Expected[] = "HelloHello World! World!";
 
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
@@ -161,10 +161,10 @@ int Test_Array_InsertN(void) {
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
+    if (0 != memcmp(Array->Contents.ContentBytes, Expected, Array_Length(Array))) {
         TEST_PRINTF("Test Failure - Array contents [ %s ] does not match "
                     "expected value [ %s ].",
-                    (char *)Array->Contents, Expected);
+                    (char *)Array->Contents.ContentBytes, Expected);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -176,9 +176,9 @@ int Test_Array_InsertN(void) {
 int Test_Array_Remove(void) {
 
     Array_t *Array = NULL;
-    const char Elements[] = "Hello World!";
+    char Elements[] = "Hello World!";
     const size_t RemoveIndex = 5;
-    const char Expected[] = "HelloWorld!";
+    char Expected[] = "HelloWorld!";
 
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
@@ -200,10 +200,10 @@ int Test_Array_Remove(void) {
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
+    if (0 != memcmp(Array->Contents.ContentBytes, Expected, Array_Length(Array))) {
         TEST_PRINTF("Test Failure - Array contents [ %s ] does not match "
                     "expected value [ %s ].",
-                    (char *)Array->Contents, Expected);
+                    (char *)Array->Contents.ContentBytes, Expected);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -215,9 +215,9 @@ int Test_Array_Remove(void) {
 int Test_Array_RemoveN(void) {
 
     Array_t *Array = NULL;
-    const char Elements[] = "Hello World!";
+    char Elements[] = "Hello World!";
     const size_t RemoveIndex = 5;
-    const char Expected[] = "Hello";
+    char Expected[] = "Hello";
 
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
@@ -239,10 +239,10 @@ int Test_Array_RemoveN(void) {
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
+    if (0 != memcmp(Array->Contents.ContentBytes, Expected, Array_Length(Array))) {
         TEST_PRINTF("Test Failure - Array contents [ %s ] does not match "
                     "expected value [ %s ].",
-                    (char *)Array->Contents, Expected);
+                    (char *)Array->Contents.ContentBytes, Expected);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -254,10 +254,10 @@ int Test_Array_RemoveN(void) {
 int Test_Array_GetElement(void) {
 
     Array_t *Array = NULL;
-    const char Contents[] = "Hello World!";
+    char Contents[] = "Hello World!";
     char *Element = NULL;
     size_t Index = 5;
-    const char Expected = ' ';
+    char Expected = ' ';
 
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
@@ -293,10 +293,10 @@ int Test_Array_GetElement(void) {
 int Test_Array_SetElement(void) {
 
     Array_t *Array = NULL;
-    const char Contents[] = "Hello World!";
+    char Contents[] = "Hello World!";
     size_t Index = 5;
-    const char NewValue = '?';
-    const char Expected[] = "Hello?World!";
+    char NewValue = '?';
+    char Expected[] = "Hello?World!";
 
     Array = Array_Create(0, sizeof(char));
     if (NULL == Array) {
@@ -316,10 +316,10 @@ int Test_Array_SetElement(void) {
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(Array->Contents, Expected, Array_Length(Array))) {
+    if (0 != memcmp(Array->Contents.ContentBytes, Expected, Array_Length(Array))) {
         TEST_PRINTF("Test Failure - Final contents (%s) not equal to expected "
                     "value (%s).",
-                    Array->Contents, Expected);
+                    (char *)Array->Contents.ContentBytes, Expected);
         Array_Release(Array);
         TEST_FAILURE;
     }
@@ -336,7 +336,7 @@ int Test_Array_Ref_InsertN(void) {
     size_t Index = 0;
     size_t SubArrayCount = 16;
 
-    Outer = Array_RefCreate(0, sizeof(Array_t *), (ReleaseFunc_t *)Array_Release);
+    Outer = Array_RefCreate(0, (ReleaseFunc_t *)Array_Release);
     if (NULL == Outer) {
         TEST_PRINTF("%s", "Test Failure - Failed to create outer Array_t of Array_t's.");
         TEST_FAILURE;
@@ -358,7 +358,7 @@ int Test_Array_Ref_InsertN(void) {
             TEST_FAILURE;
         }
 
-        if (0 != Array_InsertN(Outer, &(Inner), ((Index >= 1) ? (1) : (0)), 1)) {
+        if (0 != Array_InsertN(Outer, &Inner, ((Index >= 1) ? (1) : (0)), 1)) {
             TEST_PRINTF("Test Failure - Failed to insert inner Array_t [ %d ] "
                         "into outer Array_t.",
                         (int)Index);
@@ -368,7 +368,7 @@ int Test_Array_Ref_InsertN(void) {
     }
 
     for (Index = 0; Index < SubArrayCount; Index++) {
-        Inner = Array_GetElement(Outer, Index);
+        Inner = (Array_t *)Array_GetElement(Outer, Index);
         if (NULL == Inner) {
             TEST_PRINTF("Test Failure - Failed to retrieve inner Array_t at "
                         "index [ %d ].",
@@ -383,10 +383,10 @@ int Test_Array_Ref_InsertN(void) {
             snprintf(Contents, sizeof(Contents), "%d", (int)(SubArrayCount - Index));
         }
 
-        if (0 != memcmp(Contents, (char *)Inner->Contents, strlen(Contents))) {
+        if (0 != memcmp(Contents, Inner->Contents.ContentBytes, strlen(Contents))) {
             TEST_PRINTF("Test Failure - Array_t at index [ %d ] contents (%s) "
                         "does not match expectation (%s).",
-                        (int)Index, Inner->Contents, Contents);
+                        (int)Index, (char *)Inner->Contents.ContentBytes, Contents);
             Array_Release(Outer);
             TEST_FAILURE;
         }
@@ -405,7 +405,7 @@ int Test_Array_Ref_RemoveN(void) {
     size_t RemoveIndex = 5;
     size_t SubArrayCount = 16;
 
-    Outer = Array_RefCreate(0, sizeof(Array_t *), (ReleaseFunc_t *)Array_Release);
+    Outer = Array_RefCreate(0, (ReleaseFunc_t *)Array_Release);
     if (NULL == Outer) {
         TEST_PRINTF("%s", "Test Failure - Failed to create outer Array_t of Array_t's.");
         TEST_FAILURE;
@@ -444,7 +444,7 @@ int Test_Array_Ref_RemoveN(void) {
     }
 
     for (Index = 0; Index < Array_Length(Outer); Index++) {
-        Inner = Array_GetElement(Outer, Index);
+        Inner = (Array_t *)Array_GetElement(Outer, Index);
         if (NULL == Inner) {
             TEST_PRINTF("Test Failure - Failed to retrieve inner Array_t at "
                         "index [ %d ].",
@@ -461,10 +461,10 @@ int Test_Array_Ref_RemoveN(void) {
             snprintf(Contents, sizeof(Contents), "%d", (int)(SubArrayCount - Index));
         }
 
-        if (0 != memcmp(Contents, (char *)Inner->Contents, strlen(Contents))) {
+        if (0 != memcmp(Contents, Inner->Contents.ContentBytes, strlen(Contents))) {
             TEST_PRINTF("Test Failure - Array_t at index [ %d ] contents (%s) "
                         "does not match expectation (%s).",
-                        (int)Index, Inner->Contents, Contents);
+                        (int)Index, (char *)Inner->Contents.ContentBytes, Contents);
             Array_Release(Outer);
             TEST_FAILURE;
         }

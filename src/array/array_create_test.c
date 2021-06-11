@@ -43,7 +43,7 @@ int Test_Array_RefCreate(void) {
 
     Array_t *Array = NULL;
 
-    Array = Array_RefCreate(0, sizeof(int), (ReleaseFunc_t *)Array_Release);
+    Array = Array_RefCreate(0, (ReleaseFunc_t *)Array_Release);
     if (NULL == Array) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t*.");
         TEST_FAILURE;

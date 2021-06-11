@@ -59,8 +59,8 @@ Hashmap_t *Hashmap_Create(HashFunc_t *HashFunc, size_t KeySize, ReleaseFunc_t *K
         return NULL;
     }
 
-    Map->Buckets = Array_RefCreate(LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY, sizeof(List_t *),
-                                   (ReleaseFunc_t *)List_Release);
+    Map->Buckets =
+        Array_RefCreate(LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY, (ReleaseFunc_t *)List_Release);
     if (NULL == Map->Buckets) {
         DEBUG_PRINTF("%s", "Error: Failed to create Array_t of Buckets.");
         Hashmap_Release(Map);

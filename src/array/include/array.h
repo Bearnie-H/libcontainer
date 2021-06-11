@@ -62,7 +62,10 @@ struct Array_t {
         raw bytes, with segmenting and indexing performed explicitly
         by this library.
     */
-    uint8_t* Contents;
+    union {
+        uint8_t* ContentBytes;
+        void** ContentRefs;
+    } Contents;
 
     /*
         The number of "live" elements within the array. This is also used
@@ -92,7 +95,7 @@ struct Array_t {
         array are held WITHIN the array, or if the array simply holds pointers
         to memory held by something else.
     */
-    bool IsReference;
+    // bool IsReference;
 };
 
 /*

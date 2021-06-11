@@ -28,8 +28,7 @@
 
 int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
 
-    size_t NewCap = 1;
-    size_t MinCap = 0;
+    size_t NewCap = 1, MinCap = 0, ElementSize = sizeof(void *);
     uint8_t *Temp = NULL;
 
     if (NULL == Array) {
@@ -37,14 +36,13 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
         return 1;
     }
 
-    if (NULL == Array->Contents) {
+    if (NULL == Array->Contents.ContentBytes) {
         DEBUG_PRINTF("%s", "Error, Array_t* in invalid state with NULL Contents pointer.");
         return 1;
     }
 
-    if (0 == Array->ElementSize) {
-        DEBUG_PRINTF("%s", "Error, Array_t* in invalid state with ElementSize of 0.");
-        return 1;
+    if (0 != Array->ElementSize) {
+        ElementSize = Array->ElementSize;
     }
 
     /* Compute the desired capacity, and then perform the efficient resize
@@ -66,13 +64,13 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
         }
     }
 
-    Temp = (uint8_t *)realloc(Array->Contents, NewCap * Array->ElementSize);
+    Temp = (uint8_t *)realloc(Array->Contents.ContentBytes, NewCap * ElementSize);
     if (NULL == Temp) {
         DEBUG_PRINTF("%s", "Failed to reallocate and grow Array_t Contents");
         return 1;
     }
 
-    Array->Contents = Temp;
+    Array->Contents.ContentBytes = Temp;
     Array->Capacity = NewCap;
 
     DEBUG_PRINTF("Successfully increased Array_t capacity to [ %ld ]", (unsigned long)NewCap);

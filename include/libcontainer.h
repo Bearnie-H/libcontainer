@@ -359,7 +359,8 @@ Array_t* Array_Create(size_t StartingCapacity, size_t ElementSize);
     when an element is removed, or if the array is released as a whole. Each element
     must be able to be fully released by a single call of the given ReleaseFunc.
 */
-Array_t* Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFunc_t* ReleaseFunc);
+// Array_t* Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFunc_t* ReleaseFunc);
+Array_t* Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t* ReleaseFunc);
 
 /*
     Array_Clear
@@ -426,7 +427,7 @@ size_t Array_Length(Array_t* Array);
     An implicit assumption of this function is that it is able to read ElementSize bytes
     from the Element pointer.
 */
-int Array_Prepend(Array_t* Array, const void* Element);
+int Array_Prepend(Array_t* Array, void* Element);
 
 /*
     Array_Append
@@ -444,7 +445,7 @@ int Array_Prepend(Array_t* Array, const void* Element);
     An implicit assumption of this function is that it is able to read ElementSize bytes
     from the Element pointer.
 */
-int Array_Append(Array_t* Array, const void* Element);
+int Array_Append(Array_t* Array, void* Element);
 
 /*
     Array_Insert
@@ -463,7 +464,7 @@ int Array_Append(Array_t* Array, const void* Element);
     An implicit assumption of this function is that it is able to read ElementSize bytes
     from the Element pointer.
 */
-int Array_Insert(Array_t* Array, const void* Element, size_t Index);
+int Array_Insert(Array_t* Array, void* Element, size_t Index);
 
 /*
     Array_InsertN
@@ -486,7 +487,7 @@ int Array_Insert(Array_t* Array, const void* Element, size_t Index);
     Additionally, this will place the elements into the array in the same order as in
     the Elements pointer.
 */
-int Array_InsertN(Array_t* Array, const void* Elements, size_t Index, size_t Count);
+int Array_InsertN(Array_t* Array, void* Elements, size_t Index, size_t Count);
 
 /*
     Array_Remove
@@ -546,7 +547,7 @@ void* Array_GetElement(Array_t* Array, size_t Index);
     Outputs:
     int     -   Returns 0 on success, non-zero on failure.
 */
-int Array_SetElement(Array_t* Array, const void* Element, size_t Index);
+int Array_SetElement(Array_t* Array, void* Element, size_t Index);
 
 /*
     Array_PopElement

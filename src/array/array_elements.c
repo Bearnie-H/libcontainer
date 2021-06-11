@@ -26,19 +26,19 @@
 #include "../logging/logging.h"
 #include "include/array.h"
 
-int Array_Prepend(Array_t *Array, const void *Element) {
-    return Array_InsertN(Array, Element, 0, 1);
-}
+int Array_Prepend(Array_t *Array, void *Element) { return Array_InsertN(Array, Element, 0, 1); }
 
-int Array_Append(Array_t *Array, const void *Element) {
+int Array_Append(Array_t *Array, void *Element) {
     return Array_InsertN(Array, Element, Array->Length, 1);
 }
 
-int Array_Insert(Array_t *Array, const void *Element, size_t Index) {
+int Array_Insert(Array_t *Array, void *Element, size_t Index) {
     return Array_InsertN(Array, Element, Index, 1);
 }
 
-int Array_InsertN(Array_t *Array, const void *Elements, size_t Index, size_t Count) {
+int Array_InsertN(Array_t *Array, void *Elements, size_t Index, size_t Count) {
+
+    size_t i = 0;
 
     if ((NULL == Array) || (NULL == Elements)) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t or Element provided.");
@@ -55,11 +55,22 @@ int Array_InsertN(Array_t *Array, const void *Elements, size_t Index, size_t Cou
         return 1;
     }
 
-    memmove(&(Array->Contents[(Index + Count) * Array->ElementSize]),
-            &(Array->Contents[Index * Array->ElementSize]),
-            (Array->Length - Index) * Array->ElementSize);
+    if (0 == Array->ElementSize) {
+        memmove(&(Array->Contents.ContentRefs[Index + Count]),
+                &(Array->Contents.ContentRefs[Index]), (Array->Length - Index) * sizeof(void *));
 
-    memcpy(&(Array->Contents[Index * Array->ElementSize]), Elements, Count * Array->ElementSize);
+        for (i = 0; i < Count; i++) {
+            Array->Contents.ContentRefs[Index + i] = ((void **)Elements)[i];
+        }
+
+    } else {
+        memmove(&(Array->Contents.ContentBytes[(Index + Count) * Array->ElementSize]),
+                &(Array->Contents.ContentBytes[Index * Array->ElementSize]),
+                (Array->Length - Index) * Array->ElementSize);
+
+        memcpy(&(Array->Contents.ContentBytes[Index * Array->ElementSize]), Elements,
+               Count * Array->ElementSize);
+    }
 
     Array->Length += Count;
 
@@ -95,15 +106,20 @@ int Array_RemoveN(Array_t *Array, size_t Index, size_t Count) {
        deleted, call their release function before the memmove() to prevent
        leaks.
     */
-    if (Array->IsReference) {
+    if (0 == Array->ElementSize) {
         for (ReleaseIndex = 0; ReleaseIndex < Count; ReleaseIndex++) {
-            Array->ReleaseFunc((*(void ***)&(Array->Contents))[Index]);
+            Array->ReleaseFunc(Array->Contents.ContentRefs[Index]);
         }
-    }
 
-    memmove(&(Array->Contents[Index * Array->ElementSize]),
-            &(Array->Contents[(Index + Count) * Array->ElementSize]),
-            (Array->Length - Index - Count) * Array->ElementSize);
+        memmove(&(Array->Contents.ContentRefs[Index]),
+                &(Array->Contents.ContentRefs[Index + Count]),
+                (Array->Length - Index - Count) * sizeof(void *));
+
+    } else {
+        memmove(&(Array->Contents.ContentBytes[Index * Array->ElementSize]),
+                &(Array->Contents.ContentBytes[(Index + Count) * Array->ElementSize]),
+                (Array->Length - Index - Count) * Array->ElementSize);
+    }
 
     Array->Length -= Count;
 
@@ -126,37 +142,31 @@ void *Array_GetElement(Array_t *Array, size_t Index) {
         return NULL;
     }
 
-    if (Array->IsReference) {
-        Element = (*(void ***)&(Array->Contents))[Index];
+    if (0 == Array->ElementSize) {
+        Element = Array->Contents.ContentRefs[Index];
     } else {
-        Element = (void *)(&(Array->Contents[Array->ElementSize * Index]));
+        Element = (void *)&(Array->Contents.ContentBytes[Index * Array->ElementSize]);
     }
 
     DEBUG_PRINTF("Successfully retrieved element at index [ %d ].", (int)Index);
     return Element;
 }
 
-int Array_SetElement(Array_t *Array, const void *Element, size_t Index) {
+int Array_SetElement(Array_t *Array, void *Element, size_t Index) {
 
     void *ExistingElement = NULL;
 
-    if (NULL == Array) {
-        DEBUG_PRINTF("%s", "Error, NULL Array_t provided.");
+    ExistingElement = Array_GetElement(Array, Index);
+    if (NULL == ExistingElement) {
+        DEBUG_PRINTF("Error: Failed to get element at index [ %d ] to update value.", (int)Index);
         return 1;
     }
 
-    if (NULL == Element) {
-        DEBUG_PRINTF("%s", "Error, NULL Element pointer provided.");
-        return 1;
+    if (0 == Array->ElementSize) {
+        Array->Contents.ContentRefs[Index] = Element;
+    } else {
+        memcpy(ExistingElement, Element, Array->ElementSize);
     }
-
-    if ((0 == Array->Length) || (Array->Length < Index)) {
-        DEBUG_PRINTF("Error, requested index [ %d ] is out of bounds.", (int)Index);
-        return 1;
-    }
-
-    ExistingElement = (void *)(&(Array->Contents[Array->ElementSize * Index]));
-    memcpy(ExistingElement, Element, Array->ElementSize);
 
     DEBUG_PRINTF("Successfully set element at index [ %d ].", (int)Index);
     return 0;
@@ -175,9 +185,15 @@ void *Array_PopElement(Array_t *Array, size_t Index) {
     }
 
     /* Resize the array, removing the element. */
-    memmove(&(Array->Contents[Index * Array->ElementSize]),
-            &(Array->Contents[(Index + 1) * Array->ElementSize]),
-            (Array->Length - Index - 1) * Array->ElementSize);
+    if (0 == Array->ElementSize) {
+        memmove(Array->Contents.ContentRefs[Index], Array->Contents.ContentRefs[Index + 1],
+                (Array->Length - Index - 1) * sizeof(void *));
+
+    } else {
+        memmove(&(Array->Contents.ContentBytes[Index * Array->ElementSize]),
+                &(Array->Contents.ContentBytes[(Index + 1) * Array->ElementSize]),
+                (Array->Length - Index - 1) * Array->ElementSize);
+    }
 
     Array->Length -= 1;
 

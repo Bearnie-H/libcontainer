@@ -45,8 +45,8 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
         return NULL;
     }
 
-    Array->Contents = (uint8_t *)calloc(StartingCapacity, ElementSize);
-    if (NULL == Array->Contents) {
+    Array->Contents.ContentBytes = (uint8_t *)calloc(StartingCapacity, ElementSize);
+    if (NULL == Array->Contents.ContentBytes) {
         DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t->Contents.");
         free(Array);
         return NULL;
@@ -55,25 +55,19 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
     Array->Capacity = StartingCapacity;
     Array->ElementSize = ElementSize;
     Array->Length = 0;
-    Array->IsReference = false;
     Array->ReleaseFunc = NULL;
 
     DEBUG_PRINTF("%s", "Successfully created Array_t*.");
     return Array;
 }
 
-Array_t *Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFunc_t *ReleaseFunc) {
+Array_t *Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t *ReleaseFunc) {
 
     Array_t *Array = NULL;
 
     if (NULL == ReleaseFunc) {
         DEBUG_PRINTF("%s", "NULL ReleaseFunc provided, defaulting to free().");
         ReleaseFunc = free;
-    }
-
-    if (0 == ElementSize) {
-        DEBUG_PRINTF("Error, invalid ElementSize [ %ld ].", (unsigned long)ElementSize);
-        return NULL;
     }
 
     if (0 == StartingCapacity) {
@@ -86,17 +80,16 @@ Array_t *Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFun
         return NULL;
     }
 
-    Array->Contents = (uint8_t *)calloc(StartingCapacity, ElementSize);
-    if (NULL == Array->Contents) {
+    Array->Contents.ContentRefs = (void **)calloc(StartingCapacity, sizeof(void *));
+    if (NULL == Array->Contents.ContentRefs) {
         DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t->Contents.");
         free(Array);
         return NULL;
     }
 
     Array->Capacity = StartingCapacity;
-    Array->ElementSize = ElementSize;
+    Array->ElementSize = 0;
     Array->Length = 0;
-    Array->IsReference = true;
     Array->ReleaseFunc = ReleaseFunc;
 
     DEBUG_PRINTF("%s", "Successfully created Array_t*.");
@@ -128,23 +121,23 @@ void Array_Release(Array_t *Array) {
         return;
     }
 
-    if (NULL != Array->Contents) {
+    if (NULL != Array->Contents.ContentBytes) {
 
         /*
             If the array holds references which maintain their own memory,
             iterate over the array and release them all with the provided
             ReleaseFunc.
         */
-        if (Array->IsReference) {
+        if (0 == Array->ElementSize) {
             DEBUG_PRINTF("%s", "Array_t is array of references, releasing each "
                                "element with the provided ReleaseFunc.");
             for (Index = 0; Index < Array->Length; Index++) {
-                Array->ReleaseFunc((*(void ***)&Array->Contents)[Index]);
+                Array->ReleaseFunc(Array->Contents.ContentRefs[Index]);
             }
         }
 
         /* Finally, release the memory known to be held by the array. */
-        free(Array->Contents);
+        free(Array->Contents.ContentRefs);
 
     } else {
         DEBUG_PRINTF("%s", "Array_t has NULL contents pointer, no contents to release.");
