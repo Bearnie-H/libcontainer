@@ -44,7 +44,7 @@ int List_DoCallback(List_t *List, CallbackFunc_t *Callback) {
     }
 
     for (Node = List->Head; NULL != Node; Node = Node->Next) {
-        NodeValue = (void *)Node->Contents;
+        NodeValue = Node->Contents.ContentRaw;
         if (NULL == NodeValue) {
             DEBUG_PRINTF("%s", "Error: NULL Node Contents found in List.");
             RetValue = 1;
@@ -76,7 +76,7 @@ int List_DoCallbackArg(List_t *List, CallbackArgFunc_t *Callback, void *Args) {
     }
 
     for (Node = List->Head; NULL != Node; Node = Node->Next) {
-        NodeValue = (void *)Node->Contents;
+        NodeValue = Node->Contents.ContentRaw;
         if (NULL == NodeValue) {
             DEBUG_PRINTF("%s", "Error: NULL Node Contents found in List.");
             RetValue = 1;

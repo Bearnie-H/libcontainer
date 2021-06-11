@@ -107,7 +107,7 @@ struct Binary_Tree_Node_t {
     Outputs:
     Binary_Tree_Node_t*     -   Pointer to the created and initialized Node, or NULL on failure.
 */
-Binary_Tree_Node_t* Binary_Tree_Node_Create(int Key, size_t ValueSize, const void* Value, ReleaseFunc_t* ReleaseFunc);
+Binary_Tree_Node_t* Binary_Tree_Node_Create(int Key, size_t ValueSize, void* Value, ReleaseFunc_t* ReleaseFunc);
 
 /*
     Binary_Tree_Node_Height
@@ -136,7 +136,7 @@ size_t Binary_Tree_Node_Height(Binary_Tree_Node_t* Root);
     Outputs:
     int     -   Returns 0 on success, non-zero on failure.
 */
-int Binary_Tree_Node_Update(Binary_Tree_Node_t* Node, const void* NewValue, size_t ValueSize);
+int Binary_Tree_Node_Update(Binary_Tree_Node_t* Node, void* NewValue, size_t ValueSize);
 
 /*
     Binary_Tree_Node_Release

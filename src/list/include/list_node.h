@@ -66,7 +66,10 @@ struct List_Node_t {
     List_Node_t* Previous;
 
     /* Contents holds the actual data of this node. */
-    uint8_t* Contents;
+    union {
+        uint8_t* ContentBytes;
+        void* ContentRaw;
+    } Contents;
 
     /* Size counts how many bytes are allocated to Contents. */
     size_t Size;
@@ -110,7 +113,7 @@ List_Node_t* ListNode_Create(const void* Contents, size_t Size);
     Note:
     Passing NULL as the ReleaseFunc will default to using free() from the stdlib.h
 */
-List_Node_t* ListNode_RefCreate(const void* Contents, ReleaseFunc_t* ReleaseFunc);
+List_Node_t* ListNode_RefCreate(void* Contents, ReleaseFunc_t* ReleaseFunc);
 
 /*
     ListNode_Release
@@ -204,7 +207,7 @@ void ListNode_Delete(List_Node_t* Node);
     contents as needed. Non-zero ElementSize indicates a non-reference value, and an allocation
     will take place, setting the ReleaseFunc to free() from stdlib.h
 */
-int ListNode_UpdateValue(List_Node_t* Node, const void* Element, size_t ElementSize, ReleaseFunc_t* ReleaseFunc);
+int ListNode_UpdateValue(List_Node_t* Node, void* Element, size_t ElementSize, ReleaseFunc_t* ReleaseFunc);
 
 
 #if defined(TESTING) || defined(DEBUGGER)

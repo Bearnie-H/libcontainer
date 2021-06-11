@@ -68,7 +68,7 @@ size_t Binary_Tree_Length(Binary_Tree_t *Tree) {
     return Tree->TreeSize;
 }
 
-int Binary_Tree_Insert(Binary_Tree_t *Tree, int Key, const void *Value) {
+int Binary_Tree_Insert(Binary_Tree_t *Tree, int Key, void *Value) {
 
     Binary_Tree_Node_t *NewRoot = NULL, *NewNode = NULL;
     bool IncrementSize = false;

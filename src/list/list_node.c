@@ -50,21 +50,21 @@ List_Node_t *ListNode_Create(const void *Contents, size_t Size) {
     Node->Previous = NULL;
     Node->ReleaseFunc = free;
 
-    Node->Contents = (uint8_t *)malloc(sizeof(uint8_t) * Size);
-    if (NULL == Node->Contents) {
+    Node->Contents.ContentBytes = (uint8_t *)malloc(sizeof(uint8_t) * Size);
+    if (NULL == Node->Contents.ContentBytes) {
         DEBUG_PRINTF("%s", "Error, Failed to allocate memory for new List_Node_t->Contents.");
         free(Node);
         return NULL;
     }
 
-    memcpy(Node->Contents, Contents, Size);
+    memcpy(Node->Contents.ContentBytes, Contents, Size);
     Node->Size = Size;
 
     DEBUG_PRINTF("%s", "Successfully created new List_Node_t.");
     return Node;
 }
 
-List_Node_t *ListNode_RefCreate(const void *Contents, ReleaseFunc_t *ReleaseFunc) {
+List_Node_t *ListNode_RefCreate(void *Contents, ReleaseFunc_t *ReleaseFunc) {
 
     List_Node_t *Node = NULL;
 
@@ -86,7 +86,7 @@ List_Node_t *ListNode_RefCreate(const void *Contents, ReleaseFunc_t *ReleaseFunc
 
     Node->Next = NULL;
     Node->Previous = NULL;
-    Node->Contents = (uint8_t *)Contents;
+    Node->Contents.ContentRaw = Contents;
     Node->Size = 0; /* Size can be 0 for ref-types, as this Node owns 0 bytes of
                        memory. */
     Node->ReleaseFunc = ReleaseFunc;
@@ -102,8 +102,8 @@ void ListNode_Release(List_Node_t *Node) {
         return;
     }
 
-    if (NULL != Node->Contents) {
-        Node->ReleaseFunc(Node->Contents);
+    if (NULL != Node->Contents.ContentRaw) {
+        Node->ReleaseFunc(Node->Contents.ContentRaw);
     }
 
     ListNode_Delete(Node);
@@ -181,11 +181,10 @@ void ListNode_Delete(List_Node_t *Node) {
     return;
 }
 
-int ListNode_UpdateValue(List_Node_t *Node, const void *Element, size_t ElementSize,
+int ListNode_UpdateValue(List_Node_t *Node, void *Element, size_t ElementSize,
                          ReleaseFunc_t *ReleaseFunc) {
 
     void *NewContents = NULL;
-    bool NewNodeIsReference = false;
 
     if ((NULL == Node) || (NULL == Element)) {
         DEBUG_PRINTF("%s", "Error, NULL Node* or Element* provided.");
@@ -193,7 +192,6 @@ int ListNode_UpdateValue(List_Node_t *Node, const void *Element, size_t ElementS
     }
 
     if (0 == ElementSize) {
-        NewNodeIsReference = true;
         NewContents = (void *)Element;
         if (NULL == ReleaseFunc) {
             DEBUG_PRINTF("%s", "Error, NULL ReleaseFunc provided for "
@@ -201,7 +199,6 @@ int ListNode_UpdateValue(List_Node_t *Node, const void *Element, size_t ElementS
             return 1;
         }
     } else {
-        NewNodeIsReference = false;
         ReleaseFunc = (ReleaseFunc_t *)free;
         NewContents = (uint8_t *)malloc(sizeof(uint8_t) * ElementSize);
         if (NULL == NewContents) {
@@ -212,10 +209,10 @@ int ListNode_UpdateValue(List_Node_t *Node, const void *Element, size_t ElementS
     }
 
     /* Release the existing contents of the node. */
-    Node->ReleaseFunc(Node->Contents);
+    Node->ReleaseFunc(Node->Contents.ContentRaw);
 
     /* Actually update the Node to the desired new contents. */
-    Node->Contents = NewContents;
+    Node->Contents.ContentRaw = NewContents;
     Node->ReleaseFunc = ReleaseFunc;
     Node->Size = ElementSize;
 

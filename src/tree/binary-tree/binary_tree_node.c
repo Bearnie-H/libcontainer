@@ -28,7 +28,7 @@
 #include "../../logging/logging.h"
 #include "include/binary_tree_node.h"
 
-Binary_Tree_Node_t *Binary_Tree_Node_Create(int Key, size_t ValueSize, const void *Value,
+Binary_Tree_Node_t *Binary_Tree_Node_Create(int Key, size_t ValueSize, void *Value,
                                             ReleaseFunc_t *ReleaseFunc) {
 
     Binary_Tree_Node_t *Node = NULL;
@@ -89,7 +89,7 @@ size_t Binary_Tree_Node_Height(Binary_Tree_Node_t *Root) {
     }
 }
 
-int Binary_Tree_Node_Update(Binary_Tree_Node_t *Node, const void *NewValue, size_t ValueSize) {
+int Binary_Tree_Node_Update(Binary_Tree_Node_t *Node, void *NewValue, size_t ValueSize) {
 
     uint8_t *TempValue = NULL;
 

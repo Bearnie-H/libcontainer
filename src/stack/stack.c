@@ -79,7 +79,7 @@ bool Stack_IsEmpty(Stack_t *Stack) {
     return (0 == List_Length(Stack->Items));
 }
 
-int Stack_Push(Stack_t *Stack, const void *Value) {
+int Stack_Push(Stack_t *Stack, void *Value) {
 
     if (NULL == Stack) {
         DEBUG_PRINTF("%s", "NULL Stack* provided.");

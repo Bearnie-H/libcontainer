@@ -711,7 +711,7 @@ int List_Insert(List_t* List, const void* Element, size_t ElementSize, size_t In
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_RefInsert(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc, size_t Index);
+int List_RefInsert(List_t* List, void* Element, ReleaseFunc_t* ReleaseFunc, size_t Index);
 
 /*
     List_Prepend
@@ -742,7 +742,7 @@ int List_Prepend(List_t* List, const void* Element, size_t ElementSize);
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_RefPrepend(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc);
+int List_RefPrepend(List_t* List, void* Element, ReleaseFunc_t* ReleaseFunc);
 
 /*
     List_Append
@@ -773,7 +773,7 @@ int List_Append(List_t* List, const void* Element, size_t ElementSize);
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_RefAppend(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc);
+int List_RefAppend(List_t* List, void* Element, ReleaseFunc_t* ReleaseFunc);
 
 /*
     List_Remove
@@ -827,7 +827,7 @@ void* List_GetElement(List_t* List, size_t Index);
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_SetElement(List_t* List, const void* Element, size_t ElementSize, size_t Index);
+int List_SetElement(List_t* List, void* Element, size_t ElementSize, size_t Index);
 
 /*
     List_RefSetElement
@@ -845,7 +845,7 @@ int List_SetElement(List_t* List, const void* Element, size_t ElementSize, size_
     Outputs:
     int -   Returns 0 on success, nonzero on failure.
 */
-int List_RefSetElement(List_t* List, const void* Element, ReleaseFunc_t* ReleaseFunc, size_t Index);
+int List_RefSetElement(List_t* List, void* Element, ReleaseFunc_t* ReleaseFunc, size_t Index);
 
 /*
     List_PopElement
@@ -1101,7 +1101,7 @@ bool Hashmap_KeyExists(Hashmap_t* Map, const void* Key, size_t KeySize);
     the Key, typically in the form of a sizeof() operator. For string keys, strlen() is more
     commonly used.
 */
-int Hashmap_Insert(Hashmap_t* Map, const void* Key, const void* Value, size_t KeySize, size_t ValueSize, ReleaseFunc_t* ValueReleaseFunc);
+int Hashmap_Insert(Hashmap_t* Map, void* Key, void* Value, size_t KeySize, size_t ValueSize, ReleaseFunc_t* ValueReleaseFunc);
 
 /*
     Hashmap_Retrieve
@@ -1308,7 +1308,7 @@ size_t Binary_Tree_Length(Binary_Tree_t* Tree);
     The policy for handling duplicate Keys may change in the future to allow user-specification
     for how to handle duplicates.
 */
-int Binary_Tree_Insert(Binary_Tree_t* Tree, int Key, const void* Value);
+int Binary_Tree_Insert(Binary_Tree_t* Tree, int Key, void* Value);
 
 /*
     Binary_Tree_KeyExists
@@ -1519,7 +1519,7 @@ bool Stack_IsEmpty(Stack_t* Stack);
     Outputs:
     int     -   Returns 0 on success, non-zero on failure.
 */
-int Stack_Push(Stack_t* Stack, const void* Value);
+int Stack_Push(Stack_t* Stack, void* Value);
 
 /*
     Stack_Peek

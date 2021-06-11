@@ -86,8 +86,8 @@ Hashmap_t *Hashmap_Create(HashFunc_t *HashFunc, size_t KeySize, ReleaseFunc_t *K
     return Map;
 }
 
-int Hashmap_Insert(Hashmap_t *Map, const void *Key, const void *Value, size_t KeySize,
-                   size_t ValueSize, ReleaseFunc_t *ValueReleaseFunc) {
+int Hashmap_Insert(Hashmap_t *Map, void *Key, void *Value, size_t KeySize, size_t ValueSize,
+                   ReleaseFunc_t *ValueReleaseFunc) {
 
     Hashmap_Entry_t *Entry = NULL;
     unsigned int HashValue = 0;

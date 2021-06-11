@@ -102,7 +102,7 @@ int List_Append(List_t *List, const void *Element, size_t ElementSize) {
     return List_Insert(List, Element, ElementSize, List->Length);
 }
 
-int List_RefInsert(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc, size_t Index) {
+int List_RefInsert(List_t *List, void *Element, ReleaseFunc_t *ReleaseFunc, size_t Index) {
 
     List_Node_t *NewNode = NULL;
     List_Node_t *BaseNode = NULL;
@@ -155,11 +155,11 @@ int List_RefInsert(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc
     return 0;
 }
 
-int List_RefPrepend(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc) {
+int List_RefPrepend(List_t *List, void *Element, ReleaseFunc_t *ReleaseFunc) {
     return List_RefInsert(List, Element, ReleaseFunc, 0);
 }
 
-int List_RefAppend(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc) {
+int List_RefAppend(List_t *List, void *Element, ReleaseFunc_t *ReleaseFunc) {
     return List_RefInsert(List, Element, ReleaseFunc, List->Length);
 }
 
@@ -184,10 +184,10 @@ void *List_GetElement(List_t *List, size_t Index) {
     Node = List_findNode(List, Index);
 
     DEBUG_PRINTF("Successfully retrieved pointer to List_t item at index [ %d ].", (int)Index);
-    return (void *)Node->Contents;
+    return Node->Contents.ContentRaw;
 }
 
-int List_SetElement(List_t *List, const void *Element, size_t ElementSize, size_t Index) {
+int List_SetElement(List_t *List, void *Element, size_t ElementSize, size_t Index) {
 
     List_Node_t *Node = NULL;
 
@@ -219,8 +219,7 @@ int List_SetElement(List_t *List, const void *Element, size_t ElementSize, size_
     return 0;
 }
 
-int List_RefSetElement(List_t *List, const void *Element, ReleaseFunc_t *ReleaseFunc,
-                       size_t Index) {
+int List_RefSetElement(List_t *List, void *Element, ReleaseFunc_t *ReleaseFunc, size_t Index) {
 
     List_Node_t *Node = NULL;
 
@@ -266,7 +265,7 @@ void *List_PopElement(List_t *List, size_t Index) {
     }
 
     Node = List_findNode(List, Index);
-    NodeContents = Node->Contents;
+    NodeContents = Node->Contents.ContentRaw;
 
     if (Node == List->Head) {
         List->Head = List->Head->Next;

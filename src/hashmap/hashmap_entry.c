@@ -29,9 +29,8 @@
 #include "../logging/logging.h"
 #include "include/hashmap_entry.h"
 
-Hashmap_Entry_t *Hashmap_Entry_Create(const void *Key, const void *Value, size_t KeySize,
-                                      size_t ValueSize, unsigned int HashValue,
-                                      ReleaseFunc_t *KeyReleaseFunc,
+Hashmap_Entry_t *Hashmap_Entry_Create(void *Key, void *Value, size_t KeySize, size_t ValueSize,
+                                      unsigned int HashValue, ReleaseFunc_t *KeyReleaseFunc,
                                       ReleaseFunc_t *ValueReleaseFunc) {
 
     Hashmap_Entry_t *Entry = NULL;
@@ -111,7 +110,7 @@ Hashmap_Entry_t *Hashmap_Entry_Create(const void *Key, const void *Value, size_t
     return Entry;
 }
 
-int Hashmap_Entry_Update(Hashmap_Entry_t *Entry, const void *NewValue, size_t NewValueSize,
+int Hashmap_Entry_Update(Hashmap_Entry_t *Entry, void *NewValue, size_t NewValueSize,
                          ReleaseFunc_t *NewValueReleaseFunc) {
 
     bool NewValueIsReference = false;

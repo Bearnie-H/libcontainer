@@ -543,7 +543,7 @@ int Test_Stack_DoCallbackArg(void) {
 
     Stack_t *Stack = NULL;
     int Count = 16, i = 0;
-    const char CallbackArg[] = "Callback Arguments";
+    char CallbackArg[] = "Callback Arguments";
 
     Stack = Stack_Create(sizeof(Count), NULL);
     if (NULL == Stack) {
@@ -615,7 +615,7 @@ int Test_Stack_RefDoCallbackArg(void) {
 
     Stack_t *Stack = NULL;
     char *TempValue = NULL;
-    const char CallbackArg[] = "Callback Argument";
+    char CallbackArg[] = "Callback Argument";
     int Count = 16, i = 0;
     size_t BufferLength = 32;
 

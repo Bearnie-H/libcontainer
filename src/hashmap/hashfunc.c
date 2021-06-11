@@ -43,7 +43,7 @@ unsigned int HashFunc_Int(const void *Key, size_t KeySize) {
         DEBUG_PRINTF("%s", "Note: KeySize of 0 provided.");
     }
 
-    HashValue = *(unsigned int *)(Key);
+    HashValue = *(const unsigned int *)(Key);
     HashValue ^= HashValue >> 13;
     HashValue *= 0x5bd1e995;
     HashValue ^= HashValue >> 15;
@@ -65,7 +65,7 @@ unsigned int HashFunc_Long(const void *Key, size_t KeySize) {
         DEBUG_PRINTF("%s", "Note: KeySize of 0 provided.");
     }
 
-    KeyValue = *(long *)Key;
+    KeyValue = *(const long *)Key;
     HashValue = (unsigned int)((KeyValue * (long)0xCAFECAFE) % (long)0xDEADBEEF);
 
     return HashValue;
@@ -85,7 +85,7 @@ unsigned int HashFunc_Double(const void *Key, size_t KeySize) {
         DEBUG_PRINTF("%s", "Note: KeySize of 0 provided.");
     }
 
-    KeyValue = *(double *)Key;
+    KeyValue = *(const double *)Key;
     HashValue = (unsigned int)KeyValue;
     HashValue *= 0xCAFEBEEF;
 
@@ -94,7 +94,7 @@ unsigned int HashFunc_Double(const void *Key, size_t KeySize) {
 
 unsigned int HashFunc_String(const void *Key, size_t KeySize) {
 
-    char *KeyValue = NULL;
+    const char *KeyValue = NULL;
     unsigned int HashValue = 1;
     size_t Index = 0;
 
@@ -103,7 +103,7 @@ unsigned int HashFunc_String(const void *Key, size_t KeySize) {
         return 0;
     }
 
-    KeyValue = (char *)Key;
+    KeyValue = (const char *)Key;
 
     if (0 == KeySize) {
         DEBUG_PRINTF(

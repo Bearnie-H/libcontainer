@@ -42,7 +42,7 @@ int Test_Binary_Tree_rotateLeft() {
 
     size_t i = 0, j = 0;
     Binary_Tree_Node_t *Nodes[3] = {NULL, NULL, NULL};
-    const int Keys[3] = {1, 2, 3}, Values[3] = {10, 20, 30};
+    int Keys[3] = {1, 2, 3}, Values[3] = {10, 20, 30};
 
     for (i = 0; i < 3; i++) {
         Nodes[i] = Binary_Tree_Node_Create(Keys[i], sizeof(Values[i]), &(Values[i]), NULL);
@@ -88,7 +88,7 @@ int Test_Binary_Tree_rotateRight() {
 
     size_t i = 0, j = 0;
     Binary_Tree_Node_t *Nodes[3] = {NULL, NULL, NULL};
-    const int Keys[3] = {3, 2, 1}, Values[3] = {10, 20, 30};
+    int Keys[3] = {3, 2, 1}, Values[3] = {10, 20, 30};
 
     for (i = 0; i < 3; i++) {
         Nodes[i] = Binary_Tree_Node_Create(Keys[i], sizeof(Values[i]), &(Values[i]), NULL);

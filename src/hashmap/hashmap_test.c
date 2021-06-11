@@ -47,6 +47,7 @@ static void PrintHashmapBucketUtilization(Hashmap_t *Map) {
 
     return;
 }
+
 */
 
 int Test_hashmap(void) {
@@ -147,7 +148,7 @@ int Test_Hashmap_Insert_DoubleKey(void) {
 int Test_Hashmap_Overwrite_DoubleKey(void) {
 
     Hashmap_t *Map = NULL;
-    const char KeyValue[] = "Overwrite Key";
+    double KeyValue = 3.1415;
     int InitialValue = 0xBEEF, NewValue = 0xCAFE;
     int *CheckValue = NULL;
 
@@ -452,7 +453,7 @@ int Test_Hashmap_Insert_StringKey(void) {
 int Test_Hashmap_Overwrite_StringKey(void) {
 
     Hashmap_t *Map = NULL;
-    const char KeyValue[] = "Overwrite Key";
+    char KeyValue[] = "Overwrite Key";
     int InitialValue = 0xBEEF, NewValue = 0xCAFE;
     int *CheckValue = NULL;
 
@@ -542,7 +543,7 @@ int Test_Hashmap_Retrieve_StringKey(void) {
 int Test_Hashmap_KeyExists_StringKey(void) {
 
     Hashmap_t *Map = NULL;
-    const char ValidKey[] = "ValidKey", InvalidKey[] = "InvalidKey";
+    char ValidKey[] = "ValidKey", InvalidKey[] = "InvalidKey";
     int Value = 0xCAFE;
 
     Map = Hashmap_Create(NULL, 0, NULL);
@@ -576,7 +577,7 @@ int Test_Hashmap_KeyExists_StringKey(void) {
 int Test_Hashmap_Remove_StringKey(void) {
 
     Hashmap_t *Map = NULL;
-    const char KeyValue[] = "Test Key";
+    char KeyValue[] = "Test Key";
     int Value = 0xCAFE;
 
     Map = Hashmap_Create(NULL, 0, NULL);
@@ -585,7 +586,7 @@ int Test_Hashmap_Remove_StringKey(void) {
         TEST_FAILURE;
     }
 
-    if (0 != Hashmap_Insert(Map, KeyValue, &Value, 0, sizeof(Value), NULL)) {
+    if (0 != Hashmap_Insert(Map, KeyValue, &Value, strlen(KeyValue), sizeof(Value), NULL)) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Insert operation.");
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -610,7 +611,7 @@ int Test_Hashmap_Remove_StringKey(void) {
 int Test_Hashmap_Pop_StringKey(void) {
 
     Hashmap_t *Map = NULL;
-    const char KeyValue[] = "Pop Test";
+    char KeyValue[] = "Pop Test";
     int Value = 0xCAFE;
     int *PoppedValue = NULL;
 
@@ -620,7 +621,7 @@ int Test_Hashmap_Pop_StringKey(void) {
         TEST_FAILURE;
     }
 
-    if (0 != Hashmap_Insert(Map, &KeyValue, &Value, 0, sizeof(Value), NULL)) {
+    if (0 != Hashmap_Insert(Map, &KeyValue, &Value, strlen(KeyValue), sizeof(Value), NULL)) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Insert.");
         Hashmap_Release(Map);
         TEST_FAILURE;
