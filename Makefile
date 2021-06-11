@@ -33,16 +33,17 @@ VERSION       := v$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
 
 #   Standard Compiler Settings
 CC              := gcc
-WARNINGS        := -Wall -Werror -Wpedantic -Wextra -Wsign-conversion
-WARNINGS_IGNORE :=
-CFLAGS          := -std=c99 $(WARNINGS) $(WARNINGS_IGNORE)
+WARNINGS        := -Wall -Wpedantic -Wextra -Wsign-conversion -Wunreachable-code -Wcast-align -Wcast-qual
+WARNINGS_AS_ERRORS ?= -Werror
+WARNINGS_IGNORE := -Wno-padded
+CFLAGS          := -std=c99 $(WARNINGS) $(WARNINGS_IGNORE) $(WARNINGS_AS_ERRORS)
 LIBTOOL         := ar -rcs
 FMTTOOL         ?=$(shell which clang-format)
 
 include Build_Tuning.mk
 
 #   Define the flags for the various different end-result build targets
-RELFLAGS  := $(CFLAGS) -O2
+RELFLAGS  := $(CFLAGS) -O2 -DNDEBUG
 DBGFLAGS  := $(CFLAGS) -g -O0 -DDEBUG
 DBGRFLAGS := $(CFLAGS) -g -O0 -DDEBUG -DDEBUGGER
 TESTFLAGS := $(CFLAGS) -g -O0 -DDEBUG -DDEBUGGER -DTESTING

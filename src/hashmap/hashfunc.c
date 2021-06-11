@@ -73,7 +73,7 @@ unsigned int HashFunc_Long(const void *Key, size_t KeySize) {
 
 unsigned int HashFunc_Double(const void *Key, size_t KeySize) {
 
-    double KeyValue = 0.0f;
+    double KeyValue = 0.0;
     unsigned int HashValue = 0;
 
     if (NULL == Key) {

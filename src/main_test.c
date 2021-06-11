@@ -34,6 +34,8 @@
 #include "stack/include/stack.h"
 #include "tree/binary-tree/include/binary_tree.h"
 
+int Test_main(int argc, char **argv);
+
 int Test_main(int argc, char **argv) {
 
     int i;

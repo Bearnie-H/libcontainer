@@ -55,6 +55,8 @@ extern "C" {
 /* ++++++++++ Exported Library Types ++++++++++ */
 
 #ifdef LIBCONTAINER_ENABLE_ARRAY
+/* ++++++++++ Public Array_t Typedefs ++++++++++ */
+
 /*
     Array_t
 
@@ -74,9 +76,11 @@ extern "C" {
 */
 typedef struct Array_t Array_t;
 
+/* ---------- Public Array_t Typedefs ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_LIST
+/* ++++++++++ Public List_t Typedefs ++++++++++ */
 
 /*
     List_t
@@ -96,9 +100,11 @@ typedef struct Array_t Array_t;
 */
 typedef struct List_t List_t;
 
+/* ---------- Public List_t Typedefs ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_HASHMAP
+/* ++++++++++ Public Hashmap_t Typedefs ++++++++++ */
 
 /*
     Hashmap_t
@@ -151,10 +157,11 @@ typedef struct Hashmap_t Hashmap_t;
 */
 typedef unsigned int (HashFunc_t)(const void*, size_t);
 
+/* ---------- Public Hashmap_t Typedefs ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_BINARY_TREE
-/* +++++++++ Public Binary Tree Typedefs +++++++++ */
+/* +++++++++ Public Binary_Tree_t Typedefs +++++++++ */
 
 /*
     Binary_Tree_t
@@ -185,11 +192,11 @@ typedef unsigned int (HashFunc_t)(const void*, size_t);
 */
 typedef struct Binary_Tree_t Binary_Tree_t;
 
-/* --------- Public Binary Tree Typedefs --------- */
+/* --------- Public Binary_Tree_t Typedefs --------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_STACK
-/* ++++++++++ Public Stack Typedefs ++++++++++ */
+/* ++++++++++ Public Stack_t Typedefs ++++++++++ */
 
 /*
     Stack_t
@@ -213,8 +220,10 @@ typedef struct Binary_Tree_t Binary_Tree_t;
 */
 typedef struct Stack_t Stack_t;
 
-/* ---------- Public Stack Typedefs ---------- */
+/* ---------- Public Stack_t Typedefs ---------- */
 #endif
+
+/* ++++++++++ General Public Library Typedefs ++++++++++ */
 
 /*
     ReleaseFunc_t
@@ -280,12 +289,14 @@ typedef int(CallbackFunc_t)(void*);
 */
 typedef int(CallbackArgFunc_t)(void*, void*);
 
+/* ---------- General Public Library Typedefs ---------- */
+
 /* ---------- Exported Library Types ---------- */
 
 /* ++++++++++ Exported Library Functions ++++++++++ */
 
 #ifdef LIBCONTAINER_ENABLE_ARRAY
-/* +++++ Array Functions +++++ */
+/* ++++++++++ Public Array_t Functions ++++++++++ */
 
 /*
     Array_Create
@@ -349,31 +360,6 @@ Array_t* Array_Create(size_t StartingCapacity, size_t ElementSize);
     must be able to be fully released by a single call of the given ReleaseFunc.
 */
 Array_t* Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFunc_t* ReleaseFunc);
-
-/*
-    Array_Duplicate
-
-    This function will create a shallow duplicate of the given Array_t. If the Array holds
-   reference types, the returned array will simply point to the same underlying objects as the
-   original.
-
-    Inputs:
-    Source  -   Pointer to the Array_t to duplicate.
-
-    Outputs:
-    Array_t*    -   The resulting newly allocated array, ready to be used by this library on success,
-   or NULL on failure.
-
-    Note:
-    For reference-type arrays, which only hold pointers to the items they hold, this cannot
-   know how to duplicate these sub-items. If a reference-type object is duplicated, both
-   arrays will point to the same objects in memory and altering one will be visible in both.
-   This is allowed, to simplify giving read-only access of an array to something else,
-   but must be done with caution to ensure consistency of the underlying objects.
-   Removal of objects or release of the array are safe to perform, only operations
-   on the items themselves must be done with caution.
-*/
-Array_t* Array_Duplicate(Array_t* Source);
 
 /*
     Array_Clear
@@ -626,14 +612,11 @@ int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback);
 */
 int Array_DoCallbackArg(Array_t* Array, CallbackArgFunc_t* Callback, void* Args);
 
-
-/* ----- Array Functions ----- */
-
+/* ---------- Public Array_t Functions ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_LIST
-
-/* +++++ List Functions +++++ */
+/* ++++++++++ Public List_t Functions ++++++++++ */
 
 /*
     List_Create
@@ -949,12 +932,11 @@ int List_DoCallback(List_t* List, CallbackFunc_t* Callback);
 */
 int List_DoCallbackArg(List_t* List, CallbackArgFunc_t* Callback, void* Args);
 
-/* ----- List Functions ----- */
+/* ---------- Public List_t Functions ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_HASHMAP
-
-/* +++++ Default Hash Functions +++++ */
+/* ++++++++++ Public Default HashFunc_t Functions ++++++++++ */
 
 /*
     HashFunc_Int
@@ -1040,9 +1022,9 @@ HashFunc_t HashFunc_Double;
 */
 HashFunc_t HashFunc_String;
 
-/* ----- Default Hash Functions ----- */
+/* ---------- Public Default HashFunc_t Functions ---------- */
 
-/* +++++ Hashmap Functions +++++ */
+/* ++++++++++ Public Hashmap_t Functions ++++++++++ */
 
 /*
     Hashmap_Create
@@ -1264,12 +1246,11 @@ int Hashmap_Clear(Hashmap_t* Map);
 */
 void Hashmap_Release(Hashmap_t* Map);
 
-/* ----- Hashmap Functions ----- */
-
+/* ---------- Public Hashmap_t Functions ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_BINARY_TREE
-/* +++++++++ Binary Tree Functions +++++++++ */
+/* +++++++++ Public Binary_Tree_t Functions +++++++++ */
 
 /*
     Binary_Tree_Create
@@ -1474,11 +1455,11 @@ int Binary_Tree_Clear(Binary_Tree_t* Tree);
 */
 void Binary_Tree_Release(Binary_Tree_t* Tree);
 
-/* --------- Binary Tree Functions --------- */
+/* --------- Public Binary_Tree_t Functions --------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_STACK
-/* ++++++++++ Public Stack Functions ++++++++++ */
+/* ++++++++++ Public Stack_t Functions ++++++++++ */
 
 /*
     Stack_Create
@@ -1648,7 +1629,7 @@ int Stack_Clear(Stack_t* Stack);
 */
 void Stack_Release(Stack_t* Stack);
 
-/* ---------- Public Stack Functions ---------- */
+/* ---------- Public Stack_t Functions ---------- */
 #endif
 
 /* ---------- Exported Library Functions ---------- */

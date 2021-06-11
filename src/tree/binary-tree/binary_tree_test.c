@@ -30,7 +30,11 @@
 #include "include/binary_tree.h"
 #include "include/tree_rotations.h"
 
-void PrettyPrintBinaryTree(const char *Prefix, const Binary_Tree_Node_t *Root, bool IsLeft) {
+/* Temporary Function for printing Binary Trees.
+static void PrettyPrintBinaryTree(const char *Prefix, const Binary_Tree_Node_t *Root, bool IsLeft);
+static void PrintBinaryTree(const Binary_Tree_Node_t *Root);
+
+static void PrettyPrintBinaryTree(const char *Prefix, const Binary_Tree_Node_t *Root, bool IsLeft) {
 
     char NextLeftPrefix[64] = {0x00};
     char NextRightPrefix[64] = {0x00};
@@ -41,7 +45,7 @@ void PrettyPrintBinaryTree(const char *Prefix, const Binary_Tree_Node_t *Root, b
 
         printf("%s", (IsLeft) ? ("├──") : ("└──"));
 
-        printf("(%d,%d)\n", Root->Key, *(int *)Root->Value);
+        printf("(%d,%d)\n", Root->Key, **(int **)&(Root->Value));
 
         snprintf(NextLeftPrefix, sizeof(NextLeftPrefix), "%s%s", Prefix,
                  (IsLeft) ? ("│   ") : ("    "));
@@ -53,15 +57,16 @@ void PrettyPrintBinaryTree(const char *Prefix, const Binary_Tree_Node_t *Root, b
     }
 }
 
-void PrintBinaryTree(const Binary_Tree_Node_t *Root) {
+static void PrintBinaryTree(const Binary_Tree_Node_t *Root) {
 
-    /* In-Order traversal */
     if (NULL != Root) {
         PrintBinaryTree(Root->LeftChild);
         printf("%d ", Root->Key);
         PrintBinaryTree(Root->RightChild);
     }
 }
+
+*/
 
 static int PrintBinaryTreeCallback(void *KeyValuePair) {
 

@@ -25,9 +25,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LIBCONTAINER_ENABLE_HASHMAP
-#define LIBCONTAINER_ENABLE_ARRAY
-
 #include "include/hashmap.h"
 
 #include "../array/include/array.h"
@@ -207,7 +204,7 @@ int Hashmap_Remove(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
     Node = Bucket->Head;
     while (Node != NULL) {
-        Entry = (Hashmap_Entry_t *)Node->Contents;
+        Entry = *(Hashmap_Entry_t **)&(Node->Contents);
         if (Entry->HashValue == HashValue) {
             if (0 == memcmp(Key, Entry->Key, KeySize)) {
                 List_removeNode(Bucket, Node);
@@ -252,7 +249,7 @@ void *Hashmap_Pop(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
     Node = Bucket->Head;
     while (NULL != Node) {
-        Entry = (Hashmap_Entry_t *)Node->Contents;
+        Entry = *(Hashmap_Entry_t **)&(Node->Contents);
         if (Entry->HashValue == HashValue) {
             if (0 == memcmp(Key, Entry->Key, Entry->KeySize)) {
                 Entry->ValueSize = 0;
@@ -328,7 +325,7 @@ void *Hashmap_findInBucket(const List_t *Bucket, const void *Key, size_t KeySize
 
     Node = Bucket->Head;
     while (Node != NULL) {
-        Entry = (Hashmap_Entry_t *)Node->Contents;
+        Entry = *(Hashmap_Entry_t **)&(Node->Contents);
         if (Entry->HashValue == HashValue) {
             if (0 == memcmp(Key, Entry->Key, KeySize)) {
                 DEBUG_PRINTF("%s", "Successfully found and returned requested item from Hashmap.");

@@ -84,7 +84,7 @@ int Test_List_Insert(void) {
     }
 
     for (i = 0, Node = List->Head; i < Count; i++, Node = Node->Next) {
-        if (i != *(size_t *)(Node->Contents)) {
+        if (0 != memcmp(Node->Contents, &i, sizeof(i))) {
             List_Release(List);
             TEST_PRINTF("Test Failure - List element at index [ %d ] not equal to expected value, "
                         "Got: [ %d ], Expected: [ %d ].",
@@ -182,9 +182,9 @@ int Test_List_Prepend(void) {
         TEST_FAILURE;
     }
 
-    if (NewItem != *(size_t *)List->Head->Contents) {
+    if (0 != memcmp(List->Head->Contents, &NewItem, sizeof(NewItem))) {
         TEST_PRINTF("Test Failure - List_t Head contents (%d) not equal to expected value (%d).",
-                    (int)*(size_t *)List->Head->Contents, (int)NewItem);
+                    (int)**(size_t **)&List->Head->Contents, (int)NewItem);
         List_Release(List);
         TEST_FAILURE;
     }
@@ -275,9 +275,9 @@ int Test_List_Append(void) {
         TEST_FAILURE;
     }
 
-    if (NewItem != *(size_t *)List->Tail->Contents) {
+    if (NewItem != **(size_t **)&(List->Tail->Contents)) {
         TEST_PRINTF("Test Failure - List_t Tail contents (%d) not equal to expected value (%d).",
-                    (int)*(size_t *)List->Tail->Contents, (int)NewItem);
+                    (int)**(size_t **)&(List->Tail->Contents), (int)NewItem);
         List_Release(List);
         TEST_FAILURE;
     }

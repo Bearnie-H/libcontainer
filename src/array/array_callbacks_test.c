@@ -25,8 +25,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define LIBCONTAINER_ENABLE_ARRAY
-
 #include "../logging/logging.h"
 #include "include/array.h"
 

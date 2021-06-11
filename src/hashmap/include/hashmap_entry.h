@@ -48,15 +48,19 @@ extern "C" {
 */
 typedef struct Hashmap_Entry_t {
 
+    /* KeyReleaseFunc is a pointer to the function to call to safely
+        release the memory/resources held by the Key pointer. */
+    ReleaseFunc_t* KeyReleaseFunc;
+
+    /* ValueReleaseFunc is a pointer to the function to call to safely
+        release the memory/resources held by the Value pointer. */
+    ReleaseFunc_t* ValueReleaseFunc;
+
     /* Key holds the raw bytes of the key of this entry, regardless of the type. */
     uint8_t* Key;
 
     /* Value holds the raw bytes of the value of this entry, regardless of the type. */
     uint8_t* Value;
-
-    /* HashValue holds the full raw hash value for the key, before it is reduced to the bucket index
-    used by the encompassing Hashmap_t. */
-    unsigned int HashValue;
 
     /* KeySize holds the size of the memory owned by the Key pointer.
         If this is 0, then the value is a reference and this struct doesn't
@@ -68,13 +72,9 @@ typedef struct Hashmap_Entry_t {
         own the memory. */
     size_t ValueSize;
 
-    /* KeyReleaseFunc is a pointer to the function to call to safely
-        release the memory/resources held by the Key pointer. */
-    ReleaseFunc_t* KeyReleaseFunc;
-
-    /* ValueReleaseFunc is a pointer to the function to call to safely
-        release the memory/resources held by the Value pointer. */
-    ReleaseFunc_t* ValueReleaseFunc;
+    /* HashValue holds the full raw hash value for the key, before it is reduced to the bucket index
+    used by the encompassing Hashmap_t. */
+    unsigned int HashValue;
 
 } Hashmap_Entry_t;
 

@@ -57,7 +57,6 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
     Array->Length = 0;
     Array->IsReference = false;
     Array->ReleaseFunc = NULL;
-    Array->IsShadow = false;
 
     DEBUG_PRINTF("%s", "Successfully created Array_t*.");
     return Array;
@@ -99,43 +98,9 @@ Array_t *Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFun
     Array->Length = 0;
     Array->IsReference = true;
     Array->ReleaseFunc = ReleaseFunc;
-    Array->IsShadow = false;
 
     DEBUG_PRINTF("%s", "Successfully created Array_t*.");
     return Array;
-}
-
-Array_t *Array_Duplicate(Array_t *Source) {
-
-    Array_t *Destination = NULL;
-
-    if (NULL == Source) {
-        DEBUG_PRINTF("%s", "Error, NULL Source Array_t* provided.");
-        return NULL;
-    }
-
-    if (Source->IsReference) {
-        Destination = Array_RefCreate(Source->Capacity, Source->ElementSize, Source->ReleaseFunc);
-    } else {
-        Destination = Array_Create(Source->Capacity, Source->ElementSize);
-    }
-
-    if (NULL == Destination) {
-        DEBUG_PRINTF("%s", "Error, Failed to create new empty Array_t.");
-        return NULL;
-    }
-
-    memcpy(Destination->Contents, Source->Contents, Source->Length);
-
-    /*
-        The duplicated array is only a shadow copy if the source array holds
-        references. If it holds values, these are duplicated to new values in
-       the new array.
-    */
-    Destination->IsShadow = Source->IsReference;
-    Destination->Length = Source->Length;
-
-    return Destination;
 }
 
 int Array_Clear(Array_t *Array) {
@@ -170,11 +135,11 @@ void Array_Release(Array_t *Array) {
             iterate over the array and release them all with the provided
             ReleaseFunc.
         */
-        if (Array->IsReference && !Array->IsShadow) {
+        if (Array->IsReference) {
             DEBUG_PRINTF("%s", "Array_t is array of references, releasing each "
                                "element with the provided ReleaseFunc.");
             for (Index = 0; Index < Array->Length; Index++) {
-                Array->ReleaseFunc(*(uint8_t **)&(Array->Contents[Index * Array->ElementSize]));
+                Array->ReleaseFunc((*(void ***)&Array->Contents)[Index]);
             }
         }
 

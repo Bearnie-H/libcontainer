@@ -21,6 +21,7 @@
 */
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "../logging/logging.h"
 #include "include/list_node.h"
@@ -168,9 +169,9 @@ int Test_ListNode_UpdateValue(void) {
         TEST_FAILURE;
     }
 
-    if (*(int *)(Node->Contents) != NewContents) {
+    if (0 != memcmp(Node->Contents, &NewContents, sizeof(NewContents))) {
         TEST_PRINTF("Test Failure - Node contents (%d) not equal to expected value (%d).",
-                    *(int *)(Node->Contents), NewContents);
+                    **(int **)&(Node->Contents), NewContents);
         ListNode_Release(Node);
         TEST_FAILURE;
     }

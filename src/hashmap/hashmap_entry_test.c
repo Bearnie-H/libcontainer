@@ -60,6 +60,7 @@ int Test_Hashmap_Entry_Update(void) {
     double Key = 3.1415;
     int Value = 0xCAFE;
     double NewValue = 2.71828;
+    double Epsilon = 0.000001;
 
     Entry = Hashmap_Entry_Create(&Key, &Value, sizeof(Key), sizeof(Value), 1, NULL, NULL);
     if (NULL == Entry) {
@@ -73,9 +74,9 @@ int Test_Hashmap_Entry_Update(void) {
         TEST_FAILURE;
     }
 
-    if (*(double *)Entry->Value != NewValue) {
+    if ((**(double **)&(Entry->Value) - NewValue) > Epsilon) {
         TEST_PRINTF("Test Failure - Hashmap_Entry_t Value (%f) not equal to expectation (%f).",
-                    *(double *)Entry->Value, NewValue);
+                    **(double **)&(Entry->Value), NewValue);
         Hashmap_Entry_Release(Entry);
         TEST_FAILURE;
     }

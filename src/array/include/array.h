@@ -93,14 +93,6 @@ struct Array_t {
         to memory held by something else.
     */
     bool IsReference;
-
-    /*
-        IsShadow allow disambiguating whether or not this array is a shadow copy
-        of another (as created by Array_Duplicate), and therefore should not
-        attempt to release the memory of it's contents on release if it's a reference-type.
-    */
-    bool IsShadow;
-
 };
 
 /*

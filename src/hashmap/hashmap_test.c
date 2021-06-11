@@ -29,8 +29,10 @@
 #include "../logging/logging.h"
 #include "include/hashmap.h"
 
-/* Temporary function for visualizing the distribution properties of the hash function used. */
-void PrintHashmapBucketUtilization(Hashmap_t *Map) {
+/*
+    Temporary function for visualizing the distribution properties of the hash function used.
+
+static void PrintHashmapBucketUtilization(Hashmap_t *Map) {
 
     size_t BucketCount = 0, i = 0;
     List_t *Bucket = NULL;
@@ -45,6 +47,7 @@ void PrintHashmapBucketUtilization(Hashmap_t *Map) {
 
     return;
 }
+*/
 
 int Test_hashmap(void) {
 

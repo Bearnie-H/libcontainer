@@ -48,7 +48,6 @@ List_Node_t *ListNode_Create(const void *Contents, size_t Size) {
 
     Node->Next = NULL;
     Node->Previous = NULL;
-    Node->IsReference = false;
     Node->ReleaseFunc = free;
 
     Node->Contents = (uint8_t *)malloc(sizeof(uint8_t) * Size);
@@ -90,7 +89,6 @@ List_Node_t *ListNode_RefCreate(const void *Contents, ReleaseFunc_t *ReleaseFunc
     Node->Contents = (uint8_t *)Contents;
     Node->Size = 0; /* Size can be 0 for ref-types, as this Node owns 0 bytes of
                        memory. */
-    Node->IsReference = true;
     Node->ReleaseFunc = ReleaseFunc;
 
     DEBUG_PRINTF("%s", "Successfully created new List_Node_t.");
@@ -218,7 +216,6 @@ int ListNode_UpdateValue(List_Node_t *Node, const void *Element, size_t ElementS
 
     /* Actually update the Node to the desired new contents. */
     Node->Contents = NewContents;
-    Node->IsReference = NewNodeIsReference;
     Node->ReleaseFunc = ReleaseFunc;
     Node->Size = ElementSize;
 

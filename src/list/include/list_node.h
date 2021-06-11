@@ -52,6 +52,13 @@ typedef struct List_Node_t List_Node_t;
 struct List_Node_t {
 
     /*
+        ReleaseFunc defines the function to call (in combination with IsReference)
+        to release the memory held by the contents of this node. This is held within
+        the node itself, to allow for heterogeneous lists.
+    */
+    ReleaseFunc_t* ReleaseFunc;
+
+    /*
         Pointers to the next and previous nodes of the list,
         to allow for doubly-linked traversal.
     */
@@ -63,19 +70,6 @@ struct List_Node_t {
 
     /* Size counts how many bytes are allocated to Contents. */
     size_t Size;
-
-    /*
-        IsReference determines whether or not this Node owns the memory associated with
-        its contents or not.
-    */
-    bool IsReference;
-
-    /*
-        ReleaseFunc defines the function to call (in combination with IsReference)
-        to release the memory held by the contents of this node. This is held within
-        the node itself, to allow for heterogeneous lists.
-    */
-    ReleaseFunc_t* ReleaseFunc;
 };
 
 /*

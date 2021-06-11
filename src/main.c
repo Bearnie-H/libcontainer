@@ -27,14 +27,17 @@ int Test_main(int argc, char **argv);
 
 int main(int argc, char **argv) {
 
-    int i;
-
 #if defined(TESTING)
     /* If the executable is built in Test-mode, call the main testing function
      * and exit. */
     return Test_main(argc, argv);
+}
+#else
 
-#elif defined(DEBUGGER)
+    int i;
+
+#if defined(DEBUGGER)
+
     /* If the executable is built in Debugger-mode, call the main testing
      * function and continue with normal operation. */
     Test_main(argc, argv);
@@ -54,3 +57,5 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+
+#endif
