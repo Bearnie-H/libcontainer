@@ -53,7 +53,7 @@ Hashmap_t *Hashmap_Create(HashFunc_t *HashFunc, size_t KeySize, ReleaseFunc_t *K
         KeyReleaseFunc = (ReleaseFunc_t *)free;
     }
 
-    Map = (Hashmap_t *)malloc(sizeof(Hashmap_t));
+    Map = (Hashmap_t *)calloc(1, sizeof(Hashmap_t));
     if (NULL == Map) {
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Hashmap.");
         return NULL;

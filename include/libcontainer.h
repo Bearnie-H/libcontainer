@@ -223,6 +223,28 @@ typedef struct Stack_t Stack_t;
 /* ---------- Public Stack_t Typedefs ---------- */
 #endif
 
+#ifdef LIBCONTAINER_ENABLE_STRING
+/* ++++++++++ Public String_t Typedefs ++++++++++ */
+
+/*
+    String_t
+
+    This container provides a richer String-type than the default NULL-terminated
+    strings of standard C. This provides an interface for building, manipulating,
+    reading, and writing Strings in a memory-safe manner.
+
+    This struct is opaque to ensure all accesses are performed
+    through the functions provided in this library to ensure
+    safe access and operation.
+
+    See the functions prefixed with "String_" for the available operations
+    on this container.
+*/
+typedef struct String_t String_t;
+
+/* ---------- Public String_t Typedefs ---------- */
+#endif
+
 /* ++++++++++ General Public Library Typedefs ++++++++++ */
 
 /*
@@ -517,6 +539,10 @@ int Array_Remove(Array_t* Array, size_t Index);
     int -   Returns 0 on success, non-zero on failure.
 */
 int Array_RemoveN(Array_t* Array, size_t Index, size_t Count);
+
+int Array_Replace(Array_t* Array, void* Element, size_t Index);
+int Array_ReplaceN(Array_t* Array, void* Elements, size_t Index, size_t Count);
+
 
 /*
     Array_GetElement
@@ -1631,6 +1657,348 @@ int Stack_Clear(Stack_t* Stack);
 void Stack_Release(Stack_t* Stack);
 
 /* ---------- Public Stack_t Functions ---------- */
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_STRING
+/* ++++++++++ Public String_t Functions ++++++++++ */
+
+/*
+    String_Create
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+String_t* String_Create(char* Value, size_t Length);
+
+/*
+    String_CreateConst
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+String_t* String_CreateConst(char* Value);
+
+/*
+    String_Createf
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+String_t* String_Createf(const char* fmt, ...);
+
+/*
+    String_SPrintf
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+int String_SPrintf(String_t* String, const char* fmt, ...);
+
+/*
+    String_Appendf
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+int String_Appendf(String_t* String, const char* fmt, ...);
+
+/*
+    String_Length
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+size_t String_Length(String_t* String);
+
+/*
+    String_IsEmpty
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+bool String_IsEmpty(String_t* String);
+
+/*
+    String_GetAtIndex
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+char String_GetAtIndex(String_t* String, size_t Index);
+
+/*
+    String_GetFront
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+char String_GetFront(String_t* String);
+
+/*
+    String_GetBack
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+char String_GetBack(String_t* String);
+
+/*
+    String_Insert
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+int String_Insert(String_t* String, char* ToInsert, size_t Index, size_t Length);
+
+/*
+    String_Prepend
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+int String_Prepend(String_t* String, char* ToInsert, size_t Length);
+
+/*
+    String_Append
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+int String_Append(String_t* String, char* ToInsert, size_t Length);
+
+/*
+    String_Replace
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+int String_Replace(String_t* String, char* ToInsert, size_t Index, size_t Length);
+
+/*
+    String_Set
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+int String_Set(String_t* String, char* NewValue, size_t Length);
+
+/*
+    String_ToCString
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+char* String_ToCString(String_t* String);
+
+/*
+    String_Copy
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+String_t* String_Copy(String_t* String);
+
+/*
+    String_Substring
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+String_t* String_Substring(String_t* String, size_t Index, size_t Length);
+
+/*
+    String_Compare
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+int String_Compare(String_t* A, String_t* B);
+
+/*
+    String_Clear
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+int String_Clear(String_t* String);
+
+/*
+    String_Release
+
+    This function...
+
+    Inputs:
+    ...
+
+    Outputs:
+    ...
+
+    Note:
+    ...
+*/
+void String_Release(String_t* String);
+
+/* ---------- Public String_t Functions ---------- */
 #endif
 
 /* ---------- Exported Library Functions ---------- */

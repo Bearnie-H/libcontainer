@@ -128,6 +128,37 @@ int Array_RemoveN(Array_t *Array, size_t Index, size_t Count) {
     return 0;
 }
 
+int Array_Replace(Array_t *Array, void *Element, size_t Index) {
+    return Array_ReplaceN(Array, Element, Index, 1);
+}
+
+int Array_ReplaceN(Array_t *Array, void *Elements, size_t Index, size_t Count) {
+
+    size_t ElementSize = sizeof(void *), i = 0;
+
+    if (NULL == Array) {
+        DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+        return 1;
+    }
+
+    if ((Array->Length < Index)) {
+        DEBUG_PRINTF("Error: Index (%d) is out of bounds.", (int)Index);
+        return 1;
+    }
+
+    if (0 == Array->ElementSize) {
+        for (i = 0; i < Count; i++) {
+            Array->ReleaseFunc(Array->Contents.ContentRefs[Index + i]);
+            Array->Contents.ContentRefs[Index + i] = ((void **)Elements)[i];
+        }
+    } else {
+        ElementSize = Array->ElementSize;
+        memcpy(&(Array->Contents.ContentBytes[Index * ElementSize]), Elements, Count * ElementSize);
+    }
+
+    return 0;
+}
+
 void *Array_GetElement(Array_t *Array, size_t Index) {
 
     void *Element = NULL;

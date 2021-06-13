@@ -1,4 +1,6 @@
 /*
+    MIT License
+
     Copyright (c) 2021 Bearnie-H
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,8 +22,8 @@
     SOFTWARE.
 */
 
-#ifndef LIBCONTAINER_ARRAY_TEST_H
-#define LIBCONTAINER_ARRAY_TEST_H
+#ifndef LIBCONTAINER_STRING_TEST_H
+#define LIBCONTAINER_STRING_TEST_H
 
 /*
     If this header should export C-compatible symbols, rearrange these ifdefs as appropriate
@@ -33,32 +35,34 @@ extern "C" {
 /*
     Top-level testing entry-point for the component.
 */
-int Test_array(void);
+int Test_string(void);
 
-int Test_Array_Create(void);
-int Test_Array_RefCreate(void);
-int Test_Array_Clear(void);
-
-int Test_Array_Grow(void);
-int Test_Array_Resize(void);
-
-int Test_Array_Prepend(void);
-int Test_Array_Append(void);
-int Test_Array_Insert(void);
-int Test_Array_InsertN(void);
-int Test_Array_Remove(void);
-int Test_Array_RemoveN(void);
-int Test_Array_GetElement(void);
-int Test_Array_SetElement(void);
-int Test_Array_Replace(void);
-int Test_Array_ReplaceN(void);
-
-int Test_Array_Ref_InsertN(void);
-int Test_Array_Ref_RemoveN(void);
+int Test_String_Create(void);
+int Test_String_CreateConst(void);
+int Test_String_Length(void);
+int Test_String_IsEmpty(void);
+int Test_String_GetAtIndex(void);
+int Test_String_GetFront(void);
+int Test_String_GetBack(void);
+int Test_String_Insert(void);
+int Test_String_Prepend(void);
+int Test_String_Append(void);
+int Test_String_Replace(void);
+int Test_String_Set(void);
+int Test_String_ToCString(void);
+int Test_String_Copy(void);
+int Test_String_Substring(void);
+int Test_String_Compare(void);
+int Test_String_Compare_Less(void);
+int Test_String_Compare_Equal(void);
+int Test_String_Compare_Greater(void);
+int Test_String_Compare_NULL_A(void);
+int Test_String_Compare_NULL_B(void);
+int Test_String_Compare_NULL(void);
+int Test_String_Clear(void);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

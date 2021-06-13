@@ -26,12 +26,15 @@
 #define LIBCONTAINER_ENABLE_LIST
 #define LIBCONTAINER_ENABLE_HASHMAP
 #define LIBCONTAINER_ENABLE_BINARY_TREE
+#define LIBCONTAINER_ENABLE_STACK
+#define LIBCONTAINER_ENABLE_STRING
 
 #include "../include/libcontainer.h"
 #include "array/include/array.h"
 #include "hashmap/include/hashmap.h"
 #include "list/include/list.h"
 #include "stack/include/stack.h"
+#include "string/include/string.h"
 #include "tree/binary-tree/include/binary_tree.h"
 
 int Test_main(int argc, char **argv);
@@ -59,6 +62,7 @@ int Test_main(int argc, char **argv) {
     FailedTests += Test_hashmap();
     FailedTests += Test_binary_tree();
     FailedTests += Test_stack();
+    FailedTests += Test_string();
 
     /* Returning non-zero indicates to the Makefile during make to abort.
         This lets failing tests block further builds with the "all" target

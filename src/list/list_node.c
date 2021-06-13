@@ -40,7 +40,7 @@ List_Node_t *ListNode_Create(const void *Contents, size_t Size) {
         return NULL;
     }
 
-    Node = (List_Node_t *)malloc(sizeof(List_Node_t));
+    Node = (List_Node_t *)calloc(1, sizeof(List_Node_t));
     if (NULL == Node) {
         DEBUG_PRINTF("%s", "Error, Failed to allocate memory for new List_Node_t.");
         return NULL;
@@ -50,7 +50,7 @@ List_Node_t *ListNode_Create(const void *Contents, size_t Size) {
     Node->Previous = NULL;
     Node->ReleaseFunc = free;
 
-    Node->Contents.ContentBytes = (uint8_t *)malloc(sizeof(uint8_t) * Size);
+    Node->Contents.ContentBytes = (uint8_t *)calloc(1, sizeof(uint8_t) * Size);
     if (NULL == Node->Contents.ContentBytes) {
         DEBUG_PRINTF("%s", "Error, Failed to allocate memory for new List_Node_t->Contents.");
         free(Node);
@@ -78,7 +78,7 @@ List_Node_t *ListNode_RefCreate(void *Contents, ReleaseFunc_t *ReleaseFunc) {
         ReleaseFunc = free;
     }
 
-    Node = (List_Node_t *)malloc(sizeof(List_Node_t));
+    Node = (List_Node_t *)calloc(1, sizeof(List_Node_t));
     if (NULL == Node) {
         DEBUG_PRINTF("%s", "Error, Failed to allocate memory for new List_Node_t.");
         return NULL;
@@ -200,7 +200,7 @@ int ListNode_UpdateValue(List_Node_t *Node, void *Element, size_t ElementSize,
         }
     } else {
         ReleaseFunc = (ReleaseFunc_t *)free;
-        NewContents = (uint8_t *)malloc(sizeof(uint8_t) * ElementSize);
+        NewContents = (uint8_t *)calloc(1, sizeof(uint8_t) * ElementSize);
         if (NULL == NewContents) {
             DEBUG_PRINTF("%s", "Error, Failed to allocate memory to hold new Node contents.");
             return 1;

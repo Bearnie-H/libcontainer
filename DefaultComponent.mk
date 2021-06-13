@@ -41,24 +41,24 @@ prep:
 
 #   Only remove the dependency-tree files on a hard clean.
 clean-hard: clean
-	@printf "%-8s %s\n" "(RM)" "$(RELDEPS:$(ROOTDIR)/%=%)"
+	@printf "%-8s %s\n" "(RM)" "$(RELDEPS:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(RM) $(RELDEPS)
-	@printf "%-8s %s\n" "(RM)" "$(DBGDEPS:$(ROOTDIR)/%=%)"
+	@printf "%-8s %s\n" "(RM)" "$(DBGDEPS:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(RM) $(DBGDEPS)
-	@printf "%-8s %s\n" "(RM)" "$(DBGRDEPS:$(ROOTDIR)/%=%)"
+	@printf "%-8s %s\n" "(RM)" "$(DBGRDEPS:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(RM) $(DBGRDEPS)
-	@printf "%-8s %s\n" "(RM)" "$(TESTDEPS:$(ROOTDIR)/%=%)"
+	@printf "%-8s %s\n" "(RM)" "$(TESTDEPS:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(RM) $(TESTDEPS)
 
 #   On a regular clean, just clean up the object files for this component.
 clean:
-	@printf "%-8s %s\n" "(RM)" "$(RELOBJS:$(ROOTDIR)/%=%)"
+	@printf "%-8s %s\n" "(RM)" "$(RELOBJS:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(RM) $(RELOBJS)
-	@printf "%-8s %s\n" "(RM)" "$(DBGOBJS:$(ROOTDIR)/%=%)"
+	@printf "%-8s %s\n" "(RM)" "$(DBGOBJS:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(RM) $(DBGOBJS)
-	@printf "%-8s %s\n" "(RM)" "$(DBGROBJS:$(ROOTDIR)/%=%)"
+	@printf "%-8s %s\n" "(RM)" "$(DBGROBJS:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(RM) $(DBGROBJS)
-	@printf "%-8s %s\n" "(RM)" "$(TESTOBJS:$(ROOTDIR)/%=%)"
+	@printf "%-8s %s\n" "(RM)" "$(TESTOBJS:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(RM) $(TESTOBJS)
 
 remake:

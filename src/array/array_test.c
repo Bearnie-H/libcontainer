@@ -45,6 +45,9 @@ int Test_array(void) {
     FailedTests += Test_Array_GetElement();
     FailedTests += Test_Array_SetElement();
 
+    FailedTests += Test_Array_Replace();
+    FailedTests += Test_Array_ReplaceN();
+
     FailedTests += Test_Array_Ref_InsertN();
     FailedTests += Test_Array_Ref_RemoveN();
 

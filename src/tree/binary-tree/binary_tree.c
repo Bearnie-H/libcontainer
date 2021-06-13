@@ -43,7 +43,7 @@ Binary_Tree_t *Binary_Tree_Create(size_t ValueSize, ReleaseFunc_t *ReleaseFunc) 
                      "Note: 0 ValueSize provided, creating Binary_Tree_t of Reference-Types.");
     }
 
-    Tree = (Binary_Tree_t *)malloc(sizeof(Binary_Tree_t));
+    Tree = (Binary_Tree_t *)calloc(1, sizeof(Binary_Tree_t));
     if (NULL == Tree) {
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Binary_Tree_t.");
         return NULL;

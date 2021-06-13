@@ -1,4 +1,6 @@
 /*
+    MIT License
+
     Copyright (c) 2021 Bearnie-H
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -20,8 +22,8 @@
     SOFTWARE.
 */
 
-#ifndef LIBCONTAINER_ARRAY_TEST_H
-#define LIBCONTAINER_ARRAY_TEST_H
+#ifndef LIBCONTAINER_STRING_FMT_H
+#define LIBCONTAINER_STRING_FMT_H
 
 /*
     If this header should export C-compatible symbols, rearrange these ifdefs as appropriate
@@ -30,35 +32,18 @@
 extern "C" {
 #endif
 
-/*
-    Top-level testing entry-point for the component.
-*/
-int Test_array(void);
+#include <stdarg.h>
 
-int Test_Array_Create(void);
-int Test_Array_RefCreate(void);
-int Test_Array_Clear(void);
+ssize_t String_getFMTLength(const char* fmt, va_list args);
 
-int Test_Array_Grow(void);
-int Test_Array_Resize(void);
+#if defined(TESTING) || defined(DEBUGGER)
 
-int Test_Array_Prepend(void);
-int Test_Array_Append(void);
-int Test_Array_Insert(void);
-int Test_Array_InsertN(void);
-int Test_Array_Remove(void);
-int Test_Array_RemoveN(void);
-int Test_Array_GetElement(void);
-int Test_Array_SetElement(void);
-int Test_Array_Replace(void);
-int Test_Array_ReplaceN(void);
+#include "string_fmt_test.h"
 
-int Test_Array_Ref_InsertN(void);
-int Test_Array_Ref_RemoveN(void);
+#endif
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

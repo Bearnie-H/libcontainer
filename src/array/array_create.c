@@ -39,7 +39,7 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
         StartingCapacity = LIBCONTAINER_ARRAY_DEFAULT_CAPACITY;
     }
 
-    Array = (Array_t *)malloc(sizeof(Array_t));
+    Array = (Array_t *)calloc(1, sizeof(Array_t));
     if (NULL == Array) {
         DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t.");
         return NULL;
@@ -74,7 +74,7 @@ Array_t *Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t *ReleaseFunc) {
         StartingCapacity = LIBCONTAINER_ARRAY_DEFAULT_CAPACITY;
     }
 
-    Array = (Array_t *)malloc(sizeof(Array_t));
+    Array = (Array_t *)calloc(1, sizeof(Array_t));
     if (NULL == Array) {
         DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t.");
         return NULL;
@@ -100,6 +100,11 @@ int Array_Clear(Array_t *Array) {
 
     if (NULL == Array) {
         DEBUG_PRINTF("%s", "NULL Array*, nothing to clear.");
+        return 0;
+    }
+
+    if (0 == Array_Length(Array)) {
+        DEBUG_PRINTF("%s", "Empty Array*, nothing to clear.");
         return 0;
     }
 

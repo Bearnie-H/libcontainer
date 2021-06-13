@@ -30,7 +30,7 @@ List_t *List_Create(void) {
     List_t *List = NULL;
 
     /* Allocate the memory for the list. */
-    List = (List_t *)malloc(sizeof(List_t));
+    List = (List_t *)calloc(1, sizeof(List_t));
     if (NULL == List) {
         DEBUG_PRINTF("%s", "Error, Failed to allocate memory for List_t.");
         return NULL;
@@ -81,6 +81,6 @@ void List_Release(List_t *List) {
     ZERO_CONTAINER(List, List_t);
 
     free(List);
-    DEBUG_PRINTF("%s", "Successfully release List_t* and all held contents.");
+    DEBUG_PRINTF("%s", "Successfully released List_t* and all held contents.");
     return;
 }

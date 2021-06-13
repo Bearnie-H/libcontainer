@@ -90,6 +90,7 @@ Currently, this library provides the following containers for use:
 | `Hashmap_t`     | `LIBCONTAINER_ENABLE_HASHMAP`     | Auto-balancing key-value associative array           |
 | `Binary_Tree_t` | `LIBCONTAINER_ENABLE_BINARY_TREE` | Self-balancing binary search tree of key-value pairs |
 | `Stack_t`       | `LIBCONTAINER_ENABLE_STACK`       | LIFO (Last-In-First-Out), single-item access         |
+| `String_t`      | `LIBCONTAINER_ENABLE_STRING`      | Richer, safe, dynamically growable String type       |
 
 The internal implementations of these containers should not be a concern for their use. For example,
 currently the Binary_Tree_t implementation is based on an [AVL Tree](https://en.wikipedia.org/wiki/AVL_tree),

@@ -122,7 +122,7 @@ int Test_List_RefInsert(void) {
         }
     }
 
-    RefItem = (char *)malloc(sizeof(char) * sizeof(RefContents));
+    RefItem = (char *)calloc(1, sizeof(char) * sizeof(RefContents));
     if (NULL == RefItem) {
         List_Release(List);
         TEST_PRINTF("%s",
@@ -218,7 +218,7 @@ int Test_List_RefPrepend(void) {
         }
     }
 
-    RefItem = (char *)malloc(sizeof(char) * sizeof(RefContents));
+    RefItem = (char *)calloc(1, sizeof(char) * sizeof(RefContents));
     if (NULL == RefItem) {
         List_Release(List);
         TEST_PRINTF("%s",
@@ -311,7 +311,7 @@ int Test_List_RefAppend(void) {
         }
     }
 
-    RefItem = (char *)malloc(sizeof(char) * sizeof(RefContents));
+    RefItem = (char *)calloc(1, sizeof(char) * sizeof(RefContents));
     if (NULL == RefItem) {
         List_Release(List);
         TEST_PRINTF("%s",
@@ -551,7 +551,7 @@ int Test_List_RefSetElement(void) {
         }
     }
 
-    RefItem = (char *)malloc(sizeof(char) * sizeof(RefContents));
+    RefItem = (char *)calloc(1, sizeof(char) * sizeof(RefContents));
     if (NULL == RefItem) {
         List_Release(List);
         TEST_PRINTF("%s",

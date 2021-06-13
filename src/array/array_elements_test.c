@@ -328,6 +328,77 @@ int Test_Array_SetElement(void) {
     TEST_SUCCESSFUL;
 }
 
+int Test_Array_Replace(void) {
+
+    Array_t *Array = NULL;
+    char InitialValue[] = "Starting Value", ReplaceValue[] = "A", FinalValue[] = "StArting Value";
+    size_t ReplaceIndex = 2;
+
+    Array = Array_Create(0, sizeof(InitialValue[0]));
+    if (NULL == Array) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create Array_t for testing.");
+        TEST_FAILURE;
+    }
+
+    if (0 != Array_InsertN(Array, InitialValue, 0, sizeof(InitialValue) - 1)) {
+        TEST_PRINTF("%s", "Test Failure - Failed to insert initial Array value.");
+        Array_Release(Array);
+        TEST_FAILURE;
+    }
+
+    if (0 != Array_Replace(Array, ReplaceValue, ReplaceIndex)) {
+        TEST_PRINTF("%s", "Test Failure - Failed to perform Replace() operation.");
+        Array_Release(Array);
+        TEST_FAILURE;
+    }
+
+    if (0 != memcmp(FinalValue, Array->Contents.ContentBytes, Array_Length(Array))) {
+        TEST_PRINTF("Test Failure - Array contents (%s) not equal to expectation (%s).",
+                    (char *)Array->Contents.ContentBytes, FinalValue);
+        Array_Release(Array);
+        TEST_FAILURE;
+    }
+
+    Array_Release(Array);
+    TEST_SUCCESSFUL;
+}
+
+int Test_Array_ReplaceN(void) {
+
+    Array_t *Array = NULL;
+    char InitialValue[] = "Starting Value", ReplaceValue[] = "Final",
+         FinalValue[] = "StFinalg Value";
+    size_t ReplaceIndex = 2, ReplaceLength = sizeof(ReplaceValue) - 1;
+
+    Array = Array_Create(0, sizeof(InitialValue[0]));
+    if (NULL == Array) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create Array_t for testing.");
+        TEST_FAILURE;
+    }
+
+    if (0 != Array_InsertN(Array, InitialValue, 0, sizeof(InitialValue) - 1)) {
+        TEST_PRINTF("%s", "Test Failure - Failed to insert initial Array value.");
+        Array_Release(Array);
+        TEST_FAILURE;
+    }
+
+    if (0 != Array_ReplaceN(Array, ReplaceValue, ReplaceIndex, ReplaceLength)) {
+        TEST_PRINTF("%s", "Test Failure - Failed to perform Replace() operation.");
+        Array_Release(Array);
+        TEST_FAILURE;
+    }
+
+    if (0 != memcmp(FinalValue, Array->Contents.ContentBytes, Array_Length(Array))) {
+        TEST_PRINTF("Test Failure - Array contents (%s) not equal to expectation (%s).",
+                    (char *)Array->Contents.ContentBytes, FinalValue);
+        Array_Release(Array);
+        TEST_FAILURE;
+    }
+
+    Array_Release(Array);
+    TEST_SUCCESSFUL;
+}
+
 int Test_Array_Ref_InsertN(void) {
 
     Array_t *Outer = NULL;

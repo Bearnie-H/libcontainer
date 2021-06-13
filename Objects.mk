@@ -23,33 +23,33 @@
 
 $(TESTBUILDDIR)/%.o : %.c
 ifdef FMTTOOL
-	@printf "%-8s %-16s\n" "(FMT)" "$<"
+	@printf "%-8s %-16s\n" "(FMT)" "$<" $(QUIETMODE)
 	@$(FMTTOOL) -i $<
 endif
-	@printf "%-8s %-16s -> %s\n" "(CC)" "$<" "$(@:$(ROOTDIR)/%=%)"
+	@printf "%-8s %-16s -> %s\n" "(CC)" "$<" "$(@:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(CC) -c $(TESTFLAGS) -o $@ $< -MMD -MP
 
 $(DBGBUILDDIR)/%.o : %.c
 ifdef FMTTOOL
-	@printf "%-8s %-16s\n" "(FMT)" "$<"
+	@printf "%-8s %-16s\n" "(FMT)" "$<" $(QUIETMODE)
 	@$(FMTTOOL) -i $<
 endif
-	@printf "%-8s %-16s -> %s\n" "(CC)" "$<" "$(@:$(ROOTDIR)/%=%)"
+	@printf "%-8s %-16s -> %s\n" "(CC)" "$<" "$(@:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(CC) -c $(DBGFLAGS) -o $@ $< -MMD -MP
 
 $(DBGRBUILDDIR)/%.o : %.c
 ifdef FMTTOOL
-	@printf "%-8s %-16s\n" "(FMT)" "$<"
+	@printf "%-8s %-16s\n" "(FMT)" "$<" $(QUIETMODE)
 	@$(FMTTOOL) -i $<
 endif
-	@printf "%-8s %-16s -> %s\n" "(CC)" "$<" "$(@:$(ROOTDIR)/%=%)"
+	@printf "%-8s %-16s -> %s\n" "(CC)" "$<" "$(@:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(CC) -c $(DBGRFLAGS) -o $@ $< -MMD -MP
 
 $(RELBUILDDIR)/%.o : %.c
 ifdef FMTTOOL
-	@printf "%-8s %-16s\n" "(FMT)" "$<"
+	@printf "%-8s %-16s\n" "(FMT)" "$<" $(QUIETMODE)
 	@$(FMTTOOL) -i $<
 endif
-	@printf "%-8s %-16s -> %s\n" "(CC)" "$<" "$(@:$(ROOTDIR)/%=%)"
+	@printf "%-8s %-16s -> %s\n" "(CC)" "$<" "$(@:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(CC) -c $(RELFLAGS) -o $@ $< -MMD -MP
 

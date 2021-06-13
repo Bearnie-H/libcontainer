@@ -27,9 +27,17 @@
 
 #   Version Settings
 MAJOR_VERSION := 0
-MINOR_VERSION := 5
-PATCH_VERSION := 2
+MINOR_VERSION := 6
+PATCH_VERSION := 1
 VERSION       := v$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
+
+ifdef QUIET
+QUIETMODE := 2> /dev/null 1> /dev/null
+else
+QUIETMODE :=
+endif
+
+export QUIETMODE
 
 #   Standard Compiler Settings
 CC              := gcc
@@ -73,12 +81,18 @@ TESTSUFFIX   := .out
 #    will only be built into the "test" and "debugger" targets.
 #   For something like a library, the "src" should be moved to the TESTCOMPONENTS
 #    to allow it to be used as driver code for running something like an internal test suite.
-COMPONENTS     := src/array src/list src/hashmap src/tree/binary-tree src/stack
+COMPONENTS     := src/array src/list src/hashmap src/tree/binary-tree src/stack src/string
 TESTCOMPONENTS := src
 
 #   Additional Libraries to include when building the final applications
 SLIBS          := $(wildcard $(LIBDIR)/*.a)     #   Static Libraries
 DLIBS          := $(wildcard $(LIBDIR)/*.so)    #   Dynamic Libraries
+RELLIBS        := $(filter-out %debug.a %debug.so, $(SLIBS) $(DLIBS))
+ifdef USE_DEBUG_LIBS
+DBGLIBS        := $(filter-out $(RELLIBS), $(SLIBS) $(DLIBS))
+else
+DBGLIBS        := $(RELLIBS)
+endif
 
 #   Note, in the following build settings, the *OBJS target is not fully defined here.
 #   The goal is to allow all of the sub-components to build and leave their respective
@@ -121,15 +135,9 @@ INSTALLMANDIR    ?= /usr/local/share/man/man1
 INSTALLDIRS      := $(INSTALLBINDIR) $(INSTALLHEADERDIR) $(INSTALLMANDIR)
 #   Other installation directories go here...
 
-INSTALLBIN       := $(RELBIN)
 INSTALLHEADERS   := $(wildcard $(ROOTDIR)/include/*.h)
-INSTALLLIBS      := $(SLIBS) $(DLIBS)
 INSTALLMANPAGES  := $(wildcard $(ROOTDIR)/man/*.1)
 # Other installation targets and files go here
-
-#   Uninstallation settings - Remove any and all artefacts moved by the "install" target
-#       such that it can no longer be managed by either "clean" or "clean-hard"
-UNINSTALLFILES := 
 
 #   Export the specific compiler to use.
 export CC FMTTOOL
@@ -156,23 +164,29 @@ help: ## Show this help menu.
 #   Before installing anything, make sure the "release" target is fully up-to-date
 install: ## Build and install the release target to your system
 	@$(MKDIR) $(INSTALLDIRS)
-	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLBIN)" "$(INSTALLBINDIR)/$(notdir $(INSTALLBIN))"
-	@$(CP) $(INSTALLBIN) $(INSTALLBINDIR)/$(notdir $(INSTALLBIN))
-	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLHEADERS)" "$(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))"
+	@printf "%-8s %-16s -> %s\n" "(CP)" "$(RELBIN)" "$(INSTALLBINDIR)/$(notdir $(RELBIN))" $(QUIETMODE)
+	@$(CP) $(RELBIN) $(INSTALLBINDIR)/$(notdir $(RELBIN))
+	@printf "%-8s %-16s -> %s\n" "(CP)" "$(DBGBIN)" "$(INSTALLBINDIR)/$(notdir $(DBGBIN))" $(QUIETMODE)
+	@$(CP) $(DBGBIN) $(INSTALLBINDIR)/$(notdir $(DBGBIN))
+	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLHEADERS)" "$(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))" $(QUIETMODE)
 	@$(CP) $(INSTALLHEADERS) $(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))
-	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLMANPAGES)" "$(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))"
+	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLMANPAGES)" "$(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))" $(QUIETMODE)
 	@$(CP) $(INSTALLMANPAGES) $(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))
-	@printf "%-8s %-16s -> %s\n" "(LN)" "$(notdir $(INSTALLBIN))" "$(TARGETNAME)$(TARGETSUFFIX)"
-	@$(LN) $(INSTALLBINDIR)/$(notdir $(INSTALLBIN)) $(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)
+	@printf "%-8s %-16s -> %s\n" "(LN)" "$(notdir $(RELBIN))" "$(TARGETNAME)$(TARGETSUFFIX)" $(QUIETMODE)
+	@$(LN) $(INSTALLBINDIR)/$(notdir $(RELBIN)) $(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)
+	@printf "%-8s %-16s -> %s\n" "(LN)" "$(notdir $(DBGBIN))" "$(TARGETNAME)-debug$(TARGETSUFFIX)" $(QUIETMODE)
+	@$(LN) $(INSTALLBINDIR)/$(notdir $(DBGBIN)) $(INSTALLBINDIR)/$(TARGETNAME)-debug$(TARGETSUFFIX)
 
 uninstall:  ## Remove everything installed by the "install" target.
-	@printf "%-8s %s\n" "(RM)" "$(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)"
+	@printf "%-8s %s\n" "(RM)" "$(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)" $(QUIETMODE)
 	@$(RM) $(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)
-	@printf "%-8s %s\n" "(RM)" "$(INSTALLBINDIR)/$(notdir $(INSTALLBIN))"
+	@printf "%-8s %s\n" "(RM)" "$(INSTALLBINDIR)/$(TARGETNAME)-debug$(TARGETSUFFIX)" $(QUIETMODE)
+	@$(RM) $(INSTALLBINDIR)/$(TARGETNAME)-debug$(TARGETSUFFIX)
+	@printf "%-8s %s\n" "(RM)" "$(INSTALLBINDIR)/$(notdir $(INSTALLBIN))" $(QUIETMODE)
 	@$(RM) $(INSTALLBINDIR)/$(notdir $(INSTALLBIN))
-	@printf "%-8s %s\n" "(RM)" "$(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))"
+	@printf "%-8s %s\n" "(RM)" "$(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))" $(QUIETMODE)
 	@$(RM) $(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))
-	@printf "%-8s %s\n" "(RM)" "$(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))"
+	@printf "%-8s %s\n" "(RM)" "$(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))" $(QUIETMODE)
 	@$(RM) $(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))
 
 #   Ensure all of the build and output directories exist.
@@ -190,13 +204,13 @@ prep:   ## Ensure the build and output directory trees exist as expected.
 #   Clean-hard will remove all of the object files, but also the outputs
 #   and the dependency files generated by the -MMD -MP flags.
 clean-hard: clean   ##  Perform a clean, as well as removing all products and *.d dependency files.
-	@printf "%-8s %s\n" "(RM)" "$(notdir $(RELBIN))"
+	@printf "%-8s %s\n" "(RM)" "$(notdir $(RELBIN))" $(QUIETMODE)
 	@$(RM) $(RELBIN)
-	@printf "%-8s %s\n" "(RM)" "$(notdir $(DBGBIN))"
+	@printf "%-8s %s\n" "(RM)" "$(notdir $(DBGBIN))" $(QUIETMODE)
 	@$(RM) $(DBGBIN)
-	@printf "%-8s %s\n" "(RM)" "$(notdir $(DBGRBIN))"
+	@printf "%-8s %s\n" "(RM)" "$(notdir $(DBGRBIN))" $(QUIETMODE)
 	@$(RM) $(DBGRBIN)
-	@printf "%-8s %s\n" "(RM)" "$(notdir $(TESTBIN))"
+	@printf "%-8s %s\n" "(RM)" "$(notdir $(TESTBIN))" $(QUIETMODE)
 	@$(RM) $(TESTBIN)
 
 #   Clean will only remove the object files, nothing more.
@@ -229,27 +243,27 @@ $(TESTCOMPONENTS):
 #   Ideally, this could be used in a build system to report the number of failing tests
 #   to some larger system, in order to ensure only successfully tested builds proceed.
 test: prep $(COMPONENTS) $(TESTCOMPONENTS)  ##  Build and then execute the testing suite.
-	@printf "%-8s %-16s -> %s\n" "(CC)" "$(notdir $(TESTOBJS))" "$(TESTBIN:$(ROOTDIR)/%=%)"
-	@$(CC) $(TESTFLAGS) -o $(TESTBIN) $(TESTOBJS) $(SLIBS) $(DLIBS)
-	@$(TESTBIN)
+	@printf "%-8s %-16s -> %s\n" "(CC)" "$(notdir $(TESTOBJS) $(DBGLIBS))" "$(TESTBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
+	@$(CC) $(TESTFLAGS) -o $(TESTBIN) $(TESTOBJS) $(DBGLIBS)
+	@$(TESTBIN) $(QUIETMODE)
 
 
 #   Debugger Build Target
 debugger: prep $(COMPONENTS) $(TESTCOMPONENTS)  ##  Build the project with debugging enabled, and insert an entry point for use with a debugger.
-	@printf "%-8s %-16s -> %s\n" "(CC)" "$(notdir $(DBGROBJS))" "$(DBGRBIN:$(ROOTDIR)/%=%)"
-	@$(CC) $(DBGRFLAGS) -o $(DBGRBIN) $(DBGROBJS) $(SLIBS) $(DLIBS)
+	@printf "%-8s %-16s -> %s\n" "(CC)" "$(notdir $(DBGROBJS) $(DBGLIBS))" "$(DBGRBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
+	@$(CC) $(DBGRFLAGS) -o $(DBGRBIN) $(DBGROBJS) $(DBGLIBS)
 
 
 #   Debug Build Target
 debug: prep $(COMPONENTS)   ##  Build the project with debugging enabled.
-	@printf "%-8s %-16s -> %s\n" "(LIBTOOL)" "$(notdir $(DBGOBJS)) " "$(DBGBIN:$(ROOTDIR)/%=%)"
-	@$(LIBTOOL) $(DBGBIN) $(DBGOBJS) $(SLIBS) $(DLIBS)
+	@printf "%-8s %-16s -> %s\n" "(LIBTOOL)" "$(notdir $(DBGOBJS) $(DBGLIBS)) " "$(DBGBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
+	@$(LIBTOOL) $(DBGBIN) $(DBGOBJS) $(DBGLIBS)
 
 
 #   Release Build Target
 release: prep $(COMPONENTS)    ##  Build the project with debugging disabled and strip the resulting output.
-	@printf "%-8s %-16s -> %s\n" "(LIBTOOL)" "$(notdir $(RELOBJS)) " "$(RELBIN:$(ROOTDIR)/%=%)"
-	@$(LIBTOOL) $(RELBIN) $(RELOBJS) $(SLIBS) $(DLIBS)
-	@printf "%-8s %s\n" "(STRIP)" "$(notdir $(RELBIN))"
+	@printf "%-8s %-16s -> %s\n" "(LIBTOOL)" "$(notdir $(RELOBJS) $(RELLIBS)) " "$(RELBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
+	@$(LIBTOOL) $(RELBIN) $(RELOBJS) $(RELLIBS)
+	@printf "%-8s %s\n" "(STRIP)" "$(notdir $(RELBIN))" $(QUIETMODE)
 	@$(STRIP) $(RELBIN)
 
