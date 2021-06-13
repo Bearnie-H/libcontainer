@@ -1665,336 +1665,393 @@ void Stack_Release(Stack_t* Stack);
 /*
     String_Create
 
-    This function...
+    This function creates and initializes a new String_t with the given character
+    character sequence and Length. The Value can be NULL, in which case the
+    String_t will simply be initialized in an empty state.
 
     Inputs:
-    ...
+    Value   -   Pointer to the character sequence to use as the initial value,
+                    or NULL to initialize to an empty state.
+    Length  -   The length of the initialization sequence. If 0 and Value
+                    is Non-NULL, strlen() will be used to compute this value.
 
     Outputs:
-    ...
+    String_t*   -   Pointer to a fully prepared and ready-to-use String_t, or NULL on failure.
 
     Note:
-    ...
+    The difference between String_Create() and String_CreateConst() is that String_t values
+    created with this function can be modified later. A String_t created with String_CreateConst()
+    CANNOT be modified after it is initialized. Generally, this function will be used as
+    the primary method of creating String_t values.
 */
 String_t* String_Create(char* Value, size_t Length);
 
 /*
     String_CreateConst
 
-    This function...
+    This function creates and initializes an immutable new String_t value with
+    the given character sequence. This function is intended to generally wrap
+    String literals to allow using the String_t API on them. A String_t
+    value created with this function does NOT own the memory associated with
+    the char* it is given - it only contains the pointer.
 
     Inputs:
-    ...
+    Value   -   Pointer to a C-string to set the String_t value to.
 
     Outputs:
-    ...
+    String_t*   -   Pointer to a fully prepared and immutable String_t, or NULL on failure.
 
     Note:
-    ...
+    The difference between String_Create() and String_CreateConst() is that String_t values
+    created with this function can be modified later. A String_t created with String_CreateConst()
+    CANNOT be modified after it is initialized. Generally, this function will be used to wrap
+    string literals to access the String_t API.
 */
 String_t* String_CreateConst(char* Value);
 
 /*
     String_Createf
 
-    This function...
+    This function creates and initializes a new String_t value based on the
+    results of the given format string and arguments. Essentially, this function
+    performs "sprintf()", but ensures safe allocation of the output buffer,
+    and wraps it in a String_t.
 
     Inputs:
-    ...
+    fmt     -   The raw format C-String to use to generate the initialization value for the String_t.
+    VarArgs -   The (optional) arguments as defined by the format string.
 
     Outputs:
-    ...
+    String_t*   -   Pointer to a fully prepared and ready-to-use String_t, or NULL on failure.
 
     Note:
-    ...
+    This function is helpful for creating complex strings, or for simply accessing a
+    memory-safe sprintf() API. See sprintf() for API details for fmt and the var-args.
 */
 String_t* String_Createf(const char* fmt, ...);
 
 /*
     String_SPrintf
 
-    This function...
+    This function acts similarly to String_Createf(), but operates on an existing
+    String_t. This ensures safe allocation and writes the resulting formatted
+    string to the String_t, overwriting any existing contents.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to write the resulting formatted string to.
+    fmt     -   The raw format C-String to use to generate the initialization value for the String_t.
+    VarArgs -   The (optional) arguments as defined by the format string.
 
     Outputs:
-    ...
+    int     -   Returns 0 on success, non-zero on failure.
 
     Note:
-    ...
+    This function is helpful for creating complex strings, or for simply accessing a
+    memory-safe sprintf() API. See sprintf() for API details for fmt and the var-args.
 */
 int String_SPrintf(String_t* String, const char* fmt, ...);
 
 /*
     String_Appendf
 
-    This function...
+    This function acts similarly to String_SPrintf(), but rather than overwriting the
+    existing String_t contents, will simply append the formatted string to the end
+    of the String_t. This is helpful for building complex strings in multiple stages.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to append the resulting formatted string to.
+    fmt     -   The raw format C-String to use to generate the initialization value for the String_t.
+    VarArgs -   The (optional) arguments as defined by the format string.
 
     Outputs:
-    ...
+    int     -   Returns 0 on success, non-zero on failure.
 
     Note:
-    ...
+    This function is helpful for creating complex strings, or for simply accessing a
+    memory-safe sprintf() API. See sprintf() for API details for fmt and the var-args.
 */
 int String_Appendf(String_t* String, const char* fmt, ...);
 
 /*
     String_Length
 
-    This function...
+    This function returns the Length of the String_t. If a NULL string is provided,
+    returns 0.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to operate on.
 
     Outputs:
-    ...
+    size_t  -   The length of the String_t, as measured in bytes.
 
     Note:
-    ...
+    This operation is O(1) in the length of the string.
 */
 size_t String_Length(String_t* String);
 
 /*
     String_IsEmpty
 
-    This function...
+    This function checks whether the String_t is empty or not.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to operate on.
 
     Outputs:
-    ...
+    bool    -   Returns true if the String_t contains no data, false otherwise.
 
     Note:
-    ...
+    This operation is O(1) in the length of the string.
 */
 bool String_IsEmpty(String_t* String);
 
 /*
     String_GetAtIndex
 
-    This function...
+    This function returns the character at the specified Index from within the String.
+    This performs bounds-checking to ensure valid access.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to operate on.
+    Index   -   The 0-based index within the String_t of the character to return.
 
     Outputs:
-    ...
-
-    Note:
-    ...
+    char    -   The character value at the specified index, or -1 on error.
 */
 char String_GetAtIndex(String_t* String, size_t Index);
 
 /*
     String_GetFront
 
-    This function...
+    This function returns the character at the front of the String.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to operate on.
 
     Outputs:
-    ...
-
-    Note:
-    ...
+    char    -   The character value at the specified index, or -1 on error.
 */
 char String_GetFront(String_t* String);
 
 /*
     String_GetBack
 
-    This function...
+    String_GetFront
+
+    This function returns the character at the end of the String.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to operate on.
 
     Outputs:
-    ...
-
-    Note:
-    ...
+    char    -   The character value at the specified index, or -1 on error.
 */
 char String_GetBack(String_t* String);
 
 /*
     String_Insert
 
-    This function...
+    This function inserts the given substring of length "Length" into
+    the String_t, starting at the specified Index.
 
     Inputs:
-    ...
+    String      -   Pointer to the String_t to operate on.
+    ToInsert    -   Pointer to the new C-String to insert into the String_t.
+    Index       -   The 0-based index to begin writing into the String_t.
+    Length      -   The length of the C-String passed to this function.
 
     Outputs:
-    ...
-
-    Note:
-    ...
+    int     -   Returns 0 on success, non-zero on failure.
 */
 int String_Insert(String_t* String, char* ToInsert, size_t Index, size_t Length);
 
 /*
     String_Prepend
 
-    This function...
+    This function inserts the given substring of length "Length" into
+    the String_t, starting at the front of the string.
 
     Inputs:
-    ...
+    String      -   Pointer to the String_t to operate on.
+    ToInsert    -   Pointer to the new C-String to insert into the String_t.
+    Length      -   The length of the C-String passed to this function.
 
     Outputs:
-    ...
-
-    Note:
-    ...
+    int     -   Returns 0 on success, non-zero on failure.
 */
 int String_Prepend(String_t* String, char* ToInsert, size_t Length);
 
 /*
     String_Append
 
-    This function...
+    This function inserts the given substring of length "Length" into
+    the String_t, starting at the front of the string.
 
     Inputs:
-    ...
+    String      -   Pointer to the String_t to operate on.
+    ToInsert    -   Pointer to the new C-String to insert into the String_t.
+    Length      -   The length of the C-String passed to this function.
 
     Outputs:
-    ...
-
-    Note:
-    ...
+    int     -   Returns 0 on success, non-zero on failure.
 */
 int String_Append(String_t* String, char* ToInsert, size_t Length);
 
 /*
     String_Replace
 
-    This function...
+    This function inserts the given substring of length "Length" into
+    the String_t, starting at the front of the string. This overwrites
+    the existing contents of the String_t.
 
     Inputs:
-    ...
+    String      -   Pointer to the String_t to operate on.
+    ToInsert    -   Pointer to the new C-String to insert into the String_t.
+    Index       -   The 0-based index to begin writing into the String_t.
+    Length      -   The length of the C-String passed to this function.
 
     Outputs:
-    ...
-
-    Note:
-    ...
+    int     -   Returns 0 on success, non-zero on failure.
 */
 int String_Replace(String_t* String, char* ToInsert, size_t Index, size_t Length);
 
 /*
     String_Set
 
-    This function...
+    This function updates the String_t contents, setting the value to the
+    newly provided C-string.
 
     Inputs:
-    ...
+    String      -   Pointer to the String_t to operate on.
+    NewValue    -   Pointer to the new C-String value to set the String_t to.
+    Length      -   The length of the C-String value passed to this function.
 
     Outputs:
-    ...
-
-    Note:
-    ...
+    int     -   Returns 0 on success, non-zero on failure.
 */
 int String_Set(String_t* String, char* NewValue, size_t Length);
 
 /*
     String_ToCString
 
-    This function...
+    This function returns a C-String compatible pointer to the string
+    contents it holds. This is asserted to be NUL-terminated and compatible
+    with all standard library functions.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to operate on.
 
     Outputs:
-    ...
+    char*   -   A pointer to the C-String compatible contents of the String_t.
+                    NULL on failure.
 
     Note:
-    ...
+    This is an O(1) operation, and is reasonably efficient so caching the result is
+    not necessary.
 */
 char* String_ToCString(String_t* String);
 
 /*
-    String_Copy
+    String_Unwrap
 
-    This function...
+    This function unwraps a String_t into a raw C-String value, transferring
+    memory ownership to the caller.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to operate on.
 
     Outputs:
-    ...
+    char*   -   A pointer to the C-String compatible contents of the String_t.
+                    NULL on failure.
 
     Note:
-    ...
+    Memory ownership of the returned pointer is transferred to the caller.
+    This must be released eventually with a call to free(), or else this will
+    leak memory.
+*/
+char* String_Unwrap(String_t* String);
+
+/*
+    String_Copy
+
+    This function creates an independent copy of the given String_t.
+
+    Inputs:
+    String  -   Pointer to the String_t to operate on.
+
+    Outputs:
+    String_t*   -   Newly created, independent String_t value containing a copy
+                        of the original's contents.
 */
 String_t* String_Copy(String_t* String);
 
 /*
     String_Substring
 
-    This function...
+    This function creates a new, independent copy of a section of a given String_t.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to operate on.
+    Index   -   The 0-based index to start the Substring from.
+    Length  -   The length of the Substring to copy.
 
     Outputs:
-    ...
+    String_t*   -   Pointer to the newly created String_t containing the
+                        requested substring, or NULL on error.
 
     Note:
-    ...
+    If the requested (Index, Length) pair would overrun the String_t, they will
+    be truncated to the end of the String_t.
 */
 String_t* String_Substring(String_t* String, size_t Index, size_t Length);
 
 /*
     String_Compare
 
-    This function...
+    This function compares two String_t values. Very similar to strcmp() and
+    memcmp(), but with the added memory safety from the String_t API.
 
     Inputs:
-    ...
+    A       -   Pointer to the first String_t to operate on.
+    B       -   Pointer to the second String_t to operate on.
 
     Outputs:
-    ...
+    Returns:
+                Negative if A < B
+                0        if A == B
+                Positive if A > B
 
     Note:
-    ...
+    This function treates NULL String_t values as Greater than all legal values,
+    as well as NULL == NULL returning 0.
 */
 int String_Compare(String_t* A, String_t* B);
 
 /*
     String_Clear
 
-    This function...
+    This function clears the contents of the String_t, releasing
+    the contents but retaining the container for later use.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to operate on.
 
     Outputs:
-    ...
-
-    Note:
-    ...
+    int     -   Returns 0 on success, non-zero on failure.
 */
 int String_Clear(String_t* String);
 
 /*
     String_Release
 
-    This function...
+    This function will fully release the resources associated with the
+    given String_t.
 
     Inputs:
-    ...
+    String  -   Pointer to the String_t to operate on.
 
     Outputs:
-    ...
-
-    Note:
-    ...
+    None, the String_t is released safely.
 */
 void String_Release(String_t* String);
 

@@ -45,7 +45,19 @@ struct String_t {
     bool IsConst;
 };
 
-/* ... */
+/*
+    String_grow
+
+    This function grows the underlying allocation, ensuring there is room for at least
+    "AdditionalCapacity" more bytes.
+
+    Inputs:
+    String              -   Pointer to the String_t to operate on.
+    AdditionalCapacity  -   The number of additional bytes to ensure the String_t can hold.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
 int String_grow(String_t* String, size_t AdditionalCapacity);
 
 #if defined(TESTING) || defined(DEBUGGER)

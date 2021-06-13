@@ -41,6 +41,12 @@ String_t *String_Create(char *Value, size_t Length) {
         return NULL;
     }
 
+    if ((NULL != Value) && (0 == Length)) {
+        DEBUG_PRINTF("%s", "Note: Non-NULL Value provided, but 0 Length specified. Computing "
+                           "Length with strlen().");
+        Length = strlen(Value);
+    }
+
     String->Contents = Array_Create(Length, sizeof(char));
     if (NULL == String->Contents) {
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for String_t contents.");
@@ -107,13 +113,13 @@ char String_GetAtIndex(String_t *String, size_t Index) {
 
     if (NULL == String) {
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
-        return 0x00;
+        return -1;
     }
 
     Character = (char *)Array_GetElement(String->Contents, Index);
     if (NULL == Character) {
         DEBUG_PRINTF("Error: Failed to retrieve item at index [ %d ] from String.", (int)Index);
-        return 0x00;
+        return -1;
     }
 
     return *Character;
@@ -231,6 +237,22 @@ char *String_ToCString(String_t *String) {
     String->Contents->Contents.ContentBytes[String->Contents->Length] = 0x00;
 
     return (char *)String->Contents->Contents.ContentBytes;
+}
+
+char *String_Unwrap(String_t *String) {
+
+    char *Unwrapped = NULL;
+
+    Unwrapped = String_ToCString(String);
+    if (NULL == Unwrapped) {
+        DEBUG_PRINTF("%s", "Error: Failed to get raw C-String from String_t.");
+        return NULL;
+    }
+
+    String->Contents->Contents.ContentBytes = NULL;
+    String_Release(String);
+
+    return Unwrapped;
 }
 
 String_t *String_Copy(String_t *String) {
