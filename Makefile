@@ -87,7 +87,7 @@ TESTCOMPONENTS := src
 #   Additional Libraries to include when building the final applications
 SLIBS          := $(wildcard $(LIBDIR)/*.a)     #   Static Libraries
 DLIBS          := $(wildcard $(LIBDIR)/*.so)    #   Dynamic Libraries
-RELLIBS        := $(filter-out %debug.a %debug.so, $(SLIBS) $(DLIBS))
+RELLIBS        := $(filter-out %debug %debug.a %debug.so, $(SLIBS) $(DLIBS))
 ifdef USE_DEBUG_LIBS
 DBGLIBS        := $(filter-out $(RELLIBS), $(SLIBS) $(DLIBS))
 else
@@ -128,12 +128,14 @@ TESTTARGET   := $(TARGET)-test$(TESTSUFFIX)
 TESTBIN      := $(TESTOUTDIR)/$(TESTTARGET)
 
 #   Install Build Settings - Define to allow building the install target
-INSTALL_PATH     ?= /usr/local/$(TARGETNAME)#   If this is defined as an environment variable, allow this to be overwritten
-INSTALLBINDIR    := $(INSTALL_PATH)/lib
-INSTALLHEADERDIR := $(INSTALL_PATH)/include
-INSTALLMANDIR    ?= /usr/local/share/man/man1
-INSTALLDIRS      := $(INSTALLBINDIR) $(INSTALLHEADERDIR) $(INSTALLMANDIR)
-#   Other installation directories go here...
+INSTALL_PATH             ?= /usr/local
+TARGET_INSTALL_PATH      := $(INSTALL_PATH)/$(TARGETNAME)
+TARGET_INSTALL_BINDIR    := $(TARGET_INSTALL_PATH)/lib
+TARGET_INSTALL_HEADERDIR := $(TARGET_INSTALL_PATH)/include
+INSTALL_BINDIR           := $(INSTALL_PATH)/lib
+INSTALL_HEADERDIR        := $(INSTALL_PATH)/include
+INSTALLMANDIR            ?= /usr/local/share/man/man1
+INSTALLDIRS              := $(TARGET_INSTALL_BINDIR) $(TARGET_INSTALL_HEADERDIR) $(INTALL_BINDIR) $(INSTALL_HEADERDIR) $(INSTALLMANDIR)
 
 INSTALLHEADERS   := $(wildcard $(ROOTDIR)/include/*.h)
 INSTALLMANPAGES  := $(wildcard $(ROOTDIR)/man/*.1)
@@ -164,28 +166,35 @@ help: ## Show this help menu.
 #   Before installing anything, make sure the "release" target is fully up-to-date
 install: ## Build and install the release target to your system
 	@$(MKDIR) $(INSTALLDIRS)
-	@printf "%-8s %-16s -> %s\n" "(CP)" "$(RELBIN)" "$(INSTALLBINDIR)/$(notdir $(RELBIN))" $(QUIETMODE)
-	@$(CP) $(RELBIN) $(INSTALLBINDIR)/$(notdir $(RELBIN))
-	@printf "%-8s %-16s -> %s\n" "(CP)" "$(DBGBIN)" "$(INSTALLBINDIR)/$(notdir $(DBGBIN))" $(QUIETMODE)
-	@$(CP) $(DBGBIN) $(INSTALLBINDIR)/$(notdir $(DBGBIN))
-	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLHEADERS)" "$(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))" $(QUIETMODE)
-	@$(CP) $(INSTALLHEADERS) $(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))
+	@printf "%-8s %-16s -> %s\n" "(CP)" "$(RELBIN)" "$(TARGET_INSTALL_BINDIR)/$(notdir $(RELBIN))" $(QUIETMODE)
+	@$(CP) $(RELBIN) $(TARGET_INSTALL_BINDIR)/$(notdir $(RELBIN))
+	@printf "%-8s %-16s -> %s\n" "(CP)" "$(DBGBIN)" "$(TARGET_INSTALL_BINDIR)/$(notdir $(DBGBIN))" $(QUIETMODE)
+	@$(CP) $(DBGBIN) $(TARGET_INSTALL_BINDIR)/$(notdir $(DBGBIN))
+	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLHEADERS)" "$(addprefix $(TARGET_INSTALL_HEADERDIR)/,$(notdir $(INSTALLHEADERS)))" $(QUIETMODE)
+	@$(CP) $(INSTALLHEADERS) $(addprefix $(TARGET_INSTALL_HEADERDIR)/,$(notdir $(INSTALLHEADERS)))
 	@printf "%-8s %-16s -> %s\n" "(CP)" "$(INSTALLMANPAGES)" "$(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))" $(QUIETMODE)
 	@$(CP) $(INSTALLMANPAGES) $(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))
 	@printf "%-8s %-16s -> %s\n" "(LN)" "$(notdir $(RELBIN))" "$(TARGETNAME)$(TARGETSUFFIX)" $(QUIETMODE)
-	@$(LN) $(INSTALLBINDIR)/$(notdir $(RELBIN)) $(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)
+	@$(LN) $(TARGET_INSTALL_BINDIR)/$(notdir $(RELBIN)) $(INSTALL_BINDIR)/$(TARGETNAME)$(TARGETSUFFIX)
 	@printf "%-8s %-16s -> %s\n" "(LN)" "$(notdir $(DBGBIN))" "$(TARGETNAME)-debug$(TARGETSUFFIX)" $(QUIETMODE)
-	@$(LN) $(INSTALLBINDIR)/$(notdir $(DBGBIN)) $(INSTALLBINDIR)/$(TARGETNAME)-debug$(TARGETSUFFIX)
+	@$(LN) $(TARGET_INSTALL_BINDIR)/$(notdir $(DBGBIN)) $(INSTALL_BINDIR)/$(TARGETNAME)-debug$(TARGETSUFFIX)
+	@printf "%-8s %-16s -> %s\n" "(LN)" "$(TARGET_INSTALL_HEADERDIR)/$(TARGETNAME).h" "$(INSTALL_HEADERDIR)/$(TARGETNAME).h" $(QUIETMODE)
+	@$(LN) $(TARGET_INSTALL_HEADERDIR)/$(notdir $(TARGETNAME).h) $(INSTALL_HEADERDIR)/$(TARGETNAME).h
+	@printf "Successfully installed library to [ %s ] and header to [ %s ].\n" "$(INSTALL_BINDIR)" "$(INSTALL_HEADERDIR)"
 
 uninstall:  ## Remove everything installed by the "install" target.
-	@printf "%-8s %s\n" "(RM)" "$(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)" $(QUIETMODE)
-	@$(RM) $(INSTALLBINDIR)/$(TARGETNAME)$(TARGETSUFFIX)
-	@printf "%-8s %s\n" "(RM)" "$(INSTALLBINDIR)/$(TARGETNAME)-debug$(TARGETSUFFIX)" $(QUIETMODE)
-	@$(RM) $(INSTALLBINDIR)/$(TARGETNAME)-debug$(TARGETSUFFIX)
-	@printf "%-8s %s\n" "(RM)" "$(INSTALLBINDIR)/$(notdir $(INSTALLBIN))" $(QUIETMODE)
-	@$(RM) $(INSTALLBINDIR)/$(notdir $(INSTALLBIN))
-	@printf "%-8s %s\n" "(RM)" "$(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))" $(QUIETMODE)
-	@$(RM) $(addprefix $(INSTALLHEADERDIR)/,$(notdir $(INSTALLHEADERS)))
+	@printf "%-8s %s\n" "(RM)" "$(INSTALL_BINDIR)/$(TARGETNAME)$(TARGETSUFFIX)" $(QUIETMODE)
+	@$(RM) $(INSTALL_BINDIR)/$(TARGETNAME)$(TARGETSUFFIX)
+	@printf "%-8s %s\n" "(RM)" "$(INSTALL_BINDIR)/$(TARGETNAME)-debug$(TARGETSUFFIX)" $(QUIETMODE)
+	@$(RM) $(INSTALL_BINDIR)/$(TARGETNAME)-debug$(TARGETSUFFIX)
+	@printf "%-8s %s\n" "(RM)" "$(TARGET_INSTALL_BINDIR)/$(notdir $(RELBIN))" $(QUIETMODE)
+	@$(RM) $(TARGET_INSTALL_BINDIR)/$(notdir $(RELBIN))
+	@printf "%-8s %s\n" "(RM)" "$(TARGET_INSTALL_BINDIR)/$(notdir $(DBGBIN))" $(QUIETMODE)
+	@$(RM) $(TARGET_INSTALL_BINDIR)/$(notdir $(DBGBIN))
+	@printf "%-8s %s\n" "(RM)" "$(addprefix $(TARGET_INSTALL_HEADERDIR)/,$(notdir $(INSTALLHEADERS)))" $(QUIETMODE)
+	@$(RM) $(addprefix $(TARGET_INSTALL_HEADERDIR)/,$(notdir $(INSTALLHEADERS)))
+	@printf "%-8s %s\n" "(RM)" "$(INSTALL_HEADERDIR)/$(TARGETNAME).h" $(QUIETMODE)
+	@$(RM) $(INSTALL_HEADERDIR)/$(TARGETNAME).h
 	@printf "%-8s %s\n" "(RM)" "$(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))" $(QUIETMODE)
 	@$(RM) $(addprefix $(INSTALLMANDIR)/,$(notdir $(INSTALLMANPAGES)))
 
