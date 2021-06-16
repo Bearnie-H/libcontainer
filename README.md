@@ -134,6 +134,7 @@ These include:
 * Extending `Binary_Tree_t` to specify duplicate-item handling, i.e. ignore-new, overwrite, error, etc.
 * Extending `Array_t` and `List_t` to provide a `*_Sort()` and `*_SortStable()` interface.
 * Extending `Hashmap_t` to provide a `*_Keys()` interface to retrieve the set of added Keys.
+* Extending `Hashmap_t` to provide a `*_Values()` interface to retrieve the set of added Keys.
 * Extending all containers with a `*_Next()` interface for single-step iteration over the Values.
 
 ## License
