@@ -204,7 +204,7 @@ int Hashmap_Remove(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
     Node = Bucket->Head;
     while (Node != NULL) {
-        Entry = *(Hashmap_Entry_t **)&(Node->Contents);
+        Entry = (Hashmap_Entry_t *)Node->Contents.ContentRaw;
         if (Entry->HashValue == HashValue) {
             if (0 == memcmp(Key, Entry->Key, KeySize)) {
                 List_removeNode(Bucket, Node);
@@ -249,11 +249,11 @@ void *Hashmap_Pop(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
     Node = Bucket->Head;
     while (NULL != Node) {
-        Entry = *(Hashmap_Entry_t **)&(Node->Contents);
+        Entry = (Hashmap_Entry_t *)Node->Contents.ContentRaw;
         if (Entry->HashValue == HashValue) {
             if (0 == memcmp(Key, Entry->Key, Entry->KeySize)) {
                 Entry->ValueSize = 0;
-                Value = Entry->Value;
+                Value = Entry->Value.ValueRaw;
                 List_removeNode(Bucket, Node);
                 Map->ItemCount -= 1;
                 return Value;
@@ -325,11 +325,11 @@ void *Hashmap_findInBucket(const List_t *Bucket, const void *Key, size_t KeySize
 
     Node = Bucket->Head;
     while (Node != NULL) {
-        Entry = *(Hashmap_Entry_t **)&(Node->Contents);
+        Entry = (Hashmap_Entry_t *)Node->Contents.ContentRaw;
         if (Entry->HashValue == HashValue) {
             if (0 == memcmp(Key, Entry->Key, KeySize)) {
                 DEBUG_PRINTF("%s", "Successfully found and returned requested item from Hashmap.");
-                return (void *)Entry->Value;
+                return Entry->Value.ValueRaw;
             }
         }
         Node = Node->Next;
@@ -375,27 +375,34 @@ void Hashmap_rehash(Hashmap_t *Map) {
     double LoadFactor = 0;
     List_t *Bucket = NULL;
     Hashmap_Entry_t *Entry = NULL;
-    size_t BucketIndex = 0, BucketLength = 0, i = 0;
-    size_t MapLength = 0;
+    size_t BucketIndex = 0, BucketLength = 0, OriginalBucketCount = 0, NewBucketCount = 0, i = 0;
 
     if (NULL == Map) {
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
         return;
     }
 
-    LoadFactor = ((double)(Map->ItemCount) / (double)(Array_Length(Map->Buckets)));
+    OriginalBucketCount = Array_Length(Map->Buckets);
+
+    LoadFactor = ((double)(Map->ItemCount) / (double)(OriginalBucketCount));
     if (LoadFactor <= LIBCONTAINER_HASHMAP_LOAD_FACTOR) {
         DEBUG_PRINTF("Note: Hashmap Load factor of [ %f ] is below rehash threshold [ %f ].",
                      LoadFactor, (double)LIBCONTAINER_HASHMAP_LOAD_FACTOR);
         return;
     }
 
-    if (0 != Array_Grow(Map->Buckets, Array_Length(Map->Buckets) - 1)) {
+    if (ARRAY_DOUBLING_THRESHOLD >= OriginalBucketCount) {
+        NewBucketCount = OriginalBucketCount;
+    } else {
+        NewBucketCount = ARRAY_DOUBLING_THRESHOLD;
+    }
+
+    if (0 != Array_Grow(Map->Buckets, NewBucketCount - 1)) {
         DEBUG_PRINTF("%s", "Warning: Failed to grow internal Buckets array, aborting rehash.");
         return;
     }
 
-    while (Array_Length(Map->Buckets) != Array_Capacity(Map->Buckets)) {
+    for (i = 0; i < NewBucketCount; i++) {
         Bucket = List_Create();
         if (0 != Array_Append(Map->Buckets, &Bucket)) {
             DEBUG_PRINTF("%s", "Error: Failed to add new Bucket to expand Hashmap_t.");
@@ -403,10 +410,7 @@ void Hashmap_rehash(Hashmap_t *Map) {
         }
     }
 
-    MapLength = Hashmap_Length(Map);
-
-    for (BucketIndex = 0; BucketIndex < Array_Length(Map->Buckets); BucketIndex++) {
-
+    for (BucketIndex = 0; BucketIndex < OriginalBucketCount; BucketIndex++) {
         Bucket = (List_t *)Array_GetElement(Map->Buckets, BucketIndex);
         BucketLength = List_Length(Bucket);
 
@@ -417,10 +421,9 @@ void Hashmap_rehash(Hashmap_t *Map) {
                              "Error: Failed to rehash item for expanded Hashmap_t, dropping item.");
                 Hashmap_Entry_Release(Entry);
             }
+            Map->ItemCount -= 1;
         }
     }
-
-    Map->ItemCount = MapLength;
 
     return;
 }

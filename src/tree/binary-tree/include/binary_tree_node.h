@@ -66,7 +66,10 @@ struct Binary_Tree_Node_t {
         It is the responsibility of the user to ensure
         type matching and sizing.
     */
-    uint8_t* Value;
+    union {
+        uint8_t* ValueBytes;
+        void* ValueRaw;
+    } Value;
 
     /*
         ReleaseFunc holds the function to call to release the resources

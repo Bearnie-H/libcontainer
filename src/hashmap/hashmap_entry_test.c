@@ -74,9 +74,9 @@ int Test_Hashmap_Entry_Update(void) {
         TEST_FAILURE;
     }
 
-    if ((**(double **)&(Entry->Value) - NewValue) > Epsilon) {
+    if ((*(double *)(Entry->Value.ValueRaw) - NewValue) > Epsilon) {
         TEST_PRINTF("Test Failure - Hashmap_Entry_t Value (%f) not equal to expectation (%f).",
-                    **(double **)&(Entry->Value), NewValue);
+                    *(double *)(Entry->Value.ValueRaw), NewValue);
         Hashmap_Entry_Release(Entry);
         TEST_FAILURE;
     }

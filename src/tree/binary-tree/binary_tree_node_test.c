@@ -70,9 +70,9 @@ int Test_Binary_Tree_Node_Update(void) {
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(Node->Value, &NewValue, sizeof(NewValue))) {
+    if (0 != memcmp(Node->Value.ValueBytes, &NewValue, sizeof(NewValue))) {
         TEST_PRINTF("Test Failure - Node value (%d) not equal to expected value (%d).",
-                    **(int **)&(Node->Value), NewValue);
+                    *(int *)(Node->Value.ValueRaw), NewValue);
         Binary_Tree_Node_Release(Node);
         TEST_FAILURE;
     }

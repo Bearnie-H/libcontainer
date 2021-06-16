@@ -64,7 +64,7 @@ Binary_Tree_Node_t *Binary_Tree_Node_Create(int Key, size_t ValueSize, void *Val
     Node->RightChild = NULL;
 
     Node->ReleaseFunc = ReleaseFunc;
-    Node->Value = Contents;
+    Node->Value.ValueBytes = Contents;
     Node->ValueSize = ValueSize;
 
     DEBUG_PRINTF("%s", "Successfully created Binary_Tree_Node_t.");
@@ -104,13 +104,13 @@ int Binary_Tree_Node_Update(Binary_Tree_Node_t *Node, void *NewValue, size_t Val
         memcpy(TempValue, NewValue, ValueSize);
     }
 
-    if (Node->Value != NULL) {
+    if (Node->Value.ValueRaw != NULL) {
         DEBUG_PRINTF("%s", "Binary_Tree_Node_t has non-NULL value, releasing.");
-        Node->ReleaseFunc(Node->Value);
+        Node->ReleaseFunc(Node->Value.ValueRaw);
     }
 
     DEBUG_PRINTF("%s", "Successfully updated value of Binary_Tree_Node_t.");
-    Node->Value = TempValue;
+    Node->Value.ValueBytes = TempValue;
     Node->ValueSize = ValueSize;
     return 0;
 }
@@ -126,8 +126,8 @@ void Binary_Tree_Node_Release(Binary_Tree_Node_t *Node) {
     Binary_Tree_Node_Release(Node->LeftChild);
     Binary_Tree_Node_Release(Node->RightChild);
 
-    if (NULL != Node->Value) {
-        Node->ReleaseFunc(Node->Value);
+    if (NULL != Node->Value.ValueRaw) {
+        Node->ReleaseFunc(Node->Value.ValueRaw);
     }
 
     Parent = Node->Parent;

@@ -23,37 +23,24 @@
 #include <stdio.h>
 
 /* Definition of the entry point for the testing suite. */
-int Test_main(int argc, char **argv);
+int Test_main(void);
 
-int main(int argc, char **argv) {
+int main(void) {
 
 #if defined(TESTING)
     /* If the executable is built in Test-mode, call the main testing function
      * and exit. */
-    return Test_main(argc, argv);
+    return Test_main();
 }
 #else
-
-    int i;
 
 #if defined(DEBUGGER)
 
     /* If the executable is built in Debugger-mode, call the main testing
      * function and continue with normal operation. */
-    Test_main(argc, argv);
+    Test_main();
 
 #endif
-
-    /* Otherwise, do the standard application logic */
-
-    /* Placeholder code here to do *something* outwardly visible,
-        and to suppress the 'w-unused-parameter' compiler warning for this
-       function. */
-    printf("Executing: %s", argv[0]);
-    for (i = 1; i < argc; i++) {
-        printf(" %s", argv[i]);
-    }
-    printf("\n");
 
     return 0;
 }

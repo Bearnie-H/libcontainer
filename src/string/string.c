@@ -113,13 +113,13 @@ char String_GetAtIndex(String_t *String, size_t Index) {
 
     if (NULL == String) {
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
-        return -1;
+        return 0x00;
     }
 
     Character = (char *)Array_GetElement(String->Contents, Index);
     if (NULL == Character) {
         DEBUG_PRINTF("Error: Failed to retrieve item at index [ %d ] from String.", (int)Index);
-        return -1;
+        return 0x00;
     }
 
     return *Character;

@@ -38,6 +38,7 @@ extern "C" {
 #endif
 
 #include <sys/types.h>
+#include <stdarg.h>
 #include <stdbool.h>
 
 /* ++++++++++ Exported Library Macros ++++++++++ */
@@ -140,6 +141,7 @@ typedef struct Hashmap_t Hashmap_t;
     following key types:
 
         -   int
+        -   long
         -   double
         -   string (char*) ( optionally NULL terminated, but not necessary if size_t is provided. )
 
@@ -316,6 +318,65 @@ typedef int(CallbackArgFunc_t)(void*, void*);
 /* ---------- Exported Library Types ---------- */
 
 /* ++++++++++ Exported Library Functions ++++++++++ */
+
+/*
+    Print_Libcontainer_Library_Version
+
+    This function prints the library version documentation string to STDOUT.
+    This prints out the version information, in MAJOR.MINOR.PATCH format,
+    as well as the date and time at which the library was compiled.
+
+    Inputs:
+    None
+
+    Outputs:
+    None, the information is printed to stdout.
+
+    Note:
+    The internal version information used by this function is set during the library
+    build process. This function is primarily intended as a human-readable method
+    to understand when the library was made, and what version it's on.
+*/
+void Print_Libcontainer_Library_Version(void);
+
+/*
+    Libcontainer_Library_Version
+
+    This function returns the Version-Code of the compiled library.
+    This Version-Code is on AA.BB.CC format, where:
+        AA  -   Major Version
+        BB  -   Minor Version
+        CC  -   Patch Version
+
+    Inputs:
+    None
+
+    Outputs:
+    long    -   AABBCC Version Code of the compiled library.
+
+    Note:
+    The internal version information used by this function is set during the library
+    build process.
+*/
+long Libcontainer_Library_Version(void);
+
+/*
+    Libcontainer_Build_Time
+
+    This function returns as a long the YYYYMMDD date at which the
+    library was compiled.
+
+    Inputs:
+    None
+
+    Outputs:
+    long    -   YYYYMMDD datestamp at which the library was compiled.
+
+    Note:
+    The internal time information used by this function is set during the library
+    build process.
+*/
+long Libcontainer_Build_Time(void);
 
 #ifdef LIBCONTAINER_ENABLE_ARRAY
 /* ++++++++++ Public Array_t Functions ++++++++++ */
@@ -976,8 +1037,8 @@ int List_DoCallbackArg(List_t* List, CallbackArgFunc_t* Callback, void* Args);
     KeySize -   Size of the key (in bytes). Optional as Int has a known constant size.
 
     Outputs:
-    int     -   The hashed value of the key, to be used internally by the Hashmap_t to store the
-                    corresponding value.
+    unsigned int    -   The hashed value of the key, to be used internally by the Hashmap_t to store the
+                            corresponding value.
 
     Note:
     As this function is part of the built-in set provided by this library, and the key is a
@@ -997,8 +1058,8 @@ HashFunc_t HashFunc_Int;
     KeySize -   Size of the key (in bytes). Optional as Int has a known constant size.
 
     Outputs:
-    int     -   The hashed value of the key, to be used internally by the Hashmap_t to store the
-                    corresponding value.
+    unsigned int    -   The hashed value of the key, to be used internally by the Hashmap_t to store the
+                            corresponding value.
 
     Note:
     As this function is part of the built-in set provided by this library, and the key is a
@@ -1018,8 +1079,8 @@ HashFunc_t HashFunc_Long;
     KeySize -   Size of the key (in bytes). Optional as Double has a known constant size.
 
     Outputs:
-    int     -   The hashed value of the key, to be used internally by the Hashmap_t to store the
-                    corresponding value.
+    unsigned int    -   The hashed value of the key, to be used internally by the Hashmap_t to store the
+                            corresponding value.
 
     Note:
     As this function is part of the built-in set provided by this library, and the key is a
@@ -1031,7 +1092,7 @@ HashFunc_t HashFunc_Double;
 /*
     HashFunc_String
 
-    This function computes the necessary hash value for a *string* type key
+    This function computes the necessary hash value for a *string* (char*) type key
     for use with the Hashmap_t container.
 
     Inputs:
@@ -1041,8 +1102,8 @@ HashFunc_t HashFunc_Double;
                     If non-zero, use KeySize as the length of the given string.
 
     Outputs:
-    int     -   The hashed value of the key, to be used internally by the Hashmap_t to store the
-                    corresponding value.
+    unsigned int    -   The hashed value of the key, to be used internally by the Hashmap_t to store the
+                            corresponding value.
 
     Note:
     This is the default HashFunc if NULL is given when creating a Hashmap_t.
@@ -1731,6 +1792,27 @@ String_t* String_CreateConst(char* Value);
 String_t* String_Createf(const char* fmt, ...);
 
 /*
+    String_VCreatef
+
+    This function creates and initializes a new String_t value based on the
+    results of the given format string and arguments. Essentially, this function
+    performs "sprintf()", but ensures safe allocation of the output buffer,
+    and wraps it in a String_t.
+
+    Inputs:
+    fmt     -   The raw format C-String to use to generate the initialization value for the String_t.
+    VarArgs -   The (optional) arguments as defined by the format string.
+
+    Outputs:
+    String_t*   -   Pointer to a fully prepared and ready-to-use String_t, or NULL on failure.
+
+    Note:
+    This function is helpful for creating complex strings, or for simply accessing a
+    memory-safe sprintf() API. See sprintf() for API details for fmt and the var-args.
+*/
+String_t* String_VCreatef(const char* fmt, va_list VarArgs);
+
+/*
     String_SPrintf
 
     This function acts similarly to String_Createf(), but operates on an existing
@@ -1752,6 +1834,26 @@ String_t* String_Createf(const char* fmt, ...);
 int String_SPrintf(String_t* String, const char* fmt, ...);
 
 /*
+    String_VSPrintf
+
+    This function provides the String_SPrintf() function, but exposes the va_list
+    for better embedding in other variadic functions.
+
+    Inputs:
+    String  -   Pointer to the String_t to write the resulting formatted string to.
+    fmt     -   The raw format C-String to use to generate the initialization value for the String_t.
+    VarArgs -   The (optional) arguments as defined by the format string.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+
+    Note:
+    This function is helpful for creating complex strings, or for simply accessing a
+    memory-safe sprintf() API. See sprintf() for API details for fmt and the var-args.
+*/
+int String_VSPrintf(String_t* String, const char* fmt, va_list VarArgs);
+
+/*
     String_Appendf
 
     This function acts similarly to String_SPrintf(), but rather than overwriting the
@@ -1771,6 +1873,27 @@ int String_SPrintf(String_t* String, const char* fmt, ...);
     memory-safe sprintf() API. See sprintf() for API details for fmt and the var-args.
 */
 int String_Appendf(String_t* String, const char* fmt, ...);
+
+/*
+    String_VAppendf
+
+    This function acts similarly to String_SPrintf(), but rather than overwriting the
+    existing String_t contents, will simply append the formatted string to the end
+    of the String_t. This is helpful for building complex strings in multiple stages.
+
+    Inputs:
+    String  -   Pointer to the String_t to append the resulting formatted string to.
+    fmt     -   The raw format C-String to use to generate the initialization value for the String_t.
+    VarArgs -   The (optional) arguments as defined by the format string.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+
+    Note:
+    This function is helpful for creating complex strings, or for simply accessing a
+    memory-safe sprintf() API. See sprintf() for API details for fmt and the var-args.
+*/
+int String_VAppendf(String_t* String, const char* fmt, va_list VarArgs);
 
 /*
     String_Length
@@ -1816,7 +1939,7 @@ bool String_IsEmpty(String_t* String);
     Index   -   The 0-based index within the String_t of the character to return.
 
     Outputs:
-    char    -   The character value at the specified index, or -1 on error.
+    char    -   The character value at the specified index, or 0x00 on error.
 */
 char String_GetAtIndex(String_t* String, size_t Index);
 
@@ -1829,7 +1952,7 @@ char String_GetAtIndex(String_t* String, size_t Index);
     String  -   Pointer to the String_t to operate on.
 
     Outputs:
-    char    -   The character value at the specified index, or -1 on error.
+    char    -   The character value at the specified index, or 0x00 on error.
 */
 char String_GetFront(String_t* String);
 
@@ -1844,7 +1967,7 @@ char String_GetFront(String_t* String);
     String  -   Pointer to the String_t to operate on.
 
     Outputs:
-    char    -   The character value at the specified index, or -1 on error.
+    char    -   The character value at the specified index, or 0x00 on error.
 */
 char String_GetBack(String_t* String);
 
@@ -1955,7 +2078,7 @@ char* String_ToCString(String_t* String);
     String_Unwrap
 
     This function unwraps a String_t into a raw C-String value, transferring
-    memory ownership to the caller.
+    memory ownership to the caller. The String_t is released after being unwrapped.
 
     Inputs:
     String  -   Pointer to the String_t to operate on.

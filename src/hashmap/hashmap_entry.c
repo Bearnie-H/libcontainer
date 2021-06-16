@@ -91,16 +91,16 @@ Hashmap_Entry_t *Hashmap_Entry_Create(void *Key, void *Value, size_t KeySize, si
     }
 
     if (!ValueIsReference) {
-        Entry->Value = (uint8_t *)calloc(ValueSize, sizeof(uint8_t));
-        if (NULL == Entry->Value) {
+        Entry->Value.ValueRaw = calloc(ValueSize, sizeof(uint8_t));
+        if (NULL == Entry->Value.ValueRaw) {
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory to hold Value.");
             free(Entry);
             return NULL;
         }
-        memcpy(Entry->Value, Value, ValueSize * sizeof(uint8_t));
+        memcpy(Entry->Value.ValueBytes, Value, (ValueSize * sizeof(uint8_t)));
         Entry->ValueSize = ValueSize;
     } else {
-        Entry->Value = (uint8_t *)Value;
+        Entry->Value.ValueRaw = Value;
         Entry->ValueSize = 0;
     }
 
@@ -150,9 +150,9 @@ int Hashmap_Entry_Update(Hashmap_Entry_t *Entry, void *NewValue, size_t NewValue
         NewValueContents = (void *)NewValue;
     }
 
-    Entry->ValueReleaseFunc(Entry->Value);
+    Entry->ValueReleaseFunc(Entry->Value.ValueRaw);
 
-    Entry->Value = NewValueContents;
+    Entry->Value.ValueRaw = NewValueContents;
     Entry->ValueSize = NewValueSize;
     Entry->ValueReleaseFunc = NewValueReleaseFunc;
 
@@ -168,8 +168,8 @@ void Hashmap_Entry_Release(Hashmap_Entry_t *Entry) {
     }
 
     /* If the pointer isn't NULL, AND this Entry owns the memory, release it. */
-    if ((NULL != Entry->Value) && (0 != Entry->ValueSize)) {
-        Entry->ValueReleaseFunc(Entry->Value);
+    if ((NULL != Entry->Value.ValueRaw) && (0 != Entry->ValueSize)) {
+        Entry->ValueReleaseFunc(Entry->Value.ValueRaw);
     }
 
     /* If the pointer isn't NULL, AND this Entry owns the memory, release it. */

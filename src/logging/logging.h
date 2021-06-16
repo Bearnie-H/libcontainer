@@ -99,7 +99,16 @@ extern "C" {
 
 #define TEST_NOT_IMPLEMENTED TEST_PRINTF("%s", "Test Failure - Test not yet implemented!"); return 1
 
+
+#ifdef VERBOSE_TEST_SUCCESS
+
 #define TEST_SUCCESSFUL TEST_PRINTF("%s", "Test Successful."); return 0
+
+#else
+
+#define TEST_SUCCESSFUL return 0
+
+#endif
 
 #define TEST_FAILURE return 1
 

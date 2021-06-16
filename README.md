@@ -1,6 +1,7 @@
 # libcontainer
 
-This library provides a set of generic containers in a pure C (C99) implementation.
+This library provides a set of generic containers and container adaptors in a pure
+C (C99) implementation.
 This library is intended to be portable, and suitable for building larger tooling
 or applications on top of.
 
@@ -30,15 +31,29 @@ your specific application:
 
 | Macro Name | Description |
 | :--- | :--- |
-| `LIBCONTAINER_ZERO_ON_RELEASE`          | `memset()` all containers to 0's after releasing     |
-| `LIBCONTAINER_ARRAY_DEFAULT_CAPACITY`   | Minimum Capacity of Array_t objects unless specified |
-| `LIBCONTAINER_HASHMAP_LOAD_FACTOR`      | Hashmap Load Factor threshold before a table rehash  |
-| `LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY` | Hashmap default starting size                        |
+| `VERBOSE_TEST_SUCCESS`                  | List out a "Test Successful" message for each passing test |
+| `LIBCONTAINER_ZERO_ON_RELEASE`          | `memset()` all containers to 0's after releasing           |
+| `LIBCONTAINER_ARRAY_DEFAULT_CAPACITY`   | Minimum Capacity of Array_t objects unless specified       |
+| `LIBCONTAINER_HASHMAP_LOAD_FACTOR`      | Hashmap Load Factor threshold before a table rehash        |
+| `LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY` | Hashmap default starting size                              |
 
 To specify non-default values for any of these tunable parameters, simply set the variable as desired
 when calling the `make` program, e.g. `make LIBCONTAINER_ARRAY_DEFAULT_CAPACITY=16 release`.
 Note that all of these are initialized to sensible defaults, and making these kinds of
 changes are only necessary if you wish to tune the performance for your use-case.
+
+## Testing the Library.
+
+This library comes with a self-test suite to validate the behaviour
+of the public API exposed by the main library header `libcontainer.h`.
+This testing suite can be easily accessed with the `make test` target.
+This will build the library, along with the testing functions and an
+entry-point stub, and run this executable. Any failing tests will be
+printed out, as well as a message indicating the number of failed tests.
+
+This library has been tested on x86_64 and arm64, as well as OS X, Ubuntu,
+and Debian. Furthermore, the included `Valgrind-Test.sh` script can be
+used to instrument the test executable with the Valgrind `memcheck` tool.
 
 ## Installing the Library
 
@@ -55,12 +70,13 @@ sudo make install
 ```
 from the command line.
 
-By default, this will place the library binary and header file in `/usr/local/libcontainer/`,
-and the man page in `/usr/local/share/man/man1/`. Setting the environment variable `INSTALLDIR`
+By default, this will place the library binaries (release and debug) into `/usr/local/lib`
+and header file into `/usr/local/include`, and the man page in `/usr/local/share/man/man1/`.
+Setting the environment variable `INSTALLDIR`
 will allow updating the prefix used for the binary and header file, and updating the
 `INSTALLMANDIR` environment variable will update the prefix for the man page.
-Once installed, the file `libcontainer.a` and header `libcontainer.h` will be accessible and
-stable across library version upgrades.
+Once installed, the soft-links `libcontainer.a`, `libcontainer-debug.a` and header `libcontainer.h`
+will be accessible and stable across library versions.
 
 An additional, optional, step you may wish to perform is to add the library and header folders
 to the `INCLUDE_PATH` and `LIBRARY_PATH` so these are visible without any compiler flags.
@@ -83,8 +99,8 @@ a way to ensure only the containers you want end up compiled into your project.
 
 Currently, this library provides the following containers for use:
 
-| Container       | Enable Macro                      | Description                                          |
-| :---            | :---                              | :---                                                 |
+| Container | Enable Macro | Description |
+| :--- | :--- | :--- |
 | `Array_t`       | `LIBCONTAINER_ENABLE_ARRAY`       | Auto-resizing linear contiguous storage              |
 | `List_t`        | `LIBCONTAINER_ENABLE_LIST`        | Doubly-Linked dynamic list                           |
 | `Hashmap_t`     | `LIBCONTAINER_ENABLE_HASHMAP`     | Auto-balancing key-value associative array           |
@@ -96,6 +112,30 @@ The internal implementations of these containers should not be a concern for the
 currently the Binary_Tree_t implementation is based on an [AVL Tree](https://en.wikipedia.org/wiki/AVL_tree),
 but no part of this implementation is externally visible. This library will always ensure
 the public interface does not rely on the specific implementation of the underlying container.
+
+### Future Containers and Updates
+
+In addition to the set of containers listed in the section above, there are plans to
+implement the following additional containers:
+| Container | Enable Macro | Description |
+| :--- | :--- | :--- |
+| `Set_t`            | `LIBCONTAINER_ENABLE_SET`            | Container of explicitly unique keys                    |
+| `Queue_t`          | `LIBCONTAINER_ENABLE_QUEUE`          | FIFO (First-In First-Out) item access                  |
+| `Priority_Queue_t` | `LIBCONTAINER_ENABLE_PRIORITY_QUEUE` | Priority-ordered FIFO (First-In First-Out) item access |
+
+Note that the containers listed in this section are still tentative. Only those provided in the section
+above are implemented as of now.
+
+In addition to these new containers, there are a handful of outstanding extensions to the
+existing containers that will be implemented at some point, likely before the v.1.0.0 release.
+These include:
+
+* Extending `Binary_Tree_t` to accept a generic Key, not limited to `int`.
+* Extending `Binary_Tree_t` to specify duplicate-item handling, i.e. ignore-new, overwrite, error, etc.
+* Extending `Array_t` and `List_t` to provide a `*_Sort()` and `*_SortStable()` interface.
+* Extending `Hashmap_t` to provide a `*_Keys()` interface to retrieve the set of added Keys.
+* Extending all containers with a `*_Next()` interface for single-step iteration over the Values.
+
 ## License
 
 Copyright (c) 2021 Bearnie-H

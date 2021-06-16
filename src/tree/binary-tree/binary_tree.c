@@ -123,7 +123,7 @@ void *Binary_Tree_Get(Binary_Tree_t *Tree, int Key) {
     }
 
     DEBUG_PRINTF("Successfully returned Value with Key [ %d ] from Binary_Tree_t.", Key);
-    return (void *)(Node->Value);
+    return Node->Value.ValueRaw;
 }
 
 void *Binary_Tree_Pop(Binary_Tree_t *Tree, int Key) {
@@ -142,8 +142,8 @@ void *Binary_Tree_Pop(Binary_Tree_t *Tree, int Key) {
         return NULL;
     }
 
-    NodeContents = (void *)Node->Value;
-    Node->Value = NULL;
+    NodeContents = Node->Value.ValueRaw;
+    Node->Value.ValueRaw = NULL;
 
     Tree->Root = Binary_Tree_removeNode(Tree->Root, Key);
 
@@ -252,7 +252,7 @@ Binary_Tree_Node_t *Binary_Tree_insertNode(Binary_Tree_Node_t *Root, Binary_Tree
     } else if (Root->Key < Node->Key) {
         Root->RightChild = Binary_Tree_insertNode(Root->RightChild, Node);
     } else {
-        Binary_Tree_Node_Update(Root, Node->Value, Node->ValueSize);
+        Binary_Tree_Node_Update(Root, Node->Value.ValueRaw, Node->ValueSize);
         Binary_Tree_Node_Release(Node);
     }
 
@@ -285,7 +285,7 @@ Binary_Tree_Node_t *Binary_Tree_removeNode(Binary_Tree_Node_t *Root, int Key) {
             Successor = Binary_Tree_findMinimum(Root->RightChild);
             Root->Key = Successor->Key;
             Root->ReleaseFunc = Successor->ReleaseFunc;
-            Binary_Tree_Node_Update(Root, Successor->Value, Successor->ValueSize);
+            Binary_Tree_Node_Update(Root, Successor->Value.ValueRaw, Successor->ValueSize);
             Root->RightChild = Binary_Tree_removeNode(Root->RightChild, Successor->Key);
         } else if ((NULL != Root->LeftChild) && (NULL == Root->RightChild)) {
             /*
@@ -371,7 +371,7 @@ int Binary_Tree_doCallback(Binary_Tree_Node_t *Root, CallbackFunc_t *Callback) {
     if (NULL != Root) {
 
         KeyValuePair[0] = (void *)&(Root->Key);
-        KeyValuePair[1] = (void *)(Root->Value);
+        KeyValuePair[1] = (Root->Value.ValueRaw);
 
         RetVal |= Binary_Tree_doCallback(Root->LeftChild, Callback);
         RetVal |= Callback(KeyValuePair);
@@ -389,7 +389,7 @@ int Binary_Tree_doCallbackArg(Binary_Tree_Node_t *Root, CallbackArgFunc_t *Callb
     if (NULL != Root) {
 
         KeyValuePair[0] = (void *)&(Root->Key);
-        KeyValuePair[1] = (void *)(Root->Value);
+        KeyValuePair[1] = (Root->Value.ValueRaw);
 
         RetVal |= Binary_Tree_doCallbackArg(Root->LeftChild, Callback, Args);
         RetVal |= Callback(KeyValuePair, Args);

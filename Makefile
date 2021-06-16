@@ -26,10 +26,12 @@
 #   You will also need to update the DefaultComponent.mk file to use your test-file naming convention as well.
 
 #   Version Settings
-MAJOR_VERSION := 0
-MINOR_VERSION := 6
-PATCH_VERSION := 2
-VERSION       := v$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
+MAJOR_VERSION   := 0
+MINOR_VERSION   := 6
+PATCH_VERSION   := 3
+BUILD_DATE      := $(shell date "+%A %d %B %Y %T %Z")
+BUILD_DATESTAMP := $(shell date "+%Y%m%d")
+VERSION         := v$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
 
 ifdef QUIET
 QUIETMODE := 2> /dev/null 1> /dev/null
@@ -43,7 +45,7 @@ export QUIETMODE
 CC              := gcc
 WARNINGS        := -Wall -Wpedantic -Wextra -Wsign-conversion -Wunreachable-code -Wcast-align -Wcast-qual
 WARNINGS_AS_ERRORS ?= -Werror
-WARNINGS_IGNORE := -Wno-padded
+WARNINGS_IGNORE := -Wno-padded -Wno-unused-command-line-argument
 CFLAGS          := -std=c99 $(WARNINGS) $(WARNINGS_IGNORE) $(WARNINGS_AS_ERRORS)
 LIBTOOL         := ar -rcs
 FMTTOOL         ?=$(shell which clang-format)
@@ -81,7 +83,7 @@ TESTSUFFIX   := .out
 #    will only be built into the "test" and "debugger" targets.
 #   For something like a library, the "src" should be moved to the TESTCOMPONENTS
 #    to allow it to be used as driver code for running something like an internal test suite.
-COMPONENTS     := src/array src/list src/hashmap src/tree/binary-tree src/stack src/string
+COMPONENTS     := src/array src/list src/hashmap src/tree/binary-tree src/stack src/string src/version
 TESTCOMPONENTS := src
 
 #   Additional Libraries to include when building the final applications

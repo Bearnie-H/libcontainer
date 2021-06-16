@@ -60,7 +60,10 @@ typedef struct Hashmap_Entry_t {
     uint8_t* Key;
 
     /* Value holds the raw bytes of the value of this entry, regardless of the type. */
-    uint8_t* Value;
+    union{
+        uint8_t* ValueBytes;
+        void* ValueRaw;
+    } Value;
 
     /* KeySize holds the size of the memory owned by the Key pointer.
         If this is 0, then the value is a reference and this struct doesn't

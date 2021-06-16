@@ -60,7 +60,7 @@ int Hashmap_DoCallback(Hashmap_t *Map, CallbackFunc_t *Callback) {
                 continue;
             }
             KeyValuePair[0] = Entry->Key;
-            KeyValuePair[1] = Entry->Value;
+            KeyValuePair[1] = Entry->Value.ValueRaw;
             if (0 != Callback(KeyValuePair)) {
                 DEBUG_PRINTF("%s", "Error: Callback function returned non-zero.");
                 RetVal = 1;
@@ -104,7 +104,7 @@ int Hashmap_DoCallbackArg(Hashmap_t *Map, CallbackArgFunc_t *Callback, void *Arg
                 continue;
             }
             KeyValuePair[0] = Entry->Key;
-            KeyValuePair[1] = Entry->Value;
+            KeyValuePair[1] = Entry->Value.ValueRaw;
             if (0 != Callback(KeyValuePair, Args)) {
                 DEBUG_PRINTF("%s", "Error: Callback function returned non-zero.");
                 RetVal = 1;

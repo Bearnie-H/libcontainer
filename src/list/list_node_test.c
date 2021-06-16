@@ -171,7 +171,7 @@ int Test_ListNode_UpdateValue(void) {
 
     if (0 != memcmp(Node->Contents.ContentBytes, &NewContents, sizeof(NewContents))) {
         TEST_PRINTF("Test Failure - Node contents (%d) not equal to expected value (%d).",
-                    **(int **)&(Node->Contents), NewContents);
+                    *(int *)(Node->Contents.ContentRaw), NewContents);
         ListNode_Release(Node);
         TEST_FAILURE;
     }

@@ -51,7 +51,7 @@ extern "C" {
     This is tunable during build-time be re-defining this macro
     with the desired floating point value.
 */
-#define LIBCONTAINER_HASHMAP_LOAD_FACTOR 4
+#define LIBCONTAINER_HASHMAP_LOAD_FACTOR 4.0
 #endif
 
 #ifndef LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY

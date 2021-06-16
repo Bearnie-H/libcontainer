@@ -45,7 +45,7 @@ static void PrettyPrintBinaryTree(const char *Prefix, const Binary_Tree_Node_t *
 
         printf("%s", (IsLeft) ? ("├──") : ("└──"));
 
-        printf("(%d,%d)\n", Root->Key, **(int **)&(Root->Value));
+        printf("(%d,%d)\n", Root->Key, *(int *)(Root->Value.ValueBytes));
 
         snprintf(NextLeftPrefix, sizeof(NextLeftPrefix), "%s%s", Prefix,
                  (IsLeft) ? ("│   ") : ("    "));
