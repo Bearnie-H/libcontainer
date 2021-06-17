@@ -61,6 +61,8 @@ int Test_hashmap(void) {
 
     FailedTests += Test_hashmap_callbacks();
 
+    FailedTests += Test_hashmap_iterator();
+
     return FailedTests;
 }
 
@@ -463,20 +465,20 @@ int Test_Hashmap_Overwrite_StringKey(void) {
         TEST_FAILURE;
     }
 
-    if (0 != Hashmap_Insert(Map, &KeyValue, &InitialValue, strlen(KeyValue), sizeof(InitialValue),
+    if (0 != Hashmap_Insert(Map, KeyValue, &InitialValue, strlen(KeyValue), sizeof(InitialValue),
                             NULL)) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform first Insert.");
         Hashmap_Release(Map);
         TEST_FAILURE;
     }
 
-    if (0 != Hashmap_Insert(Map, &KeyValue, &NewValue, strlen(KeyValue), sizeof(NewValue), NULL)) {
+    if (0 != Hashmap_Insert(Map, KeyValue, &NewValue, strlen(KeyValue), sizeof(NewValue), NULL)) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform second Insert.");
         Hashmap_Release(Map);
         TEST_FAILURE;
     }
 
-    CheckValue = (int *)Hashmap_Retrieve(Map, &KeyValue, 0);
+    CheckValue = (int *)Hashmap_Retrieve(Map, KeyValue, 0);
     if (NULL == CheckValue) {
         TEST_PRINTF("%s", "Test Failure - Failed to retrieve updated value.");
         Hashmap_Release(Map);
@@ -621,13 +623,13 @@ int Test_Hashmap_Pop_StringKey(void) {
         TEST_FAILURE;
     }
 
-    if (0 != Hashmap_Insert(Map, &KeyValue, &Value, strlen(KeyValue), sizeof(Value), NULL)) {
+    if (0 != Hashmap_Insert(Map, KeyValue, &Value, strlen(KeyValue), sizeof(Value), NULL)) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Insert.");
         Hashmap_Release(Map);
         TEST_FAILURE;
     }
 
-    PoppedValue = (int *)Hashmap_Pop(Map, &KeyValue, 0);
+    PoppedValue = (int *)Hashmap_Pop(Map, KeyValue, 0);
     if (NULL == PoppedValue) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Pop.");
         Hashmap_Release(Map);

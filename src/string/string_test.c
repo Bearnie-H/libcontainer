@@ -188,7 +188,7 @@ int Test_String_GetBack(void) {
         TEST_FAILURE;
     }
 
-    if (String_GetBack(String) != StringValue[(sizeof(StringValue) - 1)]) {
+    if (String_GetBack(String) != StringValue[strlen(StringValue) - 1]) {
         TEST_PRINTF(
             "Test Failure - Character at index [ %d ] (%c) not equal to expectation value (%c).",
             (int)(sizeof(StringValue) - 1), String_GetBack(String),

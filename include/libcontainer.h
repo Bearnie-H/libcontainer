@@ -41,6 +41,25 @@ extern "C" {
 #include <stdarg.h>
 #include <stdbool.h>
 
+/* ++++++++++ Cross-Container Macro Enabling ++++++++++ */
+/*
+    For some of the containers, the API they expose requires the inclusion of
+    at least some other containers. This section at the beginning of this file
+    ensures that these API requirements are satisfied, without the user
+    needing to explicitly enable everything.
+*/
+
+/*
+    The Hashmap_t container requires the Array_t container for the
+    Hashmap_Keys() and Hashmap_Values() functions.
+*/
+#ifdef LIBCONTAINER_ENABLE_HASHMAP
+#define LIBCONTAINER_ENABLE_ARRAY
+#endif
+
+
+/* ---------- Cross-Container Macro Enabling ---------- */
+
 /* ++++++++++ Exported Library Macros ++++++++++ */
 
 /* ... */
@@ -1291,6 +1310,48 @@ int Hashmap_Insert(Hashmap_t* Map, void* Key, void* Value, size_t KeySize, size_
             but it's not entirely necessary.
 */
 void *Hashmap_Retrieve(Hashmap_t *Map, const void *Key, size_t KeySize);
+
+/*
+    Hashmap_Keys
+
+    This function returns the full set of current Keys contained in the Hashmap
+    as an unsorted Array_t.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap_t to operate on.
+
+    Outputs:
+    Array_t*    -   Pointer to an Array_t containing all of the Keys contained in the Hashmap.
+
+    Note:
+    This returned Array will contain pointers to the original items. If the
+    original items are manipulated or deleted, this returned Array_t has no knowledge
+    of this. It is the responsibility of the caller to release the returned
+    Array_t with Array_Release().
+*/
+Array_t* Hashmap_Keys(Hashmap_t* Map);
+
+/*
+    Hashmap_KeysSorted
+
+    This function is equivalent to Hashmap_Keys(), but additionally explicitly sorts
+    the resulting Array based on the given CompareFunc.
+
+    Inputs:
+    Map         -   Pointer to the Hashmap_t to operate on.
+    CompareFunc -   Pointer to the comparison function to use to
+                        order the returned Keys.
+
+    Outputs:
+    Array_t*    -   Pointer to an Array_t containing all of the Keys contained in the Hashmap.
+
+    Note:
+    This returned Array will contain pointers to the original items. If the
+    original items are manipulated or deleted, this returned Array_t has no knowledge
+    of this. It is the responsibility of the caller to release the returned
+    Array_t with Array_Release().
+*/
+Array_t* Hashmap_KeysSorted(Hashmap_t* Map, CompareFunc_t* CompareFunc);
 
 /*
     Hashmap_Pop

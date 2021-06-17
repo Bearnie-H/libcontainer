@@ -38,6 +38,7 @@ extern "C" {
 
 #include "hashmap_entry.h"
 #include "hashmap_callbacks.h"
+#include "hashmap_iterator.h"
 
 #include "../../../include/libcontainer.h"
 

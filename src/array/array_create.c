@@ -133,7 +133,7 @@ void Array_Release(Array_t *Array) {
             iterate over the array and release them all with the provided
             ReleaseFunc.
         */
-        if (0 == Array->ElementSize) {
+        if ((0 == Array->ElementSize) && (NULL != Array->ReleaseFunc)) {
             DEBUG_PRINTF("%s", "Array_t is array of references, releasing each "
                                "element with the provided ReleaseFunc.");
             for (Index = 0; Index < Array->Length; Index++) {

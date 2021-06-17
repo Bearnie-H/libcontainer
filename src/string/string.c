@@ -127,7 +127,9 @@ char String_GetAtIndex(String_t *String, size_t Index) {
 
 char String_GetFront(String_t *String) { return String_GetAtIndex(String, 0); }
 
-char String_GetBack(String_t *String) { return String_GetAtIndex(String, String_Length(String)); }
+char String_GetBack(String_t *String) {
+    return String_GetAtIndex(String, String_Length(String) - 1);
+}
 
 int String_Insert(String_t *String, char *ToInsert, size_t Index, size_t Length) {
 
