@@ -29,31 +29,35 @@
 
 int Array_DoCallback(Array_t *Array, CallbackFunc_t *Callback) {
 
-    size_t Index = 0;
     void *ElementValue = NULL;
     int RetValue = 0;
+    size_t Count = 0;
 
     if (NULL == Array) {
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
         return 1;
     }
 
+    Iterator_Invalidate(&(Array->Iterator));
+
     if (NULL == Callback) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    for (Index = 0; Index < Array_Length(Array); Index++) {
-        ElementValue = Array_GetElement(Array, Index);
-        if (NULL == ElementValue) {
-            DEBUG_PRINTF("Error: Failed to get Array element at index [ %d ].", (int)Index);
-            RetValue = 1;
-            continue;
-        }
+    Count = Array_Length(Array);
+
+    while (NULL != (ElementValue = Array_Next(Array))) {
         if (0 != Callback(ElementValue)) {
-            DEBUG_PRINTF("Note: Callback function failed for Index [ %d ].", (int)Index);
+            DEBUG_PRINTF("%s", "Note: Callback function failed.");
             RetValue = 1;
         }
+        Count -= 1;
+    }
+
+    if (0 != Count) {
+        DEBUG_PRINTF("%s", "Error: Failed to retrieve all Array values during iteration.");
+        RetValue = 1;
     }
 
     return RetValue;
@@ -61,31 +65,35 @@ int Array_DoCallback(Array_t *Array, CallbackFunc_t *Callback) {
 
 int Array_DoCallbackArg(Array_t *Array, CallbackArgFunc_t *Callback, void *Args) {
 
-    size_t Index = 0;
     void *ElementValue = NULL;
     int RetValue = 0;
+    size_t Count = 0;
 
     if (NULL == Array) {
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
         return 1;
     }
 
+    Iterator_Invalidate(&(Array->Iterator));
+
     if (NULL == Callback) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    for (Index = 0; Index < Array_Length(Array); Index++) {
-        ElementValue = Array_GetElement(Array, Index);
-        if (NULL == ElementValue) {
-            DEBUG_PRINTF("Error: Failed to get Array element at index [ %d ].", (int)Index);
-            RetValue = 1;
-            continue;
-        }
+    Count = Array_Length(Array);
+
+    while (NULL != (ElementValue = Array_Next(Array))) {
         if (0 != Callback(ElementValue, Args)) {
-            DEBUG_PRINTF("Note: Callback function failed for Index [ %d ].", (int)Index);
+            DEBUG_PRINTF("%s", "Note: Callback function failed.");
             RetValue = 1;
         }
+        Count -= 1;
+    }
+
+    if (0 != Count) {
+        DEBUG_PRINTF("%s", "Error: Failed to retrieve all Array values during iteration.");
+        RetValue = 1;
     }
 
     return RetValue;

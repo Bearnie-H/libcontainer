@@ -35,6 +35,8 @@ int Array_Sort(Array_t *Array, CompareFunc_t *CompareFunc) {
         return 1;
     }
 
+    Iterator_Invalidate(&(Array->Iterator));
+
     if (NULL == CompareFunc) {
         DEBUG_PRINTF("%s", "Error: NULL CompareFunc* provided.");
         return 1;

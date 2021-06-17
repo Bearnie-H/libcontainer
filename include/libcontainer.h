@@ -367,6 +367,8 @@ typedef int(CompareFunc_t)(const void*, const void*);
 
 /* ++++++++++ Exported Library Functions ++++++++++ */
 
+/* +++++ General Library Version Functions +++++ */
+
 /*
     Print_Libcontainer_Library_Version
 
@@ -425,6 +427,8 @@ long Libcontainer_Library_Version(void);
     build process.
 */
 long Libcontainer_Build_Time(void);
+
+/* ----- General Library Version Functions ----- */
 
 #ifdef LIBCONTAINER_ENABLE_ARRAY
 /* ++++++++++ Public Array_t Functions ++++++++++ */
@@ -733,6 +737,46 @@ int Array_SetElement(Array_t* Array, void* Element, size_t Index);
     necessary for safe operation.
 */
 void* Array_PopElement(Array_t* Array, size_t Index);
+
+/*
+    Array_Next
+
+    This function allows iteration over an Array_t in a single-step, resumable
+    manner. This provides forward iteration over the array, returning each
+    successive element to the caller.
+
+    Inputs:
+    Array   -   Pointer to the Array to operate on.
+
+    Outputs:
+    void*   -   Pointer to the "next" element of the Array.
+
+    Note:
+    Note that iteration will re-start if and when any Insert(), Remove(),
+    Sort(), or Pop() operations are performed on the Array. Any other operation can
+    be done without interrupting and restarting iteration.
+*/
+void* Array_Next(Array_t *Array);
+
+/*
+    Array_Previous
+
+    This function allows iteration over an Array_t in a single-step, resumable
+    manner. This provides reverse iteration over the array, returning each
+    successive element to the caller.
+
+    Inputs:
+    Array   -   Pointer to the Array to operate on.
+
+    Outputs:
+    void*   -   Pointer to the "previous" element of the Array.
+
+    Note:
+    Note that iteration will re-start if and when any Insert(), Remove(),
+    Sort(), or Pop() operations are performed on the Array. Any other operation can
+    be done without interrupting and restarting iteration.
+*/
+void* Array_Previous(Array_t *Array);
 
 /*
     Array_DoCallback

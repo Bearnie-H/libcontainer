@@ -45,6 +45,8 @@ int Array_InsertN(Array_t *Array, void *Elements, size_t Index, size_t Count) {
         return 1;
     }
 
+    Iterator_Invalidate(&(Array->Iterator));
+
     if ((Array->Length < Index)) {
         DEBUG_PRINTF("Index (%d) is out of bounds.", (int)Index);
         return 1;
@@ -89,6 +91,8 @@ int Array_RemoveN(Array_t *Array, size_t Index, size_t Count) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t provided.");
         return 1;
     }
+
+    Iterator_Invalidate(&(Array->Iterator));
 
     if ((0 == Array->Length) || (Array->Length < Index)) {
         DEBUG_PRINTF("Index (%d) is out of bounds.", (int)Index);
@@ -206,6 +210,13 @@ int Array_SetElement(Array_t *Array, void *Element, size_t Index) {
 void *Array_PopElement(Array_t *Array, size_t Index) {
 
     void *ElementContents = NULL;
+
+    if (NULL == Array) {
+        DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+        return NULL;
+    }
+
+    Iterator_Invalidate(&(Array->Iterator));
 
     /* Get the contents to be returned to the caller (also validate arguments).
      */

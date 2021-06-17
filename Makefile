@@ -27,8 +27,8 @@
 
 #   Version Settings
 MAJOR_VERSION   := 0
-MINOR_VERSION   := 7
-PATCH_VERSION   := 2
+MINOR_VERSION   := 8
+PATCH_VERSION   := 1
 BUILD_DATE      := $(shell date "+%A %d %B %Y %T %Z")
 BUILD_DATESTAMP := $(shell date "+%Y%m%d")
 VERSION         := v$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
@@ -83,7 +83,7 @@ TESTSUFFIX   := .out
 #    will only be built into the "test" and "debugger" targets.
 #   For something like a library, the "src" should be moved to the TESTCOMPONENTS
 #    to allow it to be used as driver code for running something like an internal test suite.
-COMPONENTS     := src/array src/list src/hashmap src/tree/binary-tree src/stack src/string src/version
+COMPONENTS     := src/array src/list src/hashmap src/tree/binary-tree src/stack src/string src/version src/iterator
 TESTCOMPONENTS := src
 
 #   Additional Libraries to include when building the final applications

@@ -56,6 +56,7 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
     Array->ElementSize = ElementSize;
     Array->Length = 0;
     Array->ReleaseFunc = NULL;
+    Array->Iterator = NULL;
 
     DEBUG_PRINTF("%s", "Successfully created Array_t*.");
     return Array;
@@ -91,6 +92,7 @@ Array_t *Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t *ReleaseFunc) {
     Array->ElementSize = 0;
     Array->Length = 0;
     Array->ReleaseFunc = ReleaseFunc;
+    Array->Iterator = NULL;
 
     DEBUG_PRINTF("%s", "Successfully created Array_t*.");
     return Array;
@@ -146,6 +148,10 @@ void Array_Release(Array_t *Array) {
 
     } else {
         DEBUG_PRINTF("%s", "Array_t has NULL contents pointer, no contents to release.");
+    }
+
+    if (NULL != Array->Iterator) {
+        Iterator_Invalidate(&(Array->Iterator));
     }
 
     ZERO_CONTAINER(Array, Array_t);

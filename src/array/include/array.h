@@ -37,8 +37,11 @@ extern "C" {
 #define LIBCONTAINER_ENABLE_ARRAY
 
 #include "../../../include/libcontainer.h"
+#include "../../iterator/include/iterator.h"
+
 #include "array_callbacks.h"
 #include "array_sort.h"
+#include "array_iterators.h"
 
 #ifndef LIBCONTAINER_ARRAY_DEFAULT_CAPACITY
 #define LIBCONTAINER_ARRAY_DEFAULT_CAPACITY 8 /* The default capacity of arrays unless otherwise specified. */
@@ -47,15 +50,6 @@ extern "C" {
 #define ARRAY_DOUBLING_THRESHOLD 4096
 
 struct Array_t {
-
-    /*
-        ReleaseFunc is used if the elements are pointer-types which hold their
-        own memory. This allows providing an outside hook for releasing memory
-        held by the objects within an array when the array itself is released.
-
-        This only has meaning if the IsReference value for an array is true.
-    */
-    ReleaseFunc_t* ReleaseFunc;
 
     /*
         Contents is the start of the memory address holding the
@@ -67,6 +61,21 @@ struct Array_t {
         uint8_t* ContentBytes;
         void** ContentRefs;
     } Contents;
+
+    /*
+        Iterator contains the necessary functionality to iterate over an Array_t,
+        single-stepping to the next or previous item.
+    */
+    Iterator_t* Iterator;
+
+    /*
+        ReleaseFunc is used if the elements are pointer-types which hold their
+        own memory. This allows providing an outside hook for releasing memory
+        held by the objects within an array when the array itself is released.
+
+        This only has meaning if the IsReference value for an array is true.
+    */
+    ReleaseFunc_t* ReleaseFunc;
 
     /*
         The number of "live" elements within the array. This is also used
