@@ -49,7 +49,6 @@ typedef enum Iterator_Type_t {
     Iterator_BinaryTree,
     Iterator_Stack,
     Iterator_String,
-    /* ... */
 } Iterator_Type_t;
 
 /*

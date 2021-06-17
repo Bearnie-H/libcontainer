@@ -36,6 +36,8 @@ extern "C" {
 
 #define LIBCONTAINER_ENABLE_LIST
 
+#include "../../iterator/include/iterator.h"
+
 #include "list_node.h"
 #include "list_callbacks.h"
 
@@ -54,6 +56,12 @@ struct List_t {
         Equal to Head if the list has one element.
     */
     List_Node_t* Tail;
+
+    /*
+        Iterator is a struct which provides single-step, resumable
+        iteration over a List_t.
+    */
+    Iterator_t* Iterator;
 
     /* Length holds the count of nodes within the list. */
     size_t Length;

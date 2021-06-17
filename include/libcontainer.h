@@ -62,13 +62,9 @@ extern "C" {
 
 /* ++++++++++ Exported Library Macros ++++++++++ */
 
-/* ... */
-
 /* ---------- Exported Library Macros ---------- */
 
 /* ++++++++++ Exported Library Globals ++++++++++ */
-
-/* ... */
 
 /* ---------- Exported Library Globals ---------- */
 
@@ -1118,6 +1114,52 @@ void* List_PopFront(List_t* List);
     void*   -   Returns an untyped pointer to the requested item contents on success, or NULL on failure.
 */
 void* List_PopBack(List_t* List);
+
+/*
+    List_Next
+
+    This function iterates over the List in the <> direction,
+    returning each new item in turn. This allows for single-step
+    and resumable iteration over the container, in a more granular and
+    explicit manner than what is provided by the Callback() interface.
+
+    Inputs:
+    List    -   Pointer to the List to iterate over.
+
+    Outputs:
+    void*   -   Pointer to the corresponding item from the List.
+                    NULL on error, and when iteration reaches the end
+                    of the List.
+
+    Note:
+    Iteration over the List will reset after any Insert(), Remove(), or Pop()
+    operation on the List, as these operations can change the ordering of items
+    within the container.
+*/
+void* List_Next(List_t* List);
+
+/*
+    List_Previous
+
+    This function iterates over the List in the <> direction,
+    returning each new item in turn. This allows for single-step
+    and resumable iteration over the container, in a more granular and
+    explicit manner than what is provided by the Callback() interface.
+
+    Inputs:
+    List    -   Pointer to the List to iterate over.
+
+    Outputs:
+    void*   -   Pointer to the corresponding item from the List.
+                    NULL on error, and when iteration reaches the end
+                    of the List.
+
+    Note:
+    Iteration over the List will reset after any Insert(), Remove(), or Pop()
+    operation on the List, as these operations can change the ordering of items
+    within the container.
+*/
+void* List_Previous(List_t* List);
 
 /*
     List_DoCallback

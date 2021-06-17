@@ -22,8 +22,8 @@
     SOFTWARE.
 */
 
-#ifndef LIBCONTAINER_ARRAY_ITERATORS_H
-#define LIBCONTAINER_ARRAY_ITERATORS_H
+#ifndef LIBCONTAINER_LIST_ITERATORS_H
+#define LIBCONTAINER_LIST_ITERATORS_H
 
 /*
     If this header should export C-compatible symbols, rearrange these ifdefs as appropriate
@@ -32,22 +32,26 @@
 extern "C" {
 #endif
 
-/*
-    Iterator_Initialize_Array
+#define LIBCONTAINER_ENABLE_LIST
 
-    This function initializes the Iterator for an Array_t.
+#include "../../../include/libcontainer.h"
+
+/*
+    Iterator_Initialize_List
+
+    This function initializes the iterator for the List_t.
 
     Inputs:
-    Array   -   Pointer to the Array to prepare the iterator for.
+    List_t* List    -   Pointer to the List to initialize the Iterator for.
 
     Outputs:
     int     -   Returns 0 on success, non-zero on failure.
 
     Note:
-    The Iterator context field for an Array type iterator is simply
-    the signed index of the next item.
+    The Iterator Context value is initialized and points to the current List_Node_t
+    to return the value for.
 */
-int Iterator_Initialize_Array(Array_t* Array);
+int Iterator_Initialize_List(List_t *List);
 
 #ifdef __cplusplus
 }

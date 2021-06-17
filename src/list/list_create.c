@@ -39,6 +39,7 @@ List_t *List_Create(void) {
     /* Set the default starting values. */
     List->Head = NULL;
     List->Tail = NULL;
+    List->Iterator = NULL;
     List->Length = 0;
 
     return List;
@@ -78,6 +79,7 @@ void List_Release(List_t *List) {
         Current = Next;
     }
 
+    Iterator_Invalidate(&(List->Iterator));
     ZERO_CONTAINER(List, List_t);
 
     free(List);

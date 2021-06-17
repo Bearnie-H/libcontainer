@@ -46,6 +46,8 @@ int List_Insert(List_t *List, const void *Element, size_t ElementSize, size_t In
         return 1;
     }
 
+    Iterator_Invalidate(&(List->Iterator));
+
     if ((List->Length < Index)) {
         DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return 1;
@@ -111,6 +113,8 @@ int List_RefInsert(List_t *List, void *Element, ReleaseFunc_t *ReleaseFunc, size
         DEBUG_PRINTF("%s", "Error, NULL List_t* or Element provided.");
         return 1;
     }
+
+    Iterator_Invalidate(&(List->Iterator));
 
     if ((List->Length < Index)) {
         DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
@@ -259,6 +263,8 @@ void *List_PopElement(List_t *List, size_t Index) {
         return NULL;
     }
 
+    Iterator_Invalidate(&(List->Iterator));
+
     if ((0 == List->Length) || (List->Length <= (size_t)Index)) {
         DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return NULL;
@@ -313,6 +319,8 @@ int List_removeNode(List_t *List, List_Node_t *Node) {
         DEBUG_PRINTF("%s", "Error: NULL List* or Node* provided.");
         return 1;
     }
+
+    Iterator_Invalidate(&(List->Iterator));
 
     /* Make sure this node is actually within the list. */
     for (CheckNode = List->Head; CheckNode != NULL && CheckNode != Node;
