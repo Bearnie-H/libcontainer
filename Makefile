@@ -53,7 +53,7 @@ FMTTOOL         ?=$(shell which clang-format)
 include Build_Tuning.mk
 
 #   Define the flags for the various different end-result build targets
-RELFLAGS  := $(CFLAGS) -O2 -DNDEBUG
+RELFLAGS  := $(CFLAGS) -Ofast -DNDEBUG
 DBGFLAGS  := $(CFLAGS) -g -O0 -DDEBUG
 DBGRFLAGS := $(CFLAGS) -g -O0 -DDEBUG -DDEBUGGER
 TESTFLAGS := $(CFLAGS) -g -O0 -DDEBUG -DDEBUGGER -DTESTING

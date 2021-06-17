@@ -38,6 +38,7 @@ extern "C" {
 
 #include "../../../include/libcontainer.h"
 #include "array_callbacks.h"
+#include "array_sort.h"
 
 #ifndef LIBCONTAINER_ARRAY_DEFAULT_CAPACITY
 #define LIBCONTAINER_ARRAY_DEFAULT_CAPACITY 8 /* The default capacity of arrays unless otherwise specified. */

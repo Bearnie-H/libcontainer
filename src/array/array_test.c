@@ -53,5 +53,7 @@ int Test_array(void) {
 
     FailedTests += Test_array_callbacks();
 
+    FailedTests += Test_array_sort();
+
     return FailedTests;
 }

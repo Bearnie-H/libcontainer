@@ -313,6 +313,35 @@ typedef int(CallbackFunc_t)(void*);
 */
 typedef int(CallbackArgFunc_t)(void*, void*);
 
+/*
+    CompareFunc_t
+
+    This is the generic form of a comparison function used by this library.
+    This is equivalent to the function pointer type required by the qsort()
+    function in stdlib.h, only explicitly typed for documentation and argument
+    type-matching purposes.
+
+    Inputs:
+    void*   -   Pointer to the first item to be compared.
+    void*   -   Pointer to the second item to be compared.
+
+    Outputs:
+    int     -   Must return negative if First < Second,
+                Must return 0 if First == Second
+                Must return positive if First > Second
+
+    Note:
+    The library will assert that NULL pointers are NEVER passed to this
+    function type. If, however, the "Value" held by a container is a
+    pointer-to-pointer type, this inner pointer MAY be NULL, and you must
+    check for this. See the documentation for strcmp() for an example
+    function which satisfies these requirements.
+
+    The size of the values is not provided, as this is known by the container,
+    and should be known by the author of such CompareFunc_t implementations.
+*/
+typedef int(CompareFunc_t)(const void*, const void*);
+
 /* ---------- General Public Library Typedefs ---------- */
 
 /* ---------- Exported Library Types ---------- */
@@ -601,9 +630,38 @@ int Array_Remove(Array_t* Array, size_t Index);
 */
 int Array_RemoveN(Array_t* Array, size_t Index, size_t Count);
 
-int Array_Replace(Array_t* Array, void* Element, size_t Index);
-int Array_ReplaceN(Array_t* Array, void* Elements, size_t Index, size_t Count);
+/*
+    Array_Replace
 
+    This function replaces the contents at the given index with the new value,
+    safely releasing the existing contents.
+
+    Inputs:
+    Array   -   Pointer to the Array_t to operate on.
+    Element -   Pointer to the new contents to insert into the Array.
+    Index   -   The index to start the replacement.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Array_Replace(Array_t* Array, void* Element, size_t Index);
+
+/*
+    Array_ReplaceN
+
+    This function replaces the contents starting at the given index with the new value,
+    safely releasing the existing contents.
+
+    Inputs:
+    Array       -   Pointer to the Array_t to operate on.
+    Elements    -   Pointer to the new contents to insert into the Array.
+    Index       -   The index to start the replacement.
+    Count       -   The number of items pointed to by "Elements"
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Array_ReplaceN(Array_t* Array, void* Elements, size_t Index, size_t Count);
 
 /*
     Array_GetElement
@@ -699,6 +757,27 @@ int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback);
     of the array.
 */
 int Array_DoCallbackArg(Array_t* Array, CallbackArgFunc_t* Callback, void* Args);
+
+/*
+    Array_Sort
+
+    This function sorts the array using the provided comparison function,
+    ensuring that the array contents are in the desired sorted order following
+    successful execution of this function.
+
+    Inputs:
+    Array       -   Pointer to the Array_t to operate on.
+    CompareFunc -   Pointer to the function to use to compare two elements of the array.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+
+    Note:
+    See the documentation for CompareFunc_t for more information on this function.
+    This must provide a total pre-order over the type contained in the array, and
+    if a stable sort is desired, a stable comparison function must be provided.
+*/
+int Array_Sort(Array_t* Array, CompareFunc_t* CompareFunc);
 
 /* ---------- Public Array_t Functions ---------- */
 #endif
