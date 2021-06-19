@@ -254,26 +254,26 @@ $(TESTCOMPONENTS):
 #   Ideally, this could be used in a build system to report the number of failing tests
 #   to some larger system, in order to ensure only successfully tested builds proceed.
 test: prep $(COMPONENTS) $(TESTCOMPONENTS)  ##  Build and then execute the testing suite.
-	@printf "%-8s %-16s -> %s\n" "(CC)" "$(notdir $(TESTOBJS) $(DBGLIBS))" "$(TESTBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
+	@printf "%-8s %-16s -> %s\n" "(CC)" "$(TESTBUILDDIR:$(ROOTDIR)/%=%)/*.o $(notdir $(DBGLIBS))" "$(TESTBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(CC) $(TESTFLAGS) -o $(TESTBIN) $(TESTOBJS) $(DBGLIBS)
 	@$(TESTBIN) $(QUIETMODE)
 
 
 #   Debugger Build Target
 debugger: prep $(COMPONENTS) $(TESTCOMPONENTS)  ##  Build the project with debugging enabled, and insert an entry point for use with a debugger.
-	@printf "%-8s %-16s -> %s\n" "(CC)" "$(notdir $(DBGROBJS) $(DBGLIBS))" "$(DBGRBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
+	@printf "%-8s %-16s -> %s\n" "(CC)" "$(DBGRBUILDDIR:$(ROOTDIR)/%=%)/*.o $(notdir $(DBGLIBS))" "$(DBGRBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(CC) $(DBGRFLAGS) -o $(DBGRBIN) $(DBGROBJS) $(DBGLIBS)
 
 
 #   Debug Build Target
 debug: prep $(COMPONENTS)   ##  Build the project with debugging enabled.
-	@printf "%-8s %-16s -> %s\n" "(LIBTOOL)" "$(notdir $(DBGOBJS) $(DBGLIBS)) " "$(DBGBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
+	@printf "%-8s %-16s -> %s\n" "(LIBTOOL)" "$(DBGBUILDDIR:$(ROOTDIR)/%=%)/*.o $(notdir $(DBGLIBS))" "$(DBGBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(LIBTOOL) $(DBGBIN) $(DBGOBJS) $(DBGLIBS)
 
 
 #   Release Build Target
 release: prep $(COMPONENTS)    ##  Build the project with debugging disabled and strip the resulting output.
-	@printf "%-8s %-16s -> %s\n" "(LIBTOOL)" "$(notdir $(RELOBJS) $(RELLIBS)) " "$(RELBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
+	@printf "%-8s %-16s -> %s\n" "(LIBTOOL)" "$(RELBUILDDIR:$(ROOTDIR)/%=%)/*.o $(notdir $(DBGLIBS))" "$(RELBIN:$(ROOTDIR)/%=%)" $(QUIETMODE)
 	@$(LIBTOOL) $(RELBIN) $(RELOBJS) $(RELLIBS)
 	@printf "%-8s %s\n" "(STRIP)" "$(notdir $(RELBIN))" $(QUIETMODE)
 	@$(STRIP) $(RELBIN)
