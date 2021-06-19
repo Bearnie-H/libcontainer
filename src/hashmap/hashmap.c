@@ -97,6 +97,8 @@ int Hashmap_Insert(Hashmap_t *Map, void *Key, void *Value, size_t KeySize, size_
         return 1;
     }
 
+    Iterator_Invalidate(&(Map->Iterator));
+
     if ((NULL == Key) || (NULL == Value)) {
         DEBUG_PRINTF("%s", "Error: NULL Key* or Value* provided.");
         return 1;
@@ -187,6 +189,8 @@ int Hashmap_Remove(Hashmap_t *Map, const void *Key, size_t KeySize) {
         return 0;
     }
 
+    Iterator_Invalidate(&(Map->Iterator));
+
     if (0 == Hashmap_Length(Map)) {
         DEBUG_PRINTF("%s", "Note: Hashmap has no elements, nothing to remove.");
         return 0;
@@ -208,6 +212,7 @@ int Hashmap_Remove(Hashmap_t *Map, const void *Key, size_t KeySize) {
         if (Entry->HashValue == HashValue) {
             if (0 == memcmp(Key, Entry->Key, KeySize)) {
                 List_removeNode(Bucket, Node);
+                Map->ItemCount -= 1;
                 DEBUG_PRINTF("%s", "Successfully removed item from Hashmap.");
                 return 0;
             }
@@ -231,6 +236,8 @@ void *Hashmap_Pop(Hashmap_t *Map, const void *Key, size_t KeySize) {
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
         return NULL;
     }
+
+    Iterator_Invalidate(&(Map->Iterator));
 
     if (NULL == Key) {
         DEBUG_PRINTF("%s", "Error: NULL Key* provided.");
@@ -271,6 +278,8 @@ int Hashmap_Clear(Hashmap_t *Map) {
         return 0;
     }
 
+    Iterator_Invalidate(&(Map->Iterator));
+
     if (0 != Array_DoCallback(Map->Buckets, (CallbackFunc_t *)List_Clear)) {
         DEBUG_PRINTF("%s", "Error: Failed to clear all buckets within Hashmap.");
         return 1;
@@ -291,6 +300,8 @@ void Hashmap_Release(Hashmap_t *Map) {
     if (NULL != Map->Buckets) {
         Array_Release(Map->Buckets);
     }
+
+    Iterator_Invalidate(&(Map->Iterator));
 
     ZERO_CONTAINER(Map, Hashmap_t);
     free(Map);
@@ -317,24 +328,21 @@ List_t *Hashmap_getBucket(Hashmap_t *Map, const void *Key, size_t KeySize,
     return (List_t *)Array_GetElement(Map->Buckets, BucketIndex);
 }
 
-void *Hashmap_findInBucket(const List_t *Bucket, const void *Key, size_t KeySize,
+void *Hashmap_findInBucket(List_t *Bucket, const void *Key, size_t KeySize,
                            unsigned int HashValue) {
 
-    List_Node_t *Node = NULL;
     Hashmap_Entry_t *Entry = NULL;
 
-    Node = Bucket->Head;
-    while (Node != NULL) {
-        Entry = (Hashmap_Entry_t *)Node->Contents.ContentRaw;
+    while (NULL != (Entry = (Hashmap_Entry_t *)List_Next(Bucket))) {
         if (Entry->HashValue == HashValue) {
             if (0 == memcmp(Key, Entry->Key, KeySize)) {
+                Iterator_Invalidate(&(Bucket->Iterator));
                 DEBUG_PRINTF("%s", "Successfully found and returned requested item from Hashmap.");
                 return Entry->Value.ValueRaw;
             }
         }
-        Node = Node->Next;
     }
-
+    Iterator_Invalidate(&(Bucket->Iterator));
     DEBUG_PRINTF("%s", "Error: Failed to find requested item in Hashmap.");
     return NULL;
 }

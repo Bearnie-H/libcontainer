@@ -30,9 +30,9 @@
 
 static int TestCallbackFunc_PrintIntValue(void *Value) {
 
-    int **KeyValuePair = (int **)Value;
-    int *MapKey = KeyValuePair[0];
-    int *MapValue = KeyValuePair[1];
+    Hashmap_KeyValuePair_t *KeyValuePair = (Hashmap_KeyValuePair_t *)Value;
+    int *MapKey = KeyValuePair->Key;
+    int *MapValue = KeyValuePair->Value;
 
     if ((NULL == MapKey) || (NULL == MapValue)) {
         TEST_PRINTF("%s", "Error: NULL MapKey* or MapValue* provided.");
@@ -46,9 +46,9 @@ static int TestCallbackFunc_PrintIntValue(void *Value) {
 
 static int TestCallbackArgFunc_PrintIntValue(void *Value, void *Args) {
 
-    int **KeyValuePair = (int **)Value;
-    int *MapKey = KeyValuePair[0];
-    int *MapValue = KeyValuePair[1];
+    Hashmap_KeyValuePair_t *KeyValuePair = (Hashmap_KeyValuePair_t *)Value;
+    int *MapKey = KeyValuePair->Key;
+    int *MapValue = KeyValuePair->Value;
     int *Divisor = (int *)Args;
 
     if (NULL == Divisor) {

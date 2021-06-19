@@ -306,6 +306,12 @@ int Test_Hashmap_Remove_DoubleKey(void) {
         TEST_FAILURE;
     }
 
+    if (0 != Hashmap_Length(Map)) {
+        TEST_PRINTF("%s", "Test Failure - Hashmap Length not 0 after only item is removed.");
+        Hashmap_Release(Map);
+        TEST_FAILURE;
+    }
+
     Hashmap_Release(Map);
     TEST_SUCCESSFUL;
 }
@@ -602,6 +608,12 @@ int Test_Hashmap_Remove_StringKey(void) {
 
     if (Hashmap_KeyExists(Map, KeyValue, 0)) {
         TEST_PRINTF("%s", "Test Failure - Removed key found in Hashmap.");
+        Hashmap_Release(Map);
+        TEST_FAILURE;
+    }
+
+    if (0 != Hashmap_Length(Map)) {
+        TEST_PRINTF("%s", "Test Failure - Hashmap Length not 0 after only item is removed.");
         Hashmap_Release(Map);
         TEST_FAILURE;
     }

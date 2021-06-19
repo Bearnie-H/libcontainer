@@ -41,6 +41,7 @@ extern "C" {
 #include "hashmap_iterator.h"
 
 #include "../../../include/libcontainer.h"
+#include "../../iterator/include/iterator.h"
 
 #ifndef LIBCONTAINER_HASHMAP_LOAD_FACTOR
 /*
@@ -84,6 +85,12 @@ struct Hashmap_t {
         more efficient structure in the future.
     */
     Array_t* Buckets;
+
+    /*
+        Iterator contains the necessary functionality to safely and consistently iterate
+        over the contents of the Hashmap.
+    */
+    Iterator_t* Iterator;
 
     /*
         ItemCount is the count of key-value pairs within the Hashmap, or the "length" of the Hashmap.
@@ -160,7 +167,7 @@ List_t* Hashmap_getBucket(Hashmap_t* Map, const void* Key, size_t KeySize, unsig
     Outputs:
     void*   -   Pointer to the value associated with the given Key, or NULL if it is not in the Hashmap.
 */
-void *Hashmap_findInBucket(const List_t *Bucket, const void *Key, size_t KeySize, unsigned int HashValue);
+void *Hashmap_findInBucket(List_t *Bucket, const void *Key, size_t KeySize, unsigned int HashValue);
 
 /*
     Hashmap_insertEntry

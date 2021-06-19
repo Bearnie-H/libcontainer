@@ -29,10 +29,8 @@
 
 int Hashmap_DoCallback(Hashmap_t *Map, CallbackFunc_t *Callback) {
 
-    size_t BucketIndex = 0, EntryIndex = 0;
-    List_t *Bucket = NULL;
-    Hashmap_Entry_t *Entry = NULL;
-    void *KeyValuePair[2] = {NULL, NULL};
+    Hashmap_KeyValuePair_t KeyValue;
+    size_t Count = 0;
     int RetVal = 0;
 
     if (NULL == Map) {
@@ -40,31 +38,25 @@ int Hashmap_DoCallback(Hashmap_t *Map, CallbackFunc_t *Callback) {
         return 1;
     }
 
+    Iterator_Invalidate(&(Map->Iterator));
+
     if (NULL == Callback) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    for (BucketIndex = 0; BucketIndex < Array_Length(Map->Buckets); BucketIndex++) {
-        Bucket = (List_t *)Array_GetElement(Map->Buckets, BucketIndex);
-        if (NULL == Bucket) {
-            DEBUG_PRINTF("%s", "Error: Failed to get Bucket from Hashmap.");
+    for (Count = 0, KeyValue = Hashmap_Next(Map); Count < Hashmap_Length(Map);
+         Count++, KeyValue = Hashmap_Next(Map)) {
+
+        if ((NULL == KeyValue.Key) || (NULL == KeyValue.Value)) {
+            DEBUG_PRINTF("%s", "Error: Failed to get Next Hashmap Key-Value pair.");
             RetVal = 1;
             continue;
         }
-        for (EntryIndex = 0; EntryIndex < List_Length(Bucket); EntryIndex++) {
-            Entry = (Hashmap_Entry_t *)List_GetElement(Bucket, EntryIndex);
-            if (NULL == Entry) {
-                DEBUG_PRINTF("%s", "Error: Retrieved NULL Entry from Hashmap Bucket.");
-                RetVal = 1;
-                continue;
-            }
-            KeyValuePair[0] = Entry->Key;
-            KeyValuePair[1] = Entry->Value.ValueRaw;
-            if (0 != Callback(KeyValuePair)) {
-                DEBUG_PRINTF("%s", "Error: Callback function returned non-zero.");
-                RetVal = 1;
-            }
+
+        if (0 != Callback(&(KeyValue))) {
+            DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+            RetVal = 1;
         }
     }
 
@@ -73,10 +65,8 @@ int Hashmap_DoCallback(Hashmap_t *Map, CallbackFunc_t *Callback) {
 
 int Hashmap_DoCallbackArg(Hashmap_t *Map, CallbackArgFunc_t *Callback, void *Args) {
 
-    size_t BucketIndex = 0, EntryIndex = 0;
-    List_t *Bucket = NULL;
-    Hashmap_Entry_t *Entry = NULL;
-    void *KeyValuePair[2] = {NULL, NULL};
+    Hashmap_KeyValuePair_t KeyValue;
+    size_t Count = 0;
     int RetVal = 0;
 
     if (NULL == Map) {
@@ -84,31 +74,23 @@ int Hashmap_DoCallbackArg(Hashmap_t *Map, CallbackArgFunc_t *Callback, void *Arg
         return 1;
     }
 
+    Iterator_Invalidate(&(Map->Iterator));
+
     if (NULL == Callback) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    for (BucketIndex = 0; BucketIndex < Array_Length(Map->Buckets); BucketIndex++) {
-        Bucket = (List_t *)Array_GetElement(Map->Buckets, BucketIndex);
-        if (NULL == Bucket) {
-            DEBUG_PRINTF("%s", "Error: Failed to get Bucket from Hashmap.");
+    for (Count = 0, KeyValue = Hashmap_Next(Map); Count < Hashmap_Length(Map);
+         Count++, KeyValue = Hashmap_Next(Map)) {
+        if ((NULL == KeyValue.Key) || (NULL == KeyValue.Value)) {
+            DEBUG_PRINTF("%s", "Error: Failed to get Next Hashmap Key-Value pair.");
             RetVal = 1;
             continue;
         }
-        for (EntryIndex = 0; EntryIndex < List_Length(Bucket); EntryIndex++) {
-            Entry = (Hashmap_Entry_t *)List_GetElement(Bucket, EntryIndex);
-            if (NULL == Entry) {
-                DEBUG_PRINTF("%s", "Error: Retrieved NULL Entry from Hashmap Bucket.");
-                RetVal = 1;
-                continue;
-            }
-            KeyValuePair[0] = Entry->Key;
-            KeyValuePair[1] = Entry->Value.ValueRaw;
-            if (0 != Callback(KeyValuePair, Args)) {
-                DEBUG_PRINTF("%s", "Error: Callback function returned non-zero.");
-                RetVal = 1;
-            }
+        if (0 != Callback(&(KeyValue), Args)) {
+            DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+            RetVal = 1;
         }
     }
 

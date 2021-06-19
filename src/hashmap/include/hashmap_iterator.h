@@ -32,6 +32,27 @@
 extern "C" {
 #endif
 
+#define LIBCONTAINER_ENABLE_ARRAY
+#define LIBCONTAINER_ENABLE_HASHMAP
+#include "../../../include/libcontainer.h"
+
+/*
+    Iterator_Initialize_Hashmap
+
+    This function initializes the Iterator for a Hashmap, preparing for forward or reverse
+    iteration over the Map.
+
+    Inputs:
+    Map             -   Pointer to the Hashmap to operate on.
+    CompareFunc     -   (Optional) function to use if the iteration order
+                            should be the Sorted Keys. Pass NULL to
+                            iterate in the arbitrary order returned by *_Keys().
+
+    Outputs:
+    void*   -   Pointer to the corresponding item from the Hashmap.
+*/
+int Iterator_Initialize_Hashmap(Hashmap_t *Map, CompareFunc_t* CompareFunc);
+
 #if defined(TESTING) || defined(DEBUGGER)
 
 #include "hashmap_iterator_test.h"

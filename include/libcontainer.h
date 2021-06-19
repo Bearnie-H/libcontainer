@@ -174,6 +174,30 @@ typedef struct Hashmap_t Hashmap_t;
 */
 typedef unsigned int (HashFunc_t)(const void*, size_t);
 
+/*
+    Hashmap_KeyValuePair_t
+
+    This struct represents a general Key-Value pair from a Hashmap value entry.
+    It is the responsibility of the caller to ensure safe typing of the returned values.
+
+    This type is generally only used with the Iterator-family functions, such
+    as Hashmap_Next() or Hashmap_Previous() or their sorted cousins. Additionally,
+    this is the "Value" passed in during the Callback() API. See the documentation
+    for those particular functions for more information about how this struct is used.
+*/
+typedef struct Hashmap_KeyValuePair_t {
+
+    /*
+        Pointer to the Key value of a Hashmap Entry.
+    */
+    void* Key;
+
+    /*
+        Pointer to the Value of a Hashmap Entry.
+    */
+    void* Value;
+} Hashmap_KeyValuePair_t;
+
 /* ---------- Public Hashmap_t Typedefs ---------- */
 #endif
 
@@ -1484,6 +1508,82 @@ void* Hashmap_Pop(Hashmap_t *Map, const void *Key, size_t KeySize);
 int Hashmap_Remove(Hashmap_t* Map, const void* Key, size_t KeySize);
 
 /*
+    Hashmap_Next
+
+    This function returns the "Next" in the Hashmap, allowing for single-step iteration
+    over the container in a richer manner than is provided by the Callback() API.
+    This provides a "forward" iteration over the map, which given the "random" ordering
+    of Keys, the exact iteration order is not well-defined. All that it guaranteed is that
+    Next() -> Previous() -> Next() will return the same Key-Value pair from each call
+    to Next().
+
+    Inputs:
+    Map     -   Pointer to the Hashmap to operate on.
+
+    Outputs:
+    Hashmap_KeyValuePair_t  -   A simple struct, containing pointers to the Key
+                                    and value for the returned Item.
+*/
+Hashmap_KeyValuePair_t Hashmap_Next(Hashmap_t* Map);
+
+/*
+    Hashmap_SortedNext
+
+    This function is equivalent to Hashmap_Next(), with the added functionality
+    of ensuring the items are traversed in Key-Sorted order, with ordering
+    defined by the CompareFunc provided.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap to operate on.
+    CompareFunc -   Pointer to the function to call to help sort the Keys into
+                        a well-defined ordering. See the documentation for a
+                        CompareFunc_t for more information on what can be passed
+                        here.
+
+    Outputs:
+    Hashmap_KeyValuePair_t  -   A simple struct, containing pointers to the Key
+                                    and value for the returned Item.
+*/
+Hashmap_KeyValuePair_t Hashmap_SortedNext(Hashmap_t* Map, CompareFunc_t* CompareFunc);
+
+/*
+    Hashmap_Previous
+
+    This function is equivalent to Hashmap_Next(), but provides iteration in the reverse
+    direction. For this unsorted case, there is no major difference between calling
+    Hashmap_Next() versus Hashmap_Previous(), as the Hashmap key values do not have
+    a well-defined ordering by default.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap to operate on.
+
+    Outputs:
+    Hashmap_KeyValuePair_t  -   A simple struct, containing pointers to the Key
+                                    and value for the returned Item.
+*/
+Hashmap_KeyValuePair_t Hashmap_Previous(Hashmap_t* Map);
+
+/*
+    Hashmap_SortedPrevious
+
+    This function is equivalent to Hashmap_SortedNext(), except in that it traverses
+    the sorted Keys in the opposite direction. If, for example Hashmap_NextSorted()
+    operates in ascending order, this would operate in descending order.
+
+    Inputs:
+    Map     -   Pointer to the Hashmap to operate on.
+    CompareFunc -   Pointer to the function to call to help sort the Keys into
+                        a well-defined ordering. See the documentation for a
+                        CompareFunc_t for more information on what can be passed
+                        here.
+
+    Outputs:
+    Hashmap_KeyValuePair_t  -   A simple struct, containing pointers to the Key
+                                    and value for the returned Item.
+*/
+Hashmap_KeyValuePair_t Hashmap_SortedPrevious(Hashmap_t* Map, CompareFunc_t* CompareFunc);
+
+/*
     Hashmap_DoCallback
 
     This function will perform the given callback function on each of the elements of
@@ -1499,8 +1599,7 @@ int Hashmap_Remove(Hashmap_t* Map, const void* Key, size_t KeySize);
 
     Note:
     For a Hashmap Callback function, the *Value* pointer provided to the callback
-    is actually an array of 2 void*, containing a pointer to the Key and the Value
-    respectively.
+    is a pointer to a Hashmap_KeyValuePair_t.
 */
 
 int Hashmap_DoCallback(Hashmap_t* Map, CallbackFunc_t* Callback);
@@ -1523,8 +1622,7 @@ int Hashmap_DoCallback(Hashmap_t* Map, CallbackFunc_t* Callback);
 
     Note:
     For a Hashmap Callback function, the *Value* pointer provided to the callback
-    is actually an array of 2 void*, containing a pointer to the Key and the Value
-    respectively.
+    is a pointer to a Hashmap_KeyValuePair_t.
 */
 
 int Hashmap_DoCallbackArg(Hashmap_t* Map, CallbackArgFunc_t* Callback, void* Args);
