@@ -100,7 +100,7 @@ int Test_Binary_Tree_Iterate_Next_InOrder(void) {
          i++, KeyValuePair = Binary_Tree_Next(Tree, Direction)) {
         if (*(size_t *)KeyValuePair.Value != Expected[i]) {
             TEST_PRINTF("Test Failure - Tree Value (%lu) not equal to expectation (%lu).",
-                        (unsigned long)*(size_t *)KeyValuePair.Value, Expected[i]);
+                        (unsigned long)*(size_t *)KeyValuePair.Value, (unsigned long)Expected[i]);
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
@@ -144,7 +144,7 @@ int Test_Binary_Tree_Iterate_Next_PreOrder(void) {
 
         if (*(size_t *)KeyValuePair.Value != Expected[i]) {
             TEST_PRINTF("Test Failure - Tree Value (%lu) not equal to expectation (%lu).",
-                        (unsigned long)*(size_t *)KeyValuePair.Value, Expected[i]);
+                        (unsigned long)*(size_t *)KeyValuePair.Value, (unsigned long)Expected[i]);
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
@@ -188,7 +188,7 @@ int Test_Binary_Tree_Iterate_Next_PostOrder(void) {
 
         if (*(size_t *)KeyValuePair.Value != Expected[i]) {
             TEST_PRINTF("Test Failure - Tree Value (%lu) not equal to expectation (%lu).",
-                        (unsigned long)*(size_t *)KeyValuePair.Value, Expected[i]);
+                        (unsigned long)*(size_t *)KeyValuePair.Value, (unsigned long)Expected[i]);
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }

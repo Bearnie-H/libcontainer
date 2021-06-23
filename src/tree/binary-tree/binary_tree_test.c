@@ -71,43 +71,31 @@ static void PrintBinaryTree(const Binary_Tree_Node_t *Root) {
 
 static int PrintBinaryTreeCallback(void *KeyValuePair) {
 
-    int *Key = NULL, *Value = NULL;
-
-    if (NULL == KeyValuePair) {
-    }
+    Binary_Tree_KeyValuePair_t Pair;
 
     if (NULL == KeyValuePair) {
         TEST_PRINTF("%s", "Test Failure - NULL KeyValuePair* provided.");
         TEST_FAILURE;
     }
 
-    Key = ((int *)((void **)KeyValuePair)[0]);
-    Value = ((int *)((void **)KeyValuePair)[1]);
+    Pair = *(Binary_Tree_KeyValuePair_t *)KeyValuePair;
 
-    if (NULL == Key) {
-        TEST_PRINTF("%s", "Test Failure - NULL Key* provided.");
-        TEST_FAILURE;
-    }
-
-    if (NULL == Value) {
+    if (NULL == Pair.Value) {
         TEST_PRINTF("%s", "Test Failure - NULL Value* provided.");
         TEST_FAILURE;
     }
 
-    DEBUG_PRINTF("(%d,%d) ", *Key, *Value);
+    DEBUG_PRINTF("(%d,%d) ", Pair.Key, *(int*)Pair.Value);
 
     return 0;
 }
 
 static int PrintBinaryTreeCallbackArgs(void *KeyValuePair, void *Args) {
 
+    Binary_Tree_KeyValuePair_t Pair;
+
     if (NULL == Args) {
         DEBUG_PRINTF("%s", "Note: NULL Args* provided.");
-    }
-
-    int *Key = NULL, *Value = NULL;
-
-    if (NULL == KeyValuePair) {
     }
 
     if (NULL == KeyValuePair) {
@@ -115,20 +103,14 @@ static int PrintBinaryTreeCallbackArgs(void *KeyValuePair, void *Args) {
         TEST_FAILURE;
     }
 
-    Key = ((int *)((void **)KeyValuePair)[0]);
-    Value = ((int *)((void **)KeyValuePair)[1]);
+    Pair = *(Binary_Tree_KeyValuePair_t *)KeyValuePair;
 
-    if (NULL == Key) {
-        TEST_PRINTF("%s", "Test Failure - NULL Key* provided.");
-        TEST_FAILURE;
-    }
-
-    if (NULL == Value) {
+    if (NULL == Pair.Value) {
         TEST_PRINTF("%s", "Test Failure - NULL Value* provided.");
         TEST_FAILURE;
     }
 
-    DEBUG_PRINTF("(%d,%d) ", *Key, *Value);
+    DEBUG_PRINTF("(%d,%d) ", Pair.Key, *(int*)Pair.Value);
 
     return 0;
 }
