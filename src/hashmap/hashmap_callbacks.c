@@ -30,31 +30,31 @@
 int Hashmap_DoCallback(Hashmap_t *Map, CallbackFunc_t *Callback) {
 
     Hashmap_KeyValuePair_t KeyValue;
-    size_t Count = 0;
-    int RetVal = 0;
+    size_t                 Count  = 0;
+    int                    RetVal = 0;
 
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
         return 1;
     }
 
     Iterator_Invalidate(&(Map->Iterator));
 
-    if (NULL == Callback) {
+    if ( NULL == Callback ) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    for (Count = 0, KeyValue = Hashmap_Next(Map); Count < Hashmap_Length(Map);
-         Count++, KeyValue = Hashmap_Next(Map)) {
+    for ( Count = 0, KeyValue = Hashmap_Next(Map); Count < Hashmap_Length(Map);
+          Count++, KeyValue   = Hashmap_Next(Map) ) {
 
-        if ((NULL == KeyValue.Key) || (NULL == KeyValue.Value)) {
+        if ( (NULL == KeyValue.Key) || (NULL == KeyValue.Value) ) {
             DEBUG_PRINTF("%s", "Error: Failed to get Next Hashmap Key-Value pair.");
             RetVal = 1;
             continue;
         }
 
-        if (0 != Callback(&(KeyValue))) {
+        if ( 0 != Callback(&(KeyValue)) ) {
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
             RetVal = 1;
         }
@@ -66,29 +66,29 @@ int Hashmap_DoCallback(Hashmap_t *Map, CallbackFunc_t *Callback) {
 int Hashmap_DoCallbackArg(Hashmap_t *Map, CallbackArgFunc_t *Callback, void *Args) {
 
     Hashmap_KeyValuePair_t KeyValue;
-    size_t Count = 0;
-    int RetVal = 0;
+    size_t                 Count  = 0;
+    int                    RetVal = 0;
 
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
         return 1;
     }
 
     Iterator_Invalidate(&(Map->Iterator));
 
-    if (NULL == Callback) {
+    if ( NULL == Callback ) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    for (Count = 0, KeyValue = Hashmap_Next(Map); Count < Hashmap_Length(Map);
-         Count++, KeyValue = Hashmap_Next(Map)) {
-        if ((NULL == KeyValue.Key) || (NULL == KeyValue.Value)) {
+    for ( Count = 0, KeyValue = Hashmap_Next(Map); Count < Hashmap_Length(Map);
+          Count++, KeyValue   = Hashmap_Next(Map) ) {
+        if ( (NULL == KeyValue.Key) || (NULL == KeyValue.Value) ) {
             DEBUG_PRINTF("%s", "Error: Failed to get Next Hashmap Key-Value pair.");
             RetVal = 1;
             continue;
         }
-        if (0 != Callback(&(KeyValue), Args)) {
+        if ( 0 != Callback(&(KeyValue), Args) ) {
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
             RetVal = 1;
         }

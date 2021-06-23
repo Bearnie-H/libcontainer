@@ -31,10 +31,10 @@
 static int TestCallbackFunc_PrintIntValue(void *Value) {
 
     Hashmap_KeyValuePair_t *KeyValuePair = (Hashmap_KeyValuePair_t *)Value;
-    int *MapKey = KeyValuePair->Key;
-    int *MapValue = KeyValuePair->Value;
+    int *                   MapKey       = KeyValuePair->Key;
+    int *                   MapValue     = KeyValuePair->Value;
 
-    if ((NULL == MapKey) || (NULL == MapValue)) {
+    if ( (NULL == MapKey) || (NULL == MapValue) ) {
         TEST_PRINTF("%s", "Error: NULL MapKey* or MapValue* provided.");
         return 1;
     }
@@ -47,21 +47,21 @@ static int TestCallbackFunc_PrintIntValue(void *Value) {
 static int TestCallbackArgFunc_PrintIntValue(void *Value, void *Args) {
 
     Hashmap_KeyValuePair_t *KeyValuePair = (Hashmap_KeyValuePair_t *)Value;
-    int *MapKey = KeyValuePair->Key;
-    int *MapValue = KeyValuePair->Value;
-    int *Divisor = (int *)Args;
+    int *                   MapKey       = KeyValuePair->Key;
+    int *                   MapValue     = KeyValuePair->Value;
+    int *                   Divisor      = (int *)Args;
 
-    if (NULL == Divisor) {
+    if ( NULL == Divisor ) {
         TEST_PRINTF("%s", "Error: NULL Divisor* provided.");
         return 1;
     }
 
-    if ((NULL == MapKey) || (NULL == MapValue)) {
+    if ( (NULL == MapKey) || (NULL == MapValue) ) {
         TEST_PRINTF("%s", "Error: NULL MapKey* or MapValue* provided.");
         return 1;
     }
 
-    if (0 == (*MapValue % *Divisor)) {
+    if ( 0 == (*MapValue % *Divisor) ) {
         DEBUG_PRINTF("Hashmap value [ %d ] (key = %d) is divisible by [ %d ]!", *MapValue, *MapKey,
                      *Divisor);
     } else {
@@ -84,20 +84,20 @@ int Test_hashmap_callbacks(void) {
 
 int Test_Hashmap_DoCallbackFunc(void) {
 
-    Hashmap_t *Map = NULL;
-    size_t Size = 64;
-    int i = 0, Key = 0;
+    Hashmap_t *Map  = NULL;
+    size_t     Size = 64;
+    int        i = 0, Key = 0;
     ;
 
     Map = Hashmap_Create(HashFunc_Int, 0, NULL);
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Hashmap_t* for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < (int)Size; i++) {
+    for ( i = 0; i < (int)Size; i++ ) {
         Key = rand();
-        if (0 != Hashmap_Insert(Map, &Key, &i, 0, sizeof(i), NULL)) {
+        if ( 0 != Hashmap_Insert(Map, &Key, &i, 0, sizeof(i), NULL) ) {
             TEST_PRINTF("Test Failure - Failed to insert Key (%d) - Value (%d) pair into Hashmap.",
                         Key, i);
             Hashmap_Release(Map);
@@ -105,7 +105,7 @@ int Test_Hashmap_DoCallbackFunc(void) {
         }
     }
 
-    if (0 != Hashmap_DoCallback(Map, TestCallbackFunc_PrintIntValue)) {
+    if ( 0 != Hashmap_DoCallback(Map, TestCallbackFunc_PrintIntValue) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Hashmap_DoCallback().");
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -116,19 +116,19 @@ int Test_Hashmap_DoCallbackFunc(void) {
 }
 int Test_Hashmap_DoCallbackArgFunc(void) {
 
-    Hashmap_t *Map = NULL;
-    size_t Size = 64;
-    int i = 0, Key = 0, Divisor = 7;
+    Hashmap_t *Map  = NULL;
+    size_t     Size = 64;
+    int        i = 0, Key = 0, Divisor = 7;
 
     Map = Hashmap_Create(HashFunc_Int, 0, NULL);
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Hashmap_t* for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < (int)Size; i++) {
+    for ( i = 0; i < (int)Size; i++ ) {
         Key = rand();
-        if (0 != Hashmap_Insert(Map, &Key, &i, 0, sizeof(i), NULL)) {
+        if ( 0 != Hashmap_Insert(Map, &Key, &i, 0, sizeof(i), NULL) ) {
             TEST_PRINTF("Test Failure - Failed to insert Key (%d) - Value (%d) pair into Hashmap.",
                         Key, i);
             Hashmap_Release(Map);
@@ -136,7 +136,7 @@ int Test_Hashmap_DoCallbackArgFunc(void) {
         }
     }
 
-    if (0 != Hashmap_DoCallbackArg(Map, TestCallbackArgFunc_PrintIntValue, &Divisor)) {
+    if ( 0 != Hashmap_DoCallbackArg(Map, TestCallbackArgFunc_PrintIntValue, &Divisor) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Hashmap_DoCallbackArg().");
         Hashmap_Release(Map);
         TEST_FAILURE;

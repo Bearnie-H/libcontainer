@@ -41,11 +41,11 @@ int Test_list_node(void) {
 
 int Test_ListNode_Create(void) {
 
-    List_Node_t *Node = NULL;
-    char Contents[] = "Hello World";
+    List_Node_t *Node       = NULL;
+    char         Contents[] = "Hello World";
 
     Node = ListNode_Create(Contents, sizeof(Contents));
-    if (NULL == Node) {
+    if ( NULL == Node ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create List_Node_t.");
         TEST_FAILURE;
     }
@@ -56,18 +56,18 @@ int Test_ListNode_Create(void) {
 
 int Test_ListNode_RefCreate(void) {
 
-    List_Node_t *Outer = NULL;
-    List_Node_t *Inner = NULL;
-    char Contents[] = "Hello World";
+    List_Node_t *Outer      = NULL;
+    List_Node_t *Inner      = NULL;
+    char         Contents[] = "Hello World";
 
     Inner = ListNode_Create(Contents, sizeof(Contents));
-    if (NULL == Inner) {
+    if ( NULL == Inner ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create inner List_Node_t.");
         TEST_FAILURE;
     }
 
     Outer = ListNode_RefCreate(Inner, (ReleaseFunc_t *)ListNode_Release);
-    if (NULL == Outer) {
+    if ( NULL == Outer ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create outer List_Node_t.");
         TEST_FAILURE;
     }
@@ -79,30 +79,30 @@ int Test_ListNode_RefCreate(void) {
 int Test_ListNode_InsertAfter(void) {
 
     List_Node_t *Node1 = NULL, *Node2 = NULL;
-    char Contents[] = "Hello World";
+    char         Contents[] = "Hello World";
 
     Node1 = ListNode_Create(Contents, sizeof(Contents));
-    if (NULL == Node1) {
+    if ( NULL == Node1 ) {
         DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node1).");
         TEST_FAILURE;
     }
 
     Node2 = ListNode_Create(Contents, sizeof(Contents));
-    if (NULL == Node2) {
+    if ( NULL == Node2 ) {
         DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node2).");
         ListNode_Release(Node1);
         TEST_FAILURE;
     }
 
-    if (0 != ListNode_InsertAfter(Node1, Node2)) {
+    if ( 0 != ListNode_InsertAfter(Node1, Node2) ) {
         DEBUG_PRINTF("%s", "Test Failure - Failed to insert List_Node_t.");
         ListNode_Release(Node1);
         ListNode_Release(Node2);
         TEST_FAILURE;
     }
 
-    if (!((Node1->Next == Node2) && (Node1->Next->Previous == Node1) &&
-          (Node2->Previous == Node1) && (Node2->Previous->Next == Node2))) {
+    if ( !((Node1->Next == Node2) && (Node1->Next->Previous == Node1) &&
+           (Node2->Previous == Node1) && (Node2->Previous->Next == Node2)) ) {
         DEBUG_PRINTF("%s", "Test Failure - Inter-Node linking not equal to expectation.");
         ListNode_Release(Node1);
         ListNode_Release(Node2);
@@ -117,30 +117,30 @@ int Test_ListNode_InsertAfter(void) {
 int Test_ListNode_InsertBefore(void) {
 
     List_Node_t *Node1 = NULL, *Node2 = NULL;
-    char Contents[] = "Hello World";
+    char         Contents[] = "Hello World";
 
     Node1 = ListNode_Create(Contents, sizeof(Contents));
-    if (NULL == Node1) {
+    if ( NULL == Node1 ) {
         DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node1).");
         TEST_FAILURE;
     }
 
     Node2 = ListNode_Create(Contents, sizeof(Contents));
-    if (NULL == Node2) {
+    if ( NULL == Node2 ) {
         DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node2).");
         ListNode_Release(Node1);
         TEST_FAILURE;
     }
 
-    if (0 != ListNode_InsertBefore(Node1, Node2)) {
+    if ( 0 != ListNode_InsertBefore(Node1, Node2) ) {
         DEBUG_PRINTF("%s", "Test Failure - Failed to insert List_Node_t.");
         ListNode_Release(Node1);
         ListNode_Release(Node2);
         TEST_FAILURE;
     }
 
-    if (!((Node1->Previous == Node2) && (Node1->Previous->Next == Node1) &&
-          (Node2->Next == Node1) && (Node2->Next->Previous == Node2))) {
+    if ( !((Node1->Previous == Node2) && (Node1->Previous->Next == Node1) &&
+           (Node2->Next == Node1) && (Node2->Next->Previous == Node2)) ) {
         DEBUG_PRINTF("%s", "Test Failure - Inter-Node linking not equal to expectation.");
         ListNode_Release(Node1);
         ListNode_Release(Node2);
@@ -154,22 +154,22 @@ int Test_ListNode_InsertBefore(void) {
 
 int Test_ListNode_UpdateValue(void) {
 
-    List_Node_t *Node = NULL;
-    int InitialContents = 10, NewContents = 5;
+    List_Node_t *Node            = NULL;
+    int          InitialContents = 10, NewContents = 5;
 
     Node = ListNode_Create(&InitialContents, sizeof(InitialContents));
-    if (NULL == Node) {
+    if ( NULL == Node ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create List_Node_t.");
         TEST_FAILURE;
     }
 
-    if (0 != ListNode_UpdateValue(Node, &NewContents, sizeof(NewContents), NULL)) {
+    if ( 0 != ListNode_UpdateValue(Node, &NewContents, sizeof(NewContents), NULL) ) {
         TEST_PRINTF("%s", "Test Failure - Error setting new Node value.");
         ListNode_Release(Node);
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(Node->Contents.ContentBytes, &NewContents, sizeof(NewContents))) {
+    if ( 0 != memcmp(Node->Contents.ContentBytes, &NewContents, sizeof(NewContents)) ) {
         TEST_PRINTF("Test Failure - Node contents (%d) not equal to expected value (%d).",
                     *(int *)(Node->Contents.ContentRaw), NewContents);
         ListNode_Release(Node);

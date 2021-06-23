@@ -28,7 +28,7 @@
 
 size_t List_Length(List_t *List) {
 
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "NULL List_t* provided, no length to report.");
         return 0;
     }
@@ -38,44 +38,44 @@ size_t List_Length(List_t *List) {
 
 int List_Insert(List_t *List, const void *Element, size_t ElementSize, size_t Index) {
 
-    List_Node_t *NewNode = NULL;
+    List_Node_t *NewNode  = NULL;
     List_Node_t *BaseNode = NULL;
 
-    if ((NULL == List) || (NULL == Element)) {
+    if ( (NULL == List) || (NULL == Element) ) {
         DEBUG_PRINTF("%s", "Error, NULL List_t* or Element provided.");
         return 1;
     }
 
     Iterator_Invalidate(&(List->Iterator));
 
-    if ((List->Length < Index)) {
+    if ( (List->Length < Index) ) {
         DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return 1;
     }
 
-    if (0 == ElementSize) {
+    if ( 0 == ElementSize ) {
         DEBUG_PRINTF("%s", "Error, Invalid ElementSize of 0.");
         return 1;
     }
 
     NewNode = ListNode_Create(Element, ElementSize);
-    if (NULL == NewNode) {
+    if ( NULL == NewNode ) {
         DEBUG_PRINTF("%s", "Error, Failed to create new List_Node_t to add into List_t.");
         return 1;
     }
 
-    if (0 == List->Length) {
+    if ( 0 == List->Length ) {
         List->Head = NewNode;
         List->Tail = NewNode;
-    } else if (0 == Index) {
-        if (0 != ListNode_InsertBefore(List->Head, NewNode)) {
+    } else if ( 0 == Index ) {
+        if ( 0 != ListNode_InsertBefore(List->Head, NewNode) ) {
             DEBUG_PRINTF("%s", "Failed to insert new List_Node_t at beginning of the List_t.");
             ListNode_Release(NewNode);
             return 1;
         }
         List->Head = NewNode;
-    } else if (List->Length == (size_t)Index) {
-        if (0 != ListNode_InsertAfter(List->Tail, NewNode)) {
+    } else if ( List->Length == (size_t)Index ) {
+        if ( 0 != ListNode_InsertAfter(List->Tail, NewNode) ) {
             DEBUG_PRINTF("%s", "Failed to insert new List_Node_t at the end of the List_t.");
             ListNode_Release(NewNode);
             return 1;
@@ -83,7 +83,7 @@ int List_Insert(List_t *List, const void *Element, size_t ElementSize, size_t In
         List->Tail = NewNode;
     } else {
         BaseNode = List_findNode(List, Index);
-        if (0 != ListNode_InsertBefore(BaseNode, NewNode)) {
+        if ( 0 != ListNode_InsertBefore(BaseNode, NewNode) ) {
             DEBUG_PRINTF("%s", "Failed to insert new List_Node_t at the requested index.");
             ListNode_Release(NewNode);
             return 1;
@@ -106,39 +106,39 @@ int List_Append(List_t *List, const void *Element, size_t ElementSize) {
 
 int List_RefInsert(List_t *List, void *Element, ReleaseFunc_t *ReleaseFunc, size_t Index) {
 
-    List_Node_t *NewNode = NULL;
+    List_Node_t *NewNode  = NULL;
     List_Node_t *BaseNode = NULL;
 
-    if ((NULL == List) || (NULL == Element)) {
+    if ( (NULL == List) || (NULL == Element) ) {
         DEBUG_PRINTF("%s", "Error, NULL List_t* or Element provided.");
         return 1;
     }
 
     Iterator_Invalidate(&(List->Iterator));
 
-    if ((List->Length < Index)) {
+    if ( (List->Length < Index) ) {
         DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return 1;
     }
 
     NewNode = ListNode_RefCreate(Element, ReleaseFunc);
-    if (NULL == NewNode) {
+    if ( NULL == NewNode ) {
         DEBUG_PRINTF("%s", "Error, Failed to create new List_Node_t to add into List_t.");
         return 1;
     }
 
-    if (0 == List->Length) {
+    if ( 0 == List->Length ) {
         List->Head = NewNode;
         List->Tail = NewNode;
-    } else if (0 == Index) {
-        if (0 != ListNode_InsertBefore(List->Head, NewNode)) {
+    } else if ( 0 == Index ) {
+        if ( 0 != ListNode_InsertBefore(List->Head, NewNode) ) {
             DEBUG_PRINTF("%s", "Failed to insert new List_Node_t at beginning of the List_t.");
             ListNode_Release(NewNode);
             return 1;
         }
         List->Head = NewNode;
-    } else if (List->Length == (size_t)Index) {
-        if (0 != ListNode_InsertAfter(List->Tail, NewNode)) {
+    } else if ( List->Length == (size_t)Index ) {
+        if ( 0 != ListNode_InsertAfter(List->Tail, NewNode) ) {
             DEBUG_PRINTF("%s", "Failed to insert new List_Node_t at the end of the List_t.");
             ListNode_Release(NewNode);
             return 1;
@@ -146,7 +146,7 @@ int List_RefInsert(List_t *List, void *Element, ReleaseFunc_t *ReleaseFunc, size
         List->Tail = NewNode;
     } else {
         BaseNode = List_findNode(List, Index);
-        if (0 != ListNode_InsertBefore(BaseNode, NewNode)) {
+        if ( 0 != ListNode_InsertBefore(BaseNode, NewNode) ) {
             DEBUG_PRINTF("%s", "Failed to insert new List_Node_t at the requested index.");
             ListNode_Release(NewNode);
             return 1;
@@ -175,12 +175,12 @@ void *List_GetElement(List_t *List, size_t Index) {
 
     List_Node_t *Node = NULL;
 
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "Error, NULL List_t* provided.");
         return NULL;
     }
 
-    if ((0 == List->Length) || (List->Length <= Index)) {
+    if ( (0 == List->Length) || (List->Length <= Index) ) {
         DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return NULL;
     }
@@ -195,17 +195,17 @@ int List_SetElement(List_t *List, void *Element, size_t ElementSize, size_t Inde
 
     List_Node_t *Node = NULL;
 
-    if ((NULL == List) || (NULL == Element)) {
+    if ( (NULL == List) || (NULL == Element) ) {
         DEBUG_PRINTF("%s", "Error, NULL List_t* or Element provided.");
         return 1;
     }
 
-    if ((0 == List->Length) || (List->Length <= (size_t)Index)) {
+    if ( (0 == List->Length) || (List->Length <= (size_t)Index) ) {
         DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return 1;
     }
 
-    if (0 == ElementSize) {
+    if ( 0 == ElementSize ) {
         DEBUG_PRINTF("%s", "Error, Illegal ElementSize of 0.");
         return 1;
     }
@@ -214,7 +214,7 @@ int List_SetElement(List_t *List, void *Element, size_t ElementSize, size_t Inde
 
     /* Since we're setting the node contents to a non-reference type, the
      * ReleaseFunc is always just free(). */
-    if (0 != ListNode_UpdateValue(Node, Element, ElementSize, (ReleaseFunc_t *)free)) {
+    if ( 0 != ListNode_UpdateValue(Node, Element, ElementSize, (ReleaseFunc_t *)free) ) {
         DEBUG_PRINTF("%s", "Error, Failed to update Node contents.");
         return 1;
     }
@@ -227,24 +227,24 @@ int List_RefSetElement(List_t *List, void *Element, ReleaseFunc_t *ReleaseFunc, 
 
     List_Node_t *Node = NULL;
 
-    if ((NULL == List) || (NULL == Element)) {
+    if ( (NULL == List) || (NULL == Element) ) {
         DEBUG_PRINTF("%s", "Error, NULL List_t* or Element provided.");
         return 1;
     }
 
-    if ((0 == List->Length) || (List->Length <= (size_t)Index)) {
+    if ( (0 == List->Length) || (List->Length <= (size_t)Index) ) {
         DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return 1;
     }
 
-    if (NULL == ReleaseFunc) {
+    if ( NULL == ReleaseFunc ) {
         DEBUG_PRINTF("%s", "Error, NULL ReleaseFunc provided.");
         return 1;
     }
 
     Node = List_findNode(List, Index);
 
-    if (0 != ListNode_UpdateValue(Node, Element, 0, ReleaseFunc)) {
+    if ( 0 != ListNode_UpdateValue(Node, Element, 0, ReleaseFunc) ) {
         DEBUG_PRINTF("%s", "Error, Failed to update Node contents.");
         return 1;
     }
@@ -255,29 +255,29 @@ int List_RefSetElement(List_t *List, void *Element, ReleaseFunc_t *ReleaseFunc, 
 
 void *List_PopElement(List_t *List, size_t Index) {
 
-    List_Node_t *Node = NULL;
-    void *NodeContents = NULL;
+    List_Node_t *Node         = NULL;
+    void *       NodeContents = NULL;
 
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "Error, NULL List_t* provided.");
         return NULL;
     }
 
     Iterator_Invalidate(&(List->Iterator));
 
-    if ((0 == List->Length) || (List->Length <= (size_t)Index)) {
+    if ( (0 == List->Length) || (List->Length <= (size_t)Index) ) {
         DEBUG_PRINTF("Error, Index value of [ %d ] is out of bounds.", (int)Index);
         return NULL;
     }
 
-    Node = List_findNode(List, Index);
+    Node         = List_findNode(List, Index);
     NodeContents = Node->Contents.ContentRaw;
 
-    if (Node == List->Head) {
+    if ( Node == List->Head ) {
         List->Head = List->Head->Next;
     }
 
-    if (Node == List->Tail) {
+    if ( Node == List->Tail ) {
         List->Tail = List->Tail->Previous;
     }
 
@@ -289,23 +289,27 @@ void *List_PopElement(List_t *List, size_t Index) {
     return NodeContents;
 }
 
-void *List_PopFront(List_t *List) { return List_PopElement(List, 0); }
+void *List_PopFront(List_t *List) {
+    return List_PopElement(List, 0);
+}
 
-void *List_PopBack(List_t *List) { return List_PopElement(List, List->Length - 1); }
+void *List_PopBack(List_t *List) {
+    return List_PopElement(List, List->Length - 1);
+}
 
 /* Private Function Definitions. */
 List_Node_t *List_findNode(List_t *List, size_t Index) {
 
-    size_t i = 0;
+    size_t       i    = 0;
     List_Node_t *Node = NULL;
 
-    if (0 == Index) {
+    if ( 0 == Index ) {
         return List->Head;
-    } else if ((List->Length - 1) == Index) {
+    } else if ( (List->Length - 1) == Index ) {
         return List->Tail;
     }
 
-    for (i = 0, Node = List->Head; i < Index; i++, Node = Node->Next)
+    for ( i = 0, Node = List->Head; i < Index; i++, Node = Node->Next )
         ;
 
     return Node;
@@ -315,7 +319,7 @@ int List_removeNode(List_t *List, List_Node_t *Node) {
 
     List_Node_t *CheckNode = NULL;
 
-    if ((NULL == List) || (NULL == Node)) {
+    if ( (NULL == List) || (NULL == Node) ) {
         DEBUG_PRINTF("%s", "Error: NULL List* or Node* provided.");
         return 1;
     }
@@ -323,20 +327,20 @@ int List_removeNode(List_t *List, List_Node_t *Node) {
     Iterator_Invalidate(&(List->Iterator));
 
     /* Make sure this node is actually within the list. */
-    for (CheckNode = List->Head; CheckNode != NULL && CheckNode != Node;
-         CheckNode = CheckNode->Next)
+    for ( CheckNode = List->Head; CheckNode != NULL && CheckNode != Node;
+          CheckNode = CheckNode->Next )
         ;
 
-    if (NULL == CheckNode) {
+    if ( NULL == CheckNode ) {
         DEBUG_PRINTF("%s", "Error: Given List_Node_t* is not within the List_t.");
         return 1;
     }
 
-    if (List->Head == Node) {
+    if ( List->Head == Node ) {
         List->Head = List->Head->Next;
     }
 
-    if (List->Tail == Node) {
+    if ( List->Tail == Node ) {
         List->Tail = List->Tail->Previous;
     }
 

@@ -29,31 +29,31 @@
 
 int List_DoCallback(List_t *List, CallbackFunc_t *Callback) {
 
-    void *NodeValue = NULL;
-    int RetValue = 0;
-    size_t Count = 0;
+    void * NodeValue = NULL;
+    int    RetValue  = 0;
+    size_t Count     = 0;
 
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
         return 1;
     }
 
     Iterator_Invalidate(&(List->Iterator));
 
-    if (NULL == Callback) {
+    if ( NULL == Callback ) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    while (NULL != (NodeValue = List_Next(List))) {
-        if (0 != Callback(NodeValue)) {
+    while ( NULL != (NodeValue = List_Next(List)) ) {
+        if ( 0 != Callback(NodeValue) ) {
             DEBUG_PRINTF("%s", "Error: Callback function returned non-zero.");
             RetValue = 1;
         }
         Count += 1;
     }
 
-    if (Count != List_Length(List)) {
+    if ( Count != List_Length(List) ) {
         DEBUG_PRINTF("%s", "Error: Iteration length does not equal List length.");
         return 1;
     }
@@ -63,31 +63,31 @@ int List_DoCallback(List_t *List, CallbackFunc_t *Callback) {
 
 int List_DoCallbackArg(List_t *List, CallbackArgFunc_t *Callback, void *Args) {
 
-    void *NodeValue = NULL;
-    int RetValue = 0;
-    size_t Count = 0;
+    void * NodeValue = NULL;
+    int    RetValue  = 0;
+    size_t Count     = 0;
 
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
         return 1;
     }
 
     Iterator_Invalidate(&(List->Iterator));
 
-    if (NULL == Callback) {
+    if ( NULL == Callback ) {
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
         return 0;
     }
 
-    while (NULL != (NodeValue = List_Next(List))) {
-        if (0 != Callback(NodeValue, Args)) {
+    while ( NULL != (NodeValue = List_Next(List)) ) {
+        if ( 0 != Callback(NodeValue, Args) ) {
             DEBUG_PRINTF("%s", "Error: Callback function returned non-zero.");
             RetValue = 1;
         }
         Count += 1;
     }
 
-    if (Count != List_Length(List)) {
+    if ( Count != List_Length(List) ) {
         DEBUG_PRINTF("%s", "Error: Iteration length does not equal List length.");
         return 1;
     }

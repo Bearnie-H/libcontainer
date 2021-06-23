@@ -33,9 +33,9 @@ static int ArrayCompareFunc_Int(const void *A, const void *B) {
 }
 
 static int ArrayCompareFunc_Double(const void *A, const void *B) {
-    if (*(const double *)A < *(const double *)B) {
+    if ( *(const double *)A < *(const double *)B ) {
         return -1;
-    } else if (*(const double *)B < *(const double *)A) {
+    } else if ( *(const double *)B < *(const double *)A ) {
         return 1;
     }
     return 0;
@@ -53,42 +53,42 @@ int Test_array_sort(void) {
 
 int Test_Array_Sort_Int(void) {
 
-    Array_t *Array = NULL;
-    size_t ArraySize = 100, i = 0;
-    int Value = 0, *Lower = NULL, *Upper = NULL;
+    Array_t *Array     = NULL;
+    size_t   ArraySize = 100, i = 0;
+    int      Value = 0, *Lower = NULL, *Upper = NULL;
 
     Array = Array_Create(0, sizeof(int));
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < ArraySize; i++) {
+    for ( i = 0; i < ArraySize; i++ ) {
         Value = rand() % 1000;
-        if (0 != Array_Append(Array, &Value)) {
+        if ( 0 != Array_Append(Array, &Value) ) {
             TEST_PRINTF("Test Failure - Failed to append value [ %d ] to Array.", Value);
             Array_Release(Array);
             TEST_FAILURE;
         }
     }
 
-    if (0 != Array_Sort(Array, ArrayCompareFunc_Int)) {
+    if ( 0 != Array_Sort(Array, ArrayCompareFunc_Int) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Sort() operation on Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
 
-    for (i = 0; i < (ArraySize - 1); i++) {
+    for ( i = 0; i < (ArraySize - 1); i++ ) {
         Lower = Array_GetElement(Array, i);
         Upper = Array_GetElement(Array, i + 1);
 
-        if ((NULL == Lower) || (NULL == Upper)) {
+        if ( (NULL == Lower) || (NULL == Upper) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to check if Array is in Sorted order.");
             Array_Release(Array);
             TEST_FAILURE;
         }
 
-        if (*Lower > *Upper) {
+        if ( *Lower > *Upper ) {
             TEST_PRINTF("Test Failure - Array is not in Sorted order, %d < %d?!", *Lower, *Upper);
             Array_Release(Array);
             TEST_FAILURE;
@@ -101,42 +101,42 @@ int Test_Array_Sort_Int(void) {
 
 int Test_Array_Sort_Double(void) {
 
-    Array_t *Array = NULL;
-    size_t ArraySize = 100, i = 0;
-    double Value = 0, *Lower = NULL, *Upper = NULL;
+    Array_t *Array     = NULL;
+    size_t   ArraySize = 100, i = 0;
+    double   Value = 0, *Lower = NULL, *Upper = NULL;
 
     Array = Array_Create(0, sizeof(double));
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < ArraySize; i++) {
+    for ( i = 0; i < ArraySize; i++ ) {
         Value = (rand() % 1000) / (double)25;
-        if (0 != Array_Append(Array, &Value)) {
+        if ( 0 != Array_Append(Array, &Value) ) {
             TEST_PRINTF("Test Failure - Failed to append value [ %lf ] to Array.", Value);
             Array_Release(Array);
             TEST_FAILURE;
         }
     }
 
-    if (0 != Array_Sort(Array, ArrayCompareFunc_Double)) {
+    if ( 0 != Array_Sort(Array, ArrayCompareFunc_Double) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Sort() operation on Array_t.");
         Array_Release(Array);
         TEST_FAILURE;
     }
 
-    for (i = 0; i < (ArraySize - 1); i++) {
+    for ( i = 0; i < (ArraySize - 1); i++ ) {
         Lower = Array_GetElement(Array, i);
         Upper = Array_GetElement(Array, i + 1);
 
-        if ((NULL == Lower) || (NULL == Upper)) {
+        if ( (NULL == Lower) || (NULL == Upper) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to check if Array is in Sorted order.");
             Array_Release(Array);
             TEST_FAILURE;
         }
 
-        if (*Lower > *Upper) {
+        if ( *Lower > *Upper ) {
             TEST_PRINTF("Test Failure - Array is not in Sorted order, %lf < %lf?!", *Lower, *Upper);
             Array_Release(Array);
             TEST_FAILURE;

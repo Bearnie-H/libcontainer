@@ -61,7 +61,7 @@ int Test_main(void) {
         This lets failing tests block further builds with the "all" target
         until the tests pass. */
 
-    if (0 != FailedTests) {
+    if ( 0 != FailedTests ) {
         printf("Error: %d tests failed!\n", FailedTests);
     }
 

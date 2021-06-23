@@ -30,7 +30,7 @@ int Test_Array_Create(void) {
     Array_t *Array = NULL;
 
     Array = Array_Create(0, sizeof(int));
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t*.");
         TEST_FAILURE;
     }
@@ -44,7 +44,7 @@ int Test_Array_RefCreate(void) {
     Array_t *Array = NULL;
 
     Array = Array_RefCreate(0, (ReleaseFunc_t *)Array_Release);
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t*.");
         TEST_FAILURE;
     }
@@ -56,31 +56,31 @@ int Test_Array_RefCreate(void) {
 int Test_Array_Clear(void) {
 
     Array_t *Array = NULL;
-    size_t Count = 32, i = 0;
-    int Value = 0;
+    size_t   Count = 32, i = 0;
+    int      Value = 0;
 
     Array = Array_Create(0, sizeof(Value));
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
+    for ( i = 0; i < Count; i++ ) {
         Value = (int)i;
-        if (0 != Array_Append(Array, &Value)) {
+        if ( 0 != Array_Append(Array, &Value) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to add item to Array.");
             Array_Release(Array);
             TEST_FAILURE;
         }
     }
 
-    if (0 != Array_Clear(Array)) {
+    if ( 0 != Array_Clear(Array) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to clear Array.");
         Array_Release(Array);
         TEST_FAILURE;
     }
 
-    if (0 != Array_Length(Array)) {
+    if ( 0 != Array_Length(Array) ) {
         TEST_PRINTF("%s", "Test Failure - Array Length not equal to 0 after Array_Clear().");
         Array_Release(Array);
         TEST_FAILURE;

@@ -30,11 +30,11 @@
 
 void Iterator_Invalidate(Iterator_t **Iterator) {
 
-    if ((NULL == Iterator) || (NULL == *Iterator)) {
+    if ( (NULL == Iterator) || (NULL == *Iterator) ) {
         return;
     }
 
-    if (NULL != (*Iterator)->ReleaseContext) {
+    if ( NULL != (*Iterator)->ReleaseContext ) {
         (*Iterator)->ReleaseContext((*Iterator)->Context);
     }
 

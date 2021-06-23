@@ -31,12 +31,12 @@ int Binary_Tree_balanceFactor(Binary_Tree_Node_t *Root) {
 
     ssize_t RightHeight = 0, LeftHeight = 0;
 
-    if (NULL == Root) {
+    if ( NULL == Root ) {
         return 0;
     }
 
     RightHeight = (ssize_t)Binary_Tree_Node_Height(Root->RightChild);
-    LeftHeight = (ssize_t)Binary_Tree_Node_Height(Root->LeftChild);
+    LeftHeight  = (ssize_t)Binary_Tree_Node_Height(Root->LeftChild);
 
     return (int)(RightHeight - LeftHeight);
 }
@@ -45,21 +45,21 @@ Binary_Tree_Node_t *Binary_Tree_rebalance(Binary_Tree_Node_t *Root) {
 
     int BalanceFactor = 0;
 
-    if (NULL == Root) {
+    if ( NULL == Root ) {
         DEBUG_PRINTF("%s", "Cannot perform tree rotations on NULL Root*.");
         return NULL;
     }
 
     BalanceFactor = Binary_Tree_balanceFactor(Root);
 
-    if (2 <= BalanceFactor) {
-        if (0 > Binary_Tree_balanceFactor(Root->RightChild)) {
+    if ( 2 <= BalanceFactor ) {
+        if ( 0 > Binary_Tree_balanceFactor(Root->RightChild) ) {
             Root = Binary_Tree_rotateDoubleLeft(Root);
         } else {
             Root = Binary_Tree_rotateLeft(Root);
         }
-    } else if (-2 >= BalanceFactor) {
-        if (0 < Binary_Tree_balanceFactor(Root->LeftChild)) {
+    } else if ( -2 >= BalanceFactor ) {
+        if ( 0 < Binary_Tree_balanceFactor(Root->LeftChild) ) {
             Root = Binary_Tree_rotateDoubleRight(Root);
         } else {
             Root = Binary_Tree_rotateRight(Root);
@@ -73,21 +73,21 @@ Binary_Tree_Node_t *Binary_Tree_rotateLeft(Binary_Tree_Node_t *Root) {
 
     Binary_Tree_Node_t *Pivot = NULL;
 
-    if (NULL == Root) {
+    if ( NULL == Root ) {
         DEBUG_PRINTF("%s", "Cannot perform tree rotations on NULL Root*.");
         return NULL;
     }
 
-    if (NULL == Root->RightChild) {
+    if ( NULL == Root->RightChild ) {
         DEBUG_PRINTF("%s", "Cannot perform Left rotation with NULL Right Child.");
         return Root;
     }
 
-    Pivot = Root->RightChild;
-    Pivot->Parent = Root->Parent;
-    Root->Parent = Pivot;
+    Pivot            = Root->RightChild;
+    Pivot->Parent    = Root->Parent;
+    Root->Parent     = Pivot;
     Root->RightChild = Pivot->LeftChild;
-    if (NULL != Root->RightChild) {
+    if ( NULL != Root->RightChild ) {
         Root->RightChild->Parent = Root;
     }
     Pivot->LeftChild = Root;
@@ -99,21 +99,21 @@ Binary_Tree_Node_t *Binary_Tree_rotateRight(Binary_Tree_Node_t *Root) {
 
     Binary_Tree_Node_t *Pivot = NULL;
 
-    if (NULL == Root) {
+    if ( NULL == Root ) {
         DEBUG_PRINTF("%s", "Cannot perform tree rotations on NULL Root*.");
         return NULL;
     }
 
-    if (NULL == Root->LeftChild) {
+    if ( NULL == Root->LeftChild ) {
         DEBUG_PRINTF("%s", "Cannot perform Left rotation with NULL Left Child.");
         return Root;
     }
 
-    Pivot = Root->LeftChild;
-    Pivot->Parent = Root->Parent;
-    Root->Parent = Pivot;
+    Pivot           = Root->LeftChild;
+    Pivot->Parent   = Root->Parent;
+    Root->Parent    = Pivot;
     Root->LeftChild = Pivot->RightChild;
-    if (NULL != Root->LeftChild) {
+    if ( NULL != Root->LeftChild ) {
         Root->LeftChild->Parent = Root;
     }
     Pivot->RightChild = Root;
@@ -123,26 +123,26 @@ Binary_Tree_Node_t *Binary_Tree_rotateRight(Binary_Tree_Node_t *Root) {
 
 Binary_Tree_Node_t *Binary_Tree_rotateDoubleLeft(Binary_Tree_Node_t *Root) {
 
-    if (NULL == Root) {
+    if ( NULL == Root ) {
         DEBUG_PRINTF("%s", "Cannot perform tree rotations on NULL Root*.");
         return NULL;
     }
 
     Root->RightChild = Binary_Tree_rotateRight(Root->RightChild);
-    Root = Binary_Tree_rotateLeft(Root);
+    Root             = Binary_Tree_rotateLeft(Root);
 
     return Root;
 }
 
 Binary_Tree_Node_t *Binary_Tree_rotateDoubleRight(Binary_Tree_Node_t *Root) {
 
-    if (NULL == Root) {
+    if ( NULL == Root ) {
         DEBUG_PRINTF("%s", "Cannot perform tree rotations on NULL Root*.");
         return NULL;
     }
 
     Root->LeftChild = Binary_Tree_rotateLeft(Root->LeftChild);
-    Root = Binary_Tree_rotateRight(Root);
+    Root            = Binary_Tree_rotateRight(Root);
 
     return Root;
 }

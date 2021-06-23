@@ -61,7 +61,7 @@ void Print_Libcontainer_Library_Version(void) {
 long Libcontainer_Library_Version(void) {
 
     long FormattedVersionNumber = 0;
-    char VersionString[7] = {0x00};
+    char VersionString[7]       = {0x00};
 
     sprintf(VersionString, "%02d%02d%02d", LIBCONTAINER_MAJOR_VERSION, LIBCONTAINER_MINOR_VERSION,
             LIBCONTAINER_PATCH_VERSION);
@@ -71,4 +71,6 @@ long Libcontainer_Library_Version(void) {
     return FormattedVersionNumber;
 }
 
-long Libcontainer_Build_Time(void) { return (long)LIBCONTAINER_BUILD_DATESTAMP; }
+long Libcontainer_Build_Time(void) {
+    return (long)LIBCONTAINER_BUILD_DATESTAMP;
+}

@@ -43,26 +43,26 @@ int Test_string_fmt(void) {
 
 int Test_String_Createf(void) {
 
-    String_t *String = NULL;
-    const char fmt[] = "Hello [ %s ]. After 9 comes %d.";
-    char ArgString[] = "World";
-    int ArgNumber = 10;
+    String_t * String        = NULL;
+    const char fmt[]         = "Hello [ %s ]. After 9 comes %d.";
+    char       ArgString[]   = "World";
+    int        ArgNumber     = 10;
     const char Expectation[] = "Hello [ World ]. After 9 comes 10.";
 
     String = String_Createf(fmt, ArgString, ArgNumber);
-    if (NULL == String) {
+    if ( NULL == String ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create String_t from format string.");
         TEST_FAILURE;
     }
 
-    if ((sizeof(Expectation) - 1) != String_Length(String)) {
+    if ( (sizeof(Expectation) - 1) != String_Length(String) ) {
         TEST_PRINTF("Test Failure - Resulting String length (%d) is not as expected (%d).",
                     (int)String_Length(String), (int)(sizeof(Expectation) - 1));
         String_Release(String);
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(String_ToCString(String), Expectation, String_Length(String))) {
+    if ( 0 != memcmp(String_ToCString(String), Expectation, String_Length(String)) ) {
         TEST_PRINTF("Test Failure - String Contents (%s) not equal to expectation (%s).",
                     String_ToCString(String), Expectation);
         String_Release(String);
@@ -75,32 +75,32 @@ int Test_String_Createf(void) {
 
 int Test_String_SPrintf(void) {
 
-    String_t *String = NULL;
-    const char fmt[] = "Hello [ %s ]. After 9 comes %d.";
-    char ArgString[] = "World";
-    int ArgNumber = 10;
+    String_t * String        = NULL;
+    const char fmt[]         = "Hello [ %s ]. After 9 comes %d.";
+    char       ArgString[]   = "World";
+    int        ArgNumber     = 10;
     const char Expectation[] = "Hello [ World ]. After 9 comes 10.";
 
     String = String_Create(NULL, 0);
-    if (NULL == String) {
+    if ( NULL == String ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create String_t for testing.");
         TEST_FAILURE;
     }
 
-    if (0 != String_SPrintf(String, fmt, ArgString, ArgNumber)) {
+    if ( 0 != String_SPrintf(String, fmt, ArgString, ArgNumber) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to write formatted string to String_t.");
         String_Release(String);
         TEST_FAILURE;
     }
 
-    if ((sizeof(Expectation) - 1) != String_Length(String)) {
+    if ( (sizeof(Expectation) - 1) != String_Length(String) ) {
         TEST_PRINTF("Test Failure - Resulting String length (%d) is not as expected (%d).",
                     (int)String_Length(String), (int)(sizeof(Expectation) - 1));
         String_Release(String);
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(String_ToCString(String), Expectation, String_Length(String))) {
+    if ( 0 != memcmp(String_ToCString(String), Expectation, String_Length(String)) ) {
         TEST_PRINTF("Test Failure - String Contents (%s) not equal to expectation (%s).",
                     String_ToCString(String), Expectation);
         String_Release(String);
@@ -113,33 +113,33 @@ int Test_String_SPrintf(void) {
 
 int Test_String_Appendf(void) {
 
-    String_t *String = NULL;
-    char Initial[] = "Message: ";
-    const char fmt[] = "Hello [ %s ]. After 9 comes %d.";
-    char ArgString[] = "World";
-    int ArgNumber = 10;
+    String_t * String        = NULL;
+    char       Initial[]     = "Message: ";
+    const char fmt[]         = "Hello [ %s ]. After 9 comes %d.";
+    char       ArgString[]   = "World";
+    int        ArgNumber     = 10;
     const char Expectation[] = "Message: Hello [ World ]. After 9 comes 10.";
 
     String = String_Create(Initial, sizeof(Initial) - 1);
-    if (NULL == String) {
+    if ( NULL == String ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create String_t for testing.");
         TEST_FAILURE;
     }
 
-    if (0 != String_Appendf(String, fmt, ArgString, ArgNumber)) {
+    if ( 0 != String_Appendf(String, fmt, ArgString, ArgNumber) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to write formatted string to String_t.");
         String_Release(String);
         TEST_FAILURE;
     }
 
-    if ((sizeof(Expectation) - 1) != String_Length(String)) {
+    if ( (sizeof(Expectation) - 1) != String_Length(String) ) {
         TEST_PRINTF("Test Failure - Resulting String length (%d) is not as expected (%d).",
                     (int)String_Length(String), (int)(sizeof(Expectation) - 1));
         String_Release(String);
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(String_ToCString(String), Expectation, String_Length(String))) {
+    if ( 0 != memcmp(String_ToCString(String), Expectation, String_Length(String)) ) {
         TEST_PRINTF("Test Failure - String Contents (%s) not equal to expectation (%s).",
                     String_ToCString(String), Expectation);
         String_Release(String);

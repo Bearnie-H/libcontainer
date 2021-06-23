@@ -36,7 +36,7 @@ int Iterator_Initialize_List(List_t *List) {
 
     Iterator_t *Iterator = NULL;
 
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
         return 1;
     }
@@ -44,14 +44,14 @@ int Iterator_Initialize_List(List_t *List) {
     Iterator_Invalidate(&(List->Iterator));
 
     Iterator = (Iterator_t *)calloc(1, sizeof(Iterator_t));
-    if (NULL == Iterator) {
+    if ( NULL == Iterator ) {
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory to initialize Iterator.");
         return 1;
     }
 
     Iterator->ReleaseContext = NULL;
-    Iterator->Type = Iterator_List;
-    Iterator->Context = NULL;
+    Iterator->Type           = Iterator_List;
+    Iterator->Context        = NULL;
 
     DEBUG_PRINTF("%s", "Successfully prepared List Iterator.");
     List->Iterator = Iterator;
@@ -62,20 +62,20 @@ void *List_Next(List_t *List) {
 
     void *Item = NULL;
 
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
         return NULL;
     }
 
-    if ((NULL == List->Iterator) || (List->Iterator->Type == Iterator_UNKNOWN)) {
-        if (0 != Iterator_Initialize_List(List)) {
+    if ( (NULL == List->Iterator) || (List->Iterator->Type == Iterator_UNKNOWN) ) {
+        if ( 0 != Iterator_Initialize_List(List) ) {
             DEBUG_PRINTF("%s", "Error: Failed to initialize List iterator.");
             return NULL;
         }
         List->Iterator->Context = List->Head;
     }
 
-    if (NULL == List->Iterator->Context) {
+    if ( NULL == List->Iterator->Context ) {
         DEBUG_PRINTF("%s", "Note: Iteration has reached the end of the List_t.");
         Iterator_Invalidate(&(List->Iterator));
         return NULL;
@@ -92,20 +92,20 @@ void *List_Previous(List_t *List) {
 
     void *Item = NULL;
 
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
         return NULL;
     }
 
-    if ((NULL == List->Iterator) || (List->Iterator->Type == Iterator_UNKNOWN)) {
-        if (0 != Iterator_Initialize_List(List)) {
+    if ( (NULL == List->Iterator) || (List->Iterator->Type == Iterator_UNKNOWN) ) {
+        if ( 0 != Iterator_Initialize_List(List) ) {
             DEBUG_PRINTF("%s", "Error: Failed to initialize List iterator.");
             return NULL;
         }
         List->Iterator->Context = List->Tail;
     }
 
-    if (NULL == List->Iterator->Context) {
+    if ( NULL == List->Iterator->Context ) {
         DEBUG_PRINTF("%s", "Note: Iteration has reached the end of the List_t.");
         Iterator_Invalidate(&(List->Iterator));
         return NULL;

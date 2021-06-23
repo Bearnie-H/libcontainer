@@ -32,9 +32,9 @@
 __attribute__((__format__(printf, 1, 2))) String_t *String_Createf(const char *fmt, ...) {
 
     String_t *String = NULL;
-    va_list Args;
+    va_list   Args;
 
-    if (NULL == fmt) {
+    if ( NULL == fmt ) {
         DEBUG_PRINTF("%s", "Error: NULL fmt* provided.");
         return NULL;
     }
@@ -48,24 +48,24 @@ __attribute__((__format__(printf, 1, 2))) String_t *String_Createf(const char *f
 }
 
 __attribute__((__format__(printf, 1, 0))) String_t *String_VCreatef(const char *fmt,
-                                                                    va_list VarArgs) {
+                                                                    va_list     VarArgs) {
 
     String_t *String = NULL;
-    ssize_t Length = 0;
+    ssize_t   Length = 0;
 
     Length = String_getFMTLength(fmt, VarArgs);
-    if (Length < 0) {
+    if ( Length < 0 ) {
         DEBUG_PRINTF("%s", "Error: Failed to determine length of resulting formatted string.");
         return NULL;
     }
 
     String = String_Create(NULL, (size_t)(Length + 1));
-    if (NULL == String) {
+    if ( NULL == String ) {
         DEBUG_PRINTF("%s", "Error: Failed to create String_t to write formatted string to.");
         return NULL;
     }
 
-    if (Length != vsnprintf(String_ToCString(String), (size_t)(Length + 1), fmt, VarArgs)) {
+    if ( Length != vsnprintf(String_ToCString(String), (size_t)(Length + 1), fmt, VarArgs) ) {
         DEBUG_PRINTF("%s", "Error: Failed to write formatted string to String.");
         String_Release(String);
         return NULL;
@@ -79,7 +79,7 @@ __attribute__((__format__(printf, 2, 3))) int String_SPrintf(String_t *String, c
                                                              ...) {
 
     va_list Args;
-    int RetVal = 0;
+    int     RetVal = 0;
 
     va_start(Args, fmt);
 
@@ -94,30 +94,30 @@ __attribute__((__format__(printf, 2, 0))) int String_VSPrintf(String_t *String, 
 
     ssize_t Length = 0;
 
-    if (NULL == String) {
+    if ( NULL == String ) {
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
         return 1;
     }
 
-    if (NULL == fmt) {
+    if ( NULL == fmt ) {
         DEBUG_PRINTF("%s", "Error: NULL fmt* provided.");
         return 1;
     }
 
     Length = String_getFMTLength(fmt, VarArgs);
-    if (Length < 0) {
+    if ( Length < 0 ) {
         DEBUG_PRINTF("%s", "Error: Failed to determine length of resulting formatted string.");
         return 1;
     }
 
-    if (((long)Length - (long)String_Length(String)) > 0) {
-        if (0 != String_grow(String, (size_t)((long)Length - (long)String_Length(String)))) {
+    if ( ((long)Length - (long)String_Length(String)) > 0 ) {
+        if ( 0 != String_grow(String, (size_t)((long)Length - (long)String_Length(String))) ) {
             DEBUG_PRINTF("%s", "Error: Failed to grow String to accommodate formatted string.");
             return 1;
         }
     }
 
-    if (Length != vsnprintf(String_ToCString(String), (size_t)(Length + 1), fmt, VarArgs)) {
+    if ( Length != vsnprintf(String_ToCString(String), (size_t)(Length + 1), fmt, VarArgs) ) {
         DEBUG_PRINTF("%s", "Error: Failed to write formatted string to String.");
         return 1;
     }
@@ -130,14 +130,14 @@ __attribute__((__format__(printf, 2, 3))) int String_Appendf(String_t *String, c
                                                              ...) {
 
     va_list Args;
-    int RetVal = 0;
+    int     RetVal = 0;
 
-    if (NULL == String) {
+    if ( NULL == String ) {
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
         return 1;
     }
 
-    if (NULL == fmt) {
+    if ( NULL == fmt ) {
         DEBUG_PRINTF("%s", "Error: NULL fmt* provided.");
         return 1;
     }
@@ -156,18 +156,18 @@ __attribute__((__format__(printf, 2, 0))) int String_VAppendf(String_t *String, 
     ssize_t Length = 0;
 
     Length = String_getFMTLength(fmt, VarArgs);
-    if (Length < 0) {
+    if ( Length < 0 ) {
         DEBUG_PRINTF("%s", "Error: Failed to determine length of resulting formatted string.");
         return 1;
     }
 
-    if (0 != String_grow(String, (size_t)Length)) {
+    if ( 0 != String_grow(String, (size_t)Length) ) {
         DEBUG_PRINTF("%s", "Error: Failed to grow String to accommodate formatted string.");
         return 1;
     }
 
-    if (Length != vsnprintf(&(String_ToCString(String)[String_Length(String)]),
-                            (size_t)(Length + 1), fmt, VarArgs)) {
+    if ( Length != vsnprintf(&(String_ToCString(String)[String_Length(String)]),
+                             (size_t)(Length + 1), fmt, VarArgs) ) {
         DEBUG_PRINTF("%s", "Error: Failed to write formatted string to String.");
         return 1;
     }
@@ -179,7 +179,7 @@ __attribute__((__format__(printf, 2, 0))) int String_VAppendf(String_t *String, 
 /* ++++++++++ Private Library Functions ++++++++++ */
 
 __attribute__((__format__(printf, 1, 0))) ssize_t String_getFMTLength(const char *fmt,
-                                                                      va_list args) {
+                                                                      va_list     args) {
 
     va_list ArgsCopy;
     ssize_t Length = 0;

@@ -27,23 +27,23 @@
 
 int Test_Array_Grow(void) {
 
-    Array_t *Array = NULL;
-    size_t DesiredCapacity = 24;
-    size_t InitialCapacity = 16;
+    Array_t *Array           = NULL;
+    size_t   DesiredCapacity = 24;
+    size_t   InitialCapacity = 16;
 
     Array = Array_Create(InitialCapacity, sizeof(int));
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Array_t.");
         TEST_FAILURE;
     }
 
-    if (0 != Array_Grow(Array, DesiredCapacity)) {
+    if ( 0 != Array_Grow(Array, DesiredCapacity) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Array_Grow().");
         Array_Release(Array);
         TEST_FAILURE;
     }
 
-    if (Array->Capacity < DesiredCapacity) {
+    if ( Array->Capacity < DesiredCapacity ) {
         TEST_PRINTF("Test Failure - Actual Array_t Capacity (%ld) is not large "
                     "enough to hold desired extra length (%ld).",
                     (unsigned long)Array->Capacity,

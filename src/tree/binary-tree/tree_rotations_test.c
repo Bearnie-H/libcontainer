@@ -40,41 +40,39 @@ int Test_tree_rotations(void) {
 
 int Test_Binary_Tree_rotateLeft() {
 
-    size_t i = 0, j = 0;
+    size_t              i = 0, j = 0;
     Binary_Tree_Node_t *Nodes[3] = {NULL, NULL, NULL};
-    int Keys[3] = {1, 2, 3}, Values[3] = {10, 20, 30};
+    int                 Keys[3] = {1, 2, 3}, Values[3] = {10, 20, 30};
 
-    for (i = 0; i < 3; i++) {
+    for ( i = 0; i < 3; i++ ) {
         Nodes[i] = Binary_Tree_Node_Create(Keys[i], sizeof(Values[i]), &(Values[i]), NULL);
-        if (NULL == Nodes[i]) {
+        if ( NULL == Nodes[i] ) {
             TEST_PRINTF("%s", "Test Failure - Failed to create Nodes for testing.");
-            for (j = 0; j < 3; j++) {
-                Binary_Tree_Node_Release(Nodes[j]);
-            }
+            for ( j = 0; j < 3; j++ ) { Binary_Tree_Node_Release(Nodes[j]); }
             TEST_FAILURE;
         }
     }
 
     Nodes[0]->RightChild = Nodes[1];
     Nodes[1]->RightChild = Nodes[2];
-    Nodes[1]->Parent = Nodes[0];
-    Nodes[2]->Parent = Nodes[1];
+    Nodes[1]->Parent     = Nodes[0];
+    Nodes[2]->Parent     = Nodes[1];
 
     Nodes[0] = Binary_Tree_rotateLeft(Nodes[0]);
 
-    if (2 != Nodes[0]->Key) {
+    if ( 2 != Nodes[0]->Key ) {
         TEST_PRINTF("%s", "Test Failure - New Root key not equal to expectation.");
         Binary_Tree_Node_Release(Nodes[0]);
         TEST_FAILURE;
     }
 
-    if (1 != Nodes[0]->LeftChild->Key) {
+    if ( 1 != Nodes[0]->LeftChild->Key ) {
         TEST_PRINTF("%s", "Test Failure - New Left Child key not equal to expectation.");
         Binary_Tree_Node_Release(Nodes[0]);
         TEST_FAILURE;
     }
 
-    if (3 != Nodes[0]->RightChild->Key) {
+    if ( 3 != Nodes[0]->RightChild->Key ) {
         TEST_PRINTF("%s", "Test Failure - New Right Child key not equal to expectation.");
         Binary_Tree_Node_Release(Nodes[0]);
         TEST_FAILURE;
@@ -86,41 +84,39 @@ int Test_Binary_Tree_rotateLeft() {
 
 int Test_Binary_Tree_rotateRight() {
 
-    size_t i = 0, j = 0;
+    size_t              i = 0, j = 0;
     Binary_Tree_Node_t *Nodes[3] = {NULL, NULL, NULL};
-    int Keys[3] = {3, 2, 1}, Values[3] = {10, 20, 30};
+    int                 Keys[3] = {3, 2, 1}, Values[3] = {10, 20, 30};
 
-    for (i = 0; i < 3; i++) {
+    for ( i = 0; i < 3; i++ ) {
         Nodes[i] = Binary_Tree_Node_Create(Keys[i], sizeof(Values[i]), &(Values[i]), NULL);
-        if (NULL == Nodes[i]) {
+        if ( NULL == Nodes[i] ) {
             TEST_PRINTF("%s", "Test Failure - Failed to create Nodes for testing.");
-            for (j = 0; j < 3; j++) {
-                Binary_Tree_Node_Release(Nodes[j]);
-            }
+            for ( j = 0; j < 3; j++ ) { Binary_Tree_Node_Release(Nodes[j]); }
             TEST_FAILURE;
         }
     }
 
     Nodes[0]->LeftChild = Nodes[1];
     Nodes[1]->LeftChild = Nodes[2];
-    Nodes[1]->Parent = Nodes[0];
-    Nodes[2]->Parent = Nodes[1];
+    Nodes[1]->Parent    = Nodes[0];
+    Nodes[2]->Parent    = Nodes[1];
 
     Nodes[0] = Binary_Tree_rotateRight(Nodes[0]);
 
-    if (2 != Nodes[0]->Key) {
+    if ( 2 != Nodes[0]->Key ) {
         TEST_PRINTF("%s", "Test Failure - New Root key not equal to expectation.");
         Binary_Tree_Node_Release(Nodes[0]);
         TEST_FAILURE;
     }
 
-    if (1 != Nodes[0]->LeftChild->Key) {
+    if ( 1 != Nodes[0]->LeftChild->Key ) {
         TEST_PRINTF("%s", "Test Failure - New Left Child key not equal to expectation.");
         Binary_Tree_Node_Release(Nodes[0]);
         TEST_FAILURE;
     }
 
-    if (3 != Nodes[0]->RightChild->Key) {
+    if ( 3 != Nodes[0]->RightChild->Key ) {
         TEST_PRINTF("%s", "Test Failure - New Right Child key not equal to expectation.");
         Binary_Tree_Node_Release(Nodes[0]);
         TEST_FAILURE;

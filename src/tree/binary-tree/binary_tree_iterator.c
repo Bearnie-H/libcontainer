@@ -35,10 +35,10 @@
 int Iterator_Initialize_Binary_Tree(Binary_Tree_t *Tree, Binary_Tree_Direction_t Direction,
                                     bool Forward) {
 
-    Iterator_t *Iterator = NULL;
-    Binary_Tree_Node_t *Node = NULL;
+    Iterator_t *        Iterator = NULL;
+    Binary_Tree_Node_t *Node     = NULL;
 
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
         return 1;
     }
@@ -46,35 +46,29 @@ int Iterator_Initialize_Binary_Tree(Binary_Tree_t *Tree, Binary_Tree_Direction_t
     Iterator_Invalidate(&(Tree->Iterator));
 
     Iterator = (Iterator_t *)calloc(1, sizeof(Iterator_t));
-    if (NULL == Iterator) {
+    if ( NULL == Iterator ) {
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory to initialize Iterator.");
         return 1;
     }
 
     Node = Tree->Root;
-    switch (Direction) {
+    switch ( Direction ) {
     case Direction_InOrder:
-        if (Forward) {
-            for (; NULL != Node->LeftChild; Node = Node->LeftChild) {
-                ;
-            }
+        if ( Forward ) {
+            for ( ; NULL != Node->LeftChild; Node = Node->LeftChild ) { ; }
         } else {
-            for (; NULL != Node->RightChild; Node = Node->RightChild) {
-                ;
-            }
+            for ( ; NULL != Node->RightChild; Node = Node->RightChild ) { ; }
         }
         break;
     case Direction_PreOrder:
-        if (!Forward) {
-            for (; NULL != Node->RightChild; Node = Node->RightChild) {
-                ;
-            }
+        if ( !Forward ) {
+            for ( ; NULL != Node->RightChild; Node = Node->RightChild ) { ; }
         }
         break;
     case Direction_PostOrder:
-        if (Forward) {
+        if ( Forward ) {
             Node = Binary_Tree_leftmostLeaf(Tree->Root);
-            if (NULL == Node) {
+            if ( NULL == Node ) {
                 DEBUG_PRINTF(
                     "%s", "Error: Failed to find Left-most leaf of Binary Tree to start Iterator.");
                 free(Iterator);
@@ -82,122 +76,108 @@ int Iterator_Initialize_Binary_Tree(Binary_Tree_t *Tree, Binary_Tree_Direction_t
             }
         }
         break;
-    default:
-        DEBUG_PRINTF("%s", "Error: Unknown traversal direction specified.");
-        return 1;
+    default: DEBUG_PRINTF("%s", "Error: Unknown traversal direction specified."); return 1;
     }
 
-    Iterator->Context = Node;
+    Iterator->Context        = Node;
     Iterator->ReleaseContext = NULL;
-    Iterator->Type = Iterator_BinaryTree;
+    Iterator->Type           = Iterator_BinaryTree;
 
     DEBUG_PRINTF("%s", "Successfully prepared Binary Tree Iterator.");
     Tree->Iterator = Iterator;
     return 0;
 }
 
-Binary_Tree_KeyValuePair_t Binary_Tree_Next(Binary_Tree_t *Tree,
+Binary_Tree_KeyValuePair_t Binary_Tree_Next(Binary_Tree_t *         Tree,
                                             Binary_Tree_Direction_t Direction) {
 
     Binary_Tree_KeyValuePair_t KeyValuePair = {0, NULL};
-    Binary_Tree_Node_t *Current = NULL;
+    Binary_Tree_Node_t *       Current      = NULL;
 
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
         return KeyValuePair;
     }
 
-    if ((NULL == Tree->Iterator) || (Tree->Iterator->Type == Iterator_UNKNOWN)) {
-        if (0 != Iterator_Initialize_Binary_Tree(Tree, Direction, true)) {
+    if ( (NULL == Tree->Iterator) || (Tree->Iterator->Type == Iterator_UNKNOWN) ) {
+        if ( 0 != Iterator_Initialize_Binary_Tree(Tree, Direction, true) ) {
             DEBUG_PRINTF("%s", "Error: Failed to initialize Binary Tree Iterator.");
             return KeyValuePair;
         }
         Current = (Binary_Tree_Node_t *)Tree->Iterator->Context;
 
-        KeyValuePair.Key = Current->Key;
+        KeyValuePair.Key   = Current->Key;
         KeyValuePair.Value = Current->Value.ValueRaw;
         return KeyValuePair;
     }
 
     Current = (Binary_Tree_Node_t *)Tree->Iterator->Context;
 
-    switch (Direction) {
-    case Direction_InOrder:
-        Current = Binary_Tree_inOrderNext(Current);
-        break;
-    case Direction_PreOrder:
-        Current = Binary_Tree_preOrderNext(Current);
-        break;
-    case Direction_PostOrder:
-        Current = Binary_Tree_postOrderNext(Current);
-        break;
+    switch ( Direction ) {
+    case Direction_InOrder: Current = Binary_Tree_inOrderNext(Current); break;
+    case Direction_PreOrder: Current = Binary_Tree_preOrderNext(Current); break;
+    case Direction_PostOrder: Current = Binary_Tree_postOrderNext(Current); break;
     default:
         DEBUG_PRINTF("%s", "Error: Unknown Tree traversal direction specified.");
         return KeyValuePair;
     }
 
-    if (NULL == Current) {
+    if ( NULL == Current ) {
         DEBUG_PRINTF("%s", "Note: Iteration has reached the end of the Tree.");
         Iterator_Invalidate(&(Tree->Iterator));
         return KeyValuePair;
     }
 
     Tree->Iterator->Context = Current;
-    KeyValuePair.Key = Current->Key;
-    KeyValuePair.Value = Current->Value.ValueRaw;
+    KeyValuePair.Key        = Current->Key;
+    KeyValuePair.Value      = Current->Value.ValueRaw;
 
     return KeyValuePair;
 }
 
-Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t *Tree,
+Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t *         Tree,
                                                 Binary_Tree_Direction_t Direction) {
 
     Binary_Tree_KeyValuePair_t KeyValuePair = {0, NULL};
-    Binary_Tree_Node_t *Current = NULL;
+    Binary_Tree_Node_t *       Current      = NULL;
 
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
         return KeyValuePair;
     }
 
-    if ((NULL == Tree->Iterator) || (Tree->Iterator->Type == Iterator_UNKNOWN)) {
-        if (0 != Iterator_Initialize_Binary_Tree(Tree, Direction, false)) {
+    if ( (NULL == Tree->Iterator) || (Tree->Iterator->Type == Iterator_UNKNOWN) ) {
+        if ( 0 != Iterator_Initialize_Binary_Tree(Tree, Direction, false) ) {
             DEBUG_PRINTF("%s", "Error: Failed to initialize Binary Tree Iterator.");
             return KeyValuePair;
         }
         Current = (Binary_Tree_Node_t *)Tree->Iterator->Context;
 
-        KeyValuePair.Key = Current->Key;
+        KeyValuePair.Key   = Current->Key;
         KeyValuePair.Value = Current->Value.ValueRaw;
         return KeyValuePair;
     }
 
     Current = (Binary_Tree_Node_t *)Tree->Iterator->Context;
 
-    switch (Direction) {
-    case Direction_InOrder:
-        Current = Binary_Tree_inOrderPrevious(Current);
-        break;
-    case Direction_PreOrder:
-        Current = Binary_Tree_preOrderPrevious(Current);
-        break;
-    case Direction_PostOrder:
-        Current = Binary_Tree_postOrderPrevious(Current);
-        break;
+    switch ( Direction ) {
+    case Direction_InOrder: Current = Binary_Tree_inOrderPrevious(Current); break;
+    case Direction_PreOrder: Current = Binary_Tree_preOrderPrevious(Current); break;
+    case Direction_PostOrder: Current = Binary_Tree_postOrderPrevious(Current); break;
     default:
         DEBUG_PRINTF("%s", "Error: Unknown Tree traversal direction specified.");
         return KeyValuePair;
     }
 
-    if (NULL == Current) {
+    if ( NULL == Current ) {
         DEBUG_PRINTF("%s", "Note: Iteration has reached the end of the Tree.");
         Iterator_Invalidate(&(Tree->Iterator));
         return KeyValuePair;
     }
 
     Tree->Iterator->Context = Current;
-    KeyValuePair.Key = Current->Key;
-    KeyValuePair.Value = Current->Value.ValueRaw;
+    KeyValuePair.Key        = Current->Key;
+    KeyValuePair.Value      = Current->Value.ValueRaw;
 
     return KeyValuePair;
 }
@@ -206,44 +186,38 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t *Tree,
 
 Binary_Tree_Node_t *Binary_Tree_inOrderNext(Binary_Tree_Node_t *Current) {
 
-    if (NULL == Current) {
+    if ( NULL == Current ) {
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
         return NULL;
     }
 
-    if (NULL != Current->RightChild) {
+    if ( NULL != Current->RightChild ) {
         Current = Current->RightChild;
-        for (; NULL != Current->LeftChild; Current = Current->LeftChild) {
-            ;
-        }
+        for ( ; NULL != Current->LeftChild; Current = Current->LeftChild ) { ; }
         return Current;
     }
 
-    while (NODE_IS_RIGHT_CHILD(Current)) {
-        Current = Current->Parent;
-    }
+    while ( NODE_IS_RIGHT_CHILD(Current) ) { Current = Current->Parent; }
 
     return Current->Parent;
 }
 
 Binary_Tree_Node_t *Binary_Tree_preOrderNext(Binary_Tree_Node_t *Current) {
 
-    if (NULL == Current) {
+    if ( NULL == Current ) {
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
         return NULL;
     }
 
-    if (NULL != Current->LeftChild) {
+    if ( NULL != Current->LeftChild ) {
         return Current->LeftChild;
-    } else if (NULL != Current->RightChild) {
+    } else if ( NULL != Current->RightChild ) {
         return Current->RightChild;
     }
 
-    while (NODE_IS_RIGHT_CHILD(Current)) {
-        Current = Current->Parent;
-    }
+    while ( NODE_IS_RIGHT_CHILD(Current) ) { Current = Current->Parent; }
 
-    if (NULL == Current->Parent) {
+    if ( NULL == Current->Parent ) {
         return NULL;
     }
 
@@ -252,16 +226,16 @@ Binary_Tree_Node_t *Binary_Tree_preOrderNext(Binary_Tree_Node_t *Current) {
 
 Binary_Tree_Node_t *Binary_Tree_postOrderNext(Binary_Tree_Node_t *Current) {
 
-    if (NULL == Current) {
+    if ( NULL == Current ) {
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
         return NULL;
     }
 
-    if (NULL == Current->Parent) {
+    if ( NULL == Current->Parent ) {
         return NULL;
     }
 
-    if (NODE_IS_RIGHT_CHILD(Current) || (NULL == Current->Parent->RightChild)) {
+    if ( NODE_IS_RIGHT_CHILD(Current) || (NULL == Current->Parent->RightChild) ) {
         return Current->Parent;
     }
 
@@ -270,21 +244,19 @@ Binary_Tree_Node_t *Binary_Tree_postOrderNext(Binary_Tree_Node_t *Current) {
 
 Binary_Tree_Node_t *Binary_Tree_inOrderPrevious(Binary_Tree_Node_t *Current) {
 
-    if (NULL == Current) {
+    if ( NULL == Current ) {
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
         return NULL;
     }
 
-    if (NULL != Current->LeftChild) {
+    if ( NULL != Current->LeftChild ) {
         Current = Current->LeftChild;
-        while (NULL != Current->RightChild) {
-            Current = Current->RightChild;
-        }
+        while ( NULL != Current->RightChild ) { Current = Current->RightChild; }
         return Current;
     }
 
-    while (!NODE_IS_RIGHT_CHILD(Current)) {
-        if (NULL == Current->Parent) {
+    while ( !NODE_IS_RIGHT_CHILD(Current) ) {
+        if ( NULL == Current->Parent ) {
             return NULL;
         }
         Current = Current->Parent;
@@ -295,20 +267,18 @@ Binary_Tree_Node_t *Binary_Tree_inOrderPrevious(Binary_Tree_Node_t *Current) {
 
 Binary_Tree_Node_t *Binary_Tree_preOrderPrevious(Binary_Tree_Node_t *Current) {
 
-    if (NULL == Current) {
+    if ( NULL == Current ) {
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
         return NULL;
     }
 
-    if (NULL == Current->Parent) {
+    if ( NULL == Current->Parent ) {
         return NULL;
     }
 
-    if ((!NODE_IS_LEFT_CHILD(Current)) && (NULL != Current->Parent->LeftChild)) {
+    if ( (!NODE_IS_LEFT_CHILD(Current)) && (NULL != Current->Parent->LeftChild) ) {
         Current = Current->Parent->LeftChild;
-        for (; NULL != Current->RightChild; Current = Current->RightChild) {
-            ;
-        }
+        for ( ; NULL != Current->RightChild; Current = Current->RightChild ) { ; }
         return Current;
     }
 
@@ -317,24 +287,24 @@ Binary_Tree_Node_t *Binary_Tree_preOrderPrevious(Binary_Tree_Node_t *Current) {
 
 Binary_Tree_Node_t *Binary_Tree_postOrderPrevious(Binary_Tree_Node_t *Current) {
 
-    if (NULL == Current) {
+    if ( NULL == Current ) {
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
         return NULL;
     }
 
-    if (NULL != Current->RightChild) {
+    if ( NULL != Current->RightChild ) {
         return Current->RightChild;
-    } else if (NULL != Current->LeftChild) {
+    } else if ( NULL != Current->LeftChild ) {
         return Current->LeftChild;
     }
 
-    if (!NODE_IS_LEFT_CHILD(Current) && (NULL != Current->Parent->LeftChild)) {
+    if ( !NODE_IS_LEFT_CHILD(Current) && (NULL != Current->Parent->LeftChild) ) {
         return Current->Parent->LeftChild;
     }
 
-    while (NULL != Current->Parent) {
-        if (NODE_IS_RIGHT_CHILD(Current->Parent) && (NULL != Current->Parent->Parent) &&
-            (NULL != Current->Parent->Parent->LeftChild)) {
+    while ( NULL != Current->Parent ) {
+        if ( NODE_IS_RIGHT_CHILD(Current->Parent) && (NULL != Current->Parent->Parent) &&
+             (NULL != Current->Parent->Parent->LeftChild) ) {
             return Current->Parent->Parent->LeftChild;
         }
         Current = Current->Parent;
@@ -345,14 +315,14 @@ Binary_Tree_Node_t *Binary_Tree_postOrderPrevious(Binary_Tree_Node_t *Current) {
 
 Binary_Tree_Node_t *Binary_Tree_leftmostLeaf(Binary_Tree_Node_t *Root) {
 
-    if (NULL == Root) {
+    if ( NULL == Root ) {
         DEBUG_PRINTF("%s", "Error: NULL Root* provided.");
         return NULL;
     }
 
-    if (NULL != Root->LeftChild) {
+    if ( NULL != Root->LeftChild ) {
         return Binary_Tree_leftmostLeaf(Root->LeftChild);
-    } else if (NULL != Root->RightChild) {
+    } else if ( NULL != Root->RightChild ) {
         return Binary_Tree_leftmostLeaf(Root->RightChild);
     } else {
 

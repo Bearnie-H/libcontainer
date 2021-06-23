@@ -41,11 +41,11 @@ int Test_hashmap_entry(void) {
 int Test_Hashmap_Entry_Create(void) {
 
     Hashmap_Entry_t *Entry = NULL;
-    double Key = 3.1415;
-    int Value = 0xCAFE;
+    double           Key   = 3.1415;
+    int              Value = 0xCAFE;
 
     Entry = Hashmap_Entry_Create(&Key, &Value, sizeof(Key), sizeof(Value), 1, NULL, NULL);
-    if (NULL == Entry) {
+    if ( NULL == Entry ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Hashmap_Entry_t for testing.");
         TEST_FAILURE;
     }
@@ -56,25 +56,25 @@ int Test_Hashmap_Entry_Create(void) {
 
 int Test_Hashmap_Entry_Update(void) {
 
-    Hashmap_Entry_t *Entry = NULL;
-    double Key = 3.1415;
-    int Value = 0xCAFE;
-    double NewValue = 2.71828;
-    double Epsilon = 0.000001;
+    Hashmap_Entry_t *Entry    = NULL;
+    double           Key      = 3.1415;
+    int              Value    = 0xCAFE;
+    double           NewValue = 2.71828;
+    double           Epsilon  = 0.000001;
 
     Entry = Hashmap_Entry_Create(&Key, &Value, sizeof(Key), sizeof(Value), 1, NULL, NULL);
-    if (NULL == Entry) {
+    if ( NULL == Entry ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Hashmap_Entry_t for testing.");
         TEST_FAILURE;
     }
 
-    if (0 != Hashmap_Entry_Update(Entry, &NewValue, sizeof(NewValue), NULL)) {
+    if ( 0 != Hashmap_Entry_Update(Entry, &NewValue, sizeof(NewValue), NULL) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to update Hashmap_Entry_t to new value.");
         Hashmap_Entry_Release(Entry);
         TEST_FAILURE;
     }
 
-    if ((*(double *)(Entry->Value.ValueRaw) - NewValue) > Epsilon) {
+    if ( (*(double *)(Entry->Value.ValueRaw) - NewValue) > Epsilon ) {
         TEST_PRINTF("Test Failure - Hashmap_Entry_t Value (%f) not equal to expectation (%f).",
                     *(double *)(Entry->Value.ValueRaw), NewValue);
         Hashmap_Entry_Release(Entry);

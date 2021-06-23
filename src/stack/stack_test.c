@@ -31,7 +31,7 @@
 
 static int StackCallbackFunc(void *Value) {
 
-    if (NULL == Value) {
+    if ( NULL == Value ) {
         DEBUG_PRINTF("%s", "NULL Value* Provided.");
         return 1;
     }
@@ -42,12 +42,12 @@ static int StackCallbackFunc(void *Value) {
 
 static int StackCallbackArgFunc(void *Value, void *Args) {
 
-    if (NULL == Value) {
+    if ( NULL == Value ) {
         DEBUG_PRINTF("%s", "NULL Value* Provided.");
         return 1;
     }
 
-    if (NULL == Args) {
+    if ( NULL == Args ) {
         DEBUG_PRINTF("%s", "NULL Args* provided.");
         DEBUG_PRINTF("Stack item has value: [ %d ].", *(int *)Value);
         return 0;
@@ -59,7 +59,7 @@ static int StackCallbackArgFunc(void *Value, void *Args) {
 
 static int StackRefCallbackFunc(void *Value) {
 
-    if (NULL == Value) {
+    if ( NULL == Value ) {
         DEBUG_PRINTF("%s", "NULL Value* Provided.");
         return 1;
     }
@@ -70,12 +70,12 @@ static int StackRefCallbackFunc(void *Value) {
 
 static int StackRefCallbackArgFunc(void *Value, void *Args) {
 
-    if (NULL == Value) {
+    if ( NULL == Value ) {
         DEBUG_PRINTF("%s", "NULL Value* Provided.");
         return 1;
     }
 
-    if (NULL == Args) {
+    if ( NULL == Args ) {
         DEBUG_PRINTF("%s", "NULL Args* provided.");
         DEBUG_PRINTF("Stack item has value: [ %s ].", (char *)Value);
         return 0;
@@ -114,10 +114,10 @@ int Test_stack(void) {
 int Test_Stack_Create(void) {
 
     Stack_t *Stack = NULL;
-    int Value = 0;
+    int      Value = 0;
 
     Stack = Stack_Create(sizeof(Value), NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
@@ -131,7 +131,7 @@ int Test_Stack_RefCreate(void) {
     Stack_t *Stack = NULL;
 
     Stack = Stack_Create(0, NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
@@ -143,27 +143,27 @@ int Test_Stack_RefCreate(void) {
 int Test_Stack_Length(void) {
 
     Stack_t *Stack = NULL;
-    int Value = 0;
+    int      Value = 0;
 
     Stack = Stack_Create(sizeof(Value), NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Length(Stack)) {
+    if ( 0 != Stack_Length(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - Length of empty Stack not equal to 0.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Push(Stack, &Value)) {
+    if ( 0 != Stack_Push(Stack, &Value) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 == Stack_Length(Stack)) {
+    if ( 0 == Stack_Length(Stack) ) {
         TEST_PRINTF("%s",
                     "Test Failure - Length of Stack equal to 0 after successful Push() operation.");
         Stack_Release(Stack);
@@ -176,36 +176,36 @@ int Test_Stack_Length(void) {
 
 int Test_Stack_RefLength(void) {
 
-    Stack_t *Stack = NULL;
-    const char Value[] = "Test Value";
-    char *ValueContents = NULL;
+    Stack_t *  Stack         = NULL;
+    const char Value[]       = "Test Value";
+    char *     ValueContents = NULL;
 
     Stack = Stack_Create(0, NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
     ValueContents = (char *)calloc(1, sizeof(Value));
-    if (NULL == ValueContents) {
+    if ( NULL == ValueContents ) {
         TEST_PRINTF("%s", "Test Failure - Failed to allocate memory for reference Item.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Length(Stack)) {
+    if ( 0 != Stack_Length(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - Length of empty Stack not equal to 0.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Push(Stack, ValueContents)) {
+    if ( 0 != Stack_Push(Stack, ValueContents) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 == Stack_Length(Stack)) {
+    if ( 0 == Stack_Length(Stack) ) {
         TEST_PRINTF("%s",
                     "Test Failure - Length of Stack equal to 0 after successful Push() operation.");
         Stack_Release(Stack);
@@ -219,15 +219,15 @@ int Test_Stack_RefLength(void) {
 int Test_Stack_IsEmpty(void) {
 
     Stack_t *Stack = NULL;
-    int Value = 0;
+    int      Value = 0;
 
     Stack = Stack_Create(sizeof(Value), NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    if (!Stack_IsEmpty(Stack)) {
+    if ( !Stack_IsEmpty(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - New Stack not reporting empty.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -242,12 +242,12 @@ int Test_Stack_RefIsEmpty(void) {
     Stack_t *Stack = NULL;
 
     Stack = Stack_Create(0, NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    if (!Stack_IsEmpty(Stack)) {
+    if ( !Stack_IsEmpty(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - New Stack not reporting empty.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -260,27 +260,27 @@ int Test_Stack_RefIsEmpty(void) {
 int Test_Stack_Push(void) {
 
     Stack_t *Stack = NULL;
-    int Value = 0;
+    int      Value = 0;
 
     Stack = Stack_Create(sizeof(Value), NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    if (!Stack_IsEmpty(Stack)) {
+    if ( !Stack_IsEmpty(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - New Stack not reporting empty.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Push(Stack, &Value)) {
+    if ( 0 != Stack_Push(Stack, &Value) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (Stack_IsEmpty(Stack)) {
+    if ( Stack_IsEmpty(Stack) ) {
         TEST_PRINTF("%s",
                     "Test Failure - Stack reporting empty after successful Push() operation.");
         Stack_Release(Stack);
@@ -293,37 +293,37 @@ int Test_Stack_Push(void) {
 
 int Test_Stack_RefPush(void) {
 
-    Stack_t *Stack = NULL;
-    const char Value[] = "Test Value";
-    char *ValueContents = NULL;
+    Stack_t *  Stack         = NULL;
+    const char Value[]       = "Test Value";
+    char *     ValueContents = NULL;
 
     Stack = Stack_Create(0, NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    if (!Stack_IsEmpty(Stack)) {
+    if ( !Stack_IsEmpty(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - New Stack not reporting empty.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
     ValueContents = (char *)calloc(1, sizeof(Value));
-    if (NULL == ValueContents) {
+    if ( NULL == ValueContents ) {
         TEST_PRINTF("%s", "Test Failure - Failed to allocate memory for reference Item.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Push(Stack, ValueContents)) {
+    if ( 0 != Stack_Push(Stack, ValueContents) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         free(ValueContents);
         TEST_FAILURE;
     }
 
-    if (Stack_IsEmpty(Stack)) {
+    if ( Stack_IsEmpty(Stack) ) {
         TEST_PRINTF("%s",
                     "Test Failure - Stack reporting empty after successful Push() operation.");
         Stack_Release(Stack);
@@ -337,28 +337,28 @@ int Test_Stack_RefPush(void) {
 int Test_Stack_Peek(void) {
 
     Stack_t *Stack = NULL;
-    int Value = 0xBEEF, *PeekValue = NULL;
+    int      Value = 0xBEEF, *PeekValue = NULL;
 
     Stack = Stack_Create(sizeof(Value), NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Push(Stack, &Value)) {
+    if ( 0 != Stack_Push(Stack, &Value) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
     PeekValue = (int *)Stack_Peek(Stack);
-    if (NULL == PeekValue) {
+    if ( NULL == PeekValue ) {
         TEST_PRINTF("%s", "Test Failure - Failed to Peek() item at the top of the Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (Value != *PeekValue) {
+    if ( Value != *PeekValue ) {
         TEST_PRINTF("Test Failure - Item Peek()'d (%d) does not have expected value (%d).",
                     *PeekValue, Value);
         Stack_Release(Stack);
@@ -371,24 +371,24 @@ int Test_Stack_Peek(void) {
 
 int Test_Stack_RefPeek(void) {
 
-    Stack_t *Stack = NULL;
-    const char Value[] = "Test Value";
-    char *ValueContents = NULL, *PeekContents = NULL;
+    Stack_t *  Stack         = NULL;
+    const char Value[]       = "Test Value";
+    char *     ValueContents = NULL, *PeekContents = NULL;
 
     Stack = Stack_Create(0, NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
     ValueContents = (char *)calloc(1, sizeof(Value));
-    if (NULL == ValueContents) {
+    if ( NULL == ValueContents ) {
         TEST_PRINTF("%s", "Test Failure - Failed to allocate memory for reference Item.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Push(Stack, ValueContents)) {
+    if ( 0 != Stack_Push(Stack, ValueContents) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         free(ValueContents);
@@ -396,13 +396,13 @@ int Test_Stack_RefPeek(void) {
     }
 
     PeekContents = (char *)Stack_Peek(Stack);
-    if (NULL == PeekContents) {
+    if ( NULL == PeekContents ) {
         TEST_PRINTF("%s", "Test Failure - Failed to Peek() item at the top of the Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(PeekContents, ValueContents, sizeof(Value))) {
+    if ( 0 != memcmp(PeekContents, ValueContents, sizeof(Value)) ) {
         TEST_PRINTF("Test Failure - Item Peek()'d (%s) does not have expected value (%s).",
                     PeekContents, ValueContents);
         Stack_Release(Stack);
@@ -416,28 +416,28 @@ int Test_Stack_RefPeek(void) {
 int Test_Stack_Pop(void) {
 
     Stack_t *Stack = NULL;
-    int Value = 0xBEEF, *PopValue = NULL;
+    int      Value = 0xBEEF, *PopValue = NULL;
 
     Stack = Stack_Create(sizeof(Value), NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Push(Stack, &Value)) {
+    if ( 0 != Stack_Push(Stack, &Value) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
     PopValue = (int *)Stack_Pop(Stack);
-    if (NULL == PopValue) {
+    if ( NULL == PopValue ) {
         TEST_PRINTF("%s", "Test Failure - Failed to Pop() item at the top of the Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (Value != *PopValue) {
+    if ( Value != *PopValue ) {
         TEST_PRINTF("Test Failure - Item Pop()'d (%d) does not have expected value (%d).",
                     *PopValue, Value);
         Stack_Release(Stack);
@@ -445,7 +445,7 @@ int Test_Stack_Pop(void) {
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Length(Stack)) {
+    if ( 0 != Stack_Length(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - Stack Length not 0 after Pop().");
         Stack_Release(Stack);
         free(PopValue);
@@ -459,24 +459,24 @@ int Test_Stack_Pop(void) {
 
 int Test_Stack_RefPop(void) {
 
-    Stack_t *Stack = NULL;
-    const char Value[] = "Test Value";
-    char *ValueContents = NULL, *PopContents = NULL;
+    Stack_t *  Stack         = NULL;
+    const char Value[]       = "Test Value";
+    char *     ValueContents = NULL, *PopContents = NULL;
 
     Stack = Stack_Create(0, NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
     ValueContents = (char *)calloc(1, sizeof(Value));
-    if (NULL == ValueContents) {
+    if ( NULL == ValueContents ) {
         TEST_PRINTF("%s", "Test Failure - Failed to allocate memory for reference Item.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Push(Stack, ValueContents)) {
+    if ( 0 != Stack_Push(Stack, ValueContents) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         free(ValueContents);
@@ -484,13 +484,13 @@ int Test_Stack_RefPop(void) {
     }
 
     PopContents = (char *)Stack_Pop(Stack);
-    if (NULL == PopContents) {
+    if ( NULL == PopContents ) {
         TEST_PRINTF("%s", "Test Failure - Failed to Pop() item at the top of the Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (0 != memcmp(PopContents, ValueContents, sizeof(Value))) {
+    if ( 0 != memcmp(PopContents, ValueContents, sizeof(Value)) ) {
         TEST_PRINTF("Test Failure - Item Pop()'d (%s) does not have expected value (%s).",
                     PopContents, ValueContents);
         Stack_Release(Stack);
@@ -498,7 +498,7 @@ int Test_Stack_RefPop(void) {
         TEST_FAILURE;
     }
 
-    if (0 != Stack_Length(Stack)) {
+    if ( 0 != Stack_Length(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - Stack Length not 0 after Pop().");
         Stack_Release(Stack);
         free(PopContents);
@@ -513,23 +513,23 @@ int Test_Stack_RefPop(void) {
 int Test_Stack_DoCallback(void) {
 
     Stack_t *Stack = NULL;
-    int Count = 16, i = 0;
+    int      Count = 16, i = 0;
 
     Stack = Stack_Create(sizeof(Count), NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
-        if (0 != Stack_Push(Stack, &i)) {
+    for ( i = 0; i < Count; i++ ) {
+        if ( 0 != Stack_Push(Stack, &i) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value onto Stack.");
             Stack_Release(Stack);
             TEST_FAILURE;
         }
     }
 
-    if (0 != Stack_DoCallback(Stack, StackCallbackFunc)) {
+    if ( 0 != Stack_DoCallback(Stack, StackCallbackFunc) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Callback on Stack contents.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -542,24 +542,24 @@ int Test_Stack_DoCallback(void) {
 int Test_Stack_DoCallbackArg(void) {
 
     Stack_t *Stack = NULL;
-    int Count = 16, i = 0;
-    char CallbackArg[] = "Callback Arguments";
+    int      Count = 16, i = 0;
+    char     CallbackArg[] = "Callback Arguments";
 
     Stack = Stack_Create(sizeof(Count), NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
-        if (0 != Stack_Push(Stack, &i)) {
+    for ( i = 0; i < Count; i++ ) {
+        if ( 0 != Stack_Push(Stack, &i) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value onto Stack.");
             Stack_Release(Stack);
             TEST_FAILURE;
         }
     }
 
-    if (0 != Stack_DoCallbackArg(Stack, StackCallbackArgFunc, (void *)CallbackArg)) {
+    if ( 0 != Stack_DoCallbackArg(Stack, StackCallbackArgFunc, (void *)CallbackArg) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Callback on Stack contents.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -571,21 +571,21 @@ int Test_Stack_DoCallbackArg(void) {
 
 int Test_Stack_RefDoCallback(void) {
 
-    Stack_t *Stack = NULL;
-    char *TempValue = NULL;
-    int Count = 16, i = 0;
-    size_t BufferLength = 32;
+    Stack_t *Stack     = NULL;
+    char *   TempValue = NULL;
+    int      Count = 16, i = 0;
+    size_t   BufferLength = 32;
 
     Stack = Stack_Create(0, NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
+    for ( i = 0; i < Count; i++ ) {
 
         TempValue = calloc(BufferLength, sizeof(char));
-        if (NULL == TempValue) {
+        if ( NULL == TempValue ) {
             TEST_PRINTF("%s", "Test Failure - Failed to allocate memory for reference item.");
             Stack_Release(Stack);
             TEST_FAILURE;
@@ -593,7 +593,7 @@ int Test_Stack_RefDoCallback(void) {
 
         snprintf(TempValue, BufferLength, "Stack Value [ %d ].", i);
 
-        if (0 != Stack_Push(Stack, TempValue)) {
+        if ( 0 != Stack_Push(Stack, TempValue) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value to Stack.");
             free(TempValue);
             Stack_Release(Stack);
@@ -601,7 +601,7 @@ int Test_Stack_RefDoCallback(void) {
         }
     }
 
-    if (0 != Stack_DoCallback(Stack, StackRefCallbackFunc)) {
+    if ( 0 != Stack_DoCallback(Stack, StackRefCallbackFunc) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Callback on Stack contents.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -613,22 +613,22 @@ int Test_Stack_RefDoCallback(void) {
 
 int Test_Stack_RefDoCallbackArg(void) {
 
-    Stack_t *Stack = NULL;
-    char *TempValue = NULL;
-    char CallbackArg[] = "Callback Argument";
-    int Count = 16, i = 0;
-    size_t BufferLength = 32;
+    Stack_t *Stack         = NULL;
+    char *   TempValue     = NULL;
+    char     CallbackArg[] = "Callback Argument";
+    int      Count = 16, i = 0;
+    size_t   BufferLength = 32;
 
     Stack = Stack_Create(0, NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
+    for ( i = 0; i < Count; i++ ) {
 
         TempValue = calloc(BufferLength, sizeof(char));
-        if (NULL == TempValue) {
+        if ( NULL == TempValue ) {
             TEST_PRINTF("%s", "Test Failure - Failed to allocate memory for reference item.");
             Stack_Release(Stack);
             TEST_FAILURE;
@@ -636,7 +636,7 @@ int Test_Stack_RefDoCallbackArg(void) {
 
         snprintf(TempValue, BufferLength, "Stack Value [ %d ].", i);
 
-        if (0 != Stack_Push(Stack, TempValue)) {
+        if ( 0 != Stack_Push(Stack, TempValue) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value to Stack.");
             free(TempValue);
             Stack_Release(Stack);
@@ -644,7 +644,7 @@ int Test_Stack_RefDoCallbackArg(void) {
         }
     }
 
-    if (0 != Stack_DoCallbackArg(Stack, StackRefCallbackArgFunc, (void *)CallbackArg)) {
+    if ( 0 != Stack_DoCallbackArg(Stack, StackRefCallbackArgFunc, (void *)CallbackArg) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Callback on Stack contents.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -657,29 +657,29 @@ int Test_Stack_RefDoCallbackArg(void) {
 int Test_Stack_Clear(void) {
 
     Stack_t *Stack = NULL;
-    int Count = 16, i = 0;
+    int      Count = 16, i = 0;
 
     Stack = Stack_Create(sizeof(Count), NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
-        if (0 != Stack_Push(Stack, &i)) {
+    for ( i = 0; i < Count; i++ ) {
+        if ( 0 != Stack_Push(Stack, &i) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value onto Stack.");
             Stack_Release(Stack);
             TEST_FAILURE;
         }
     }
 
-    if (0 != Stack_Clear(Stack)) {
+    if ( 0 != Stack_Clear(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Clear() on Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (!Stack_IsEmpty(Stack)) {
+    if ( !Stack_IsEmpty(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - Stack reporting non-empty after Clear().");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -691,21 +691,21 @@ int Test_Stack_Clear(void) {
 
 int Test_Stack_RefClear(void) {
 
-    Stack_t *Stack = NULL;
-    char *TempValue = NULL;
-    int Count = 16, i = 0;
-    size_t BufferLength = 32;
+    Stack_t *Stack     = NULL;
+    char *   TempValue = NULL;
+    int      Count = 16, i = 0;
+    size_t   BufferLength = 32;
 
     Stack = Stack_Create(0, NULL);
-    if (NULL == Stack) {
+    if ( NULL == Stack ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Stack_t for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
+    for ( i = 0; i < Count; i++ ) {
 
         TempValue = calloc(BufferLength, sizeof(char));
-        if (NULL == TempValue) {
+        if ( NULL == TempValue ) {
             TEST_PRINTF("%s", "Test Failure - Failed to allocate memory for reference item.");
             Stack_Release(Stack);
             TEST_FAILURE;
@@ -713,7 +713,7 @@ int Test_Stack_RefClear(void) {
 
         snprintf(TempValue, BufferLength, "Stack Value [ %d ].", i);
 
-        if (0 != Stack_Push(Stack, TempValue)) {
+        if ( 0 != Stack_Push(Stack, TempValue) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value to Stack.");
             free(TempValue);
             Stack_Release(Stack);
@@ -721,13 +721,13 @@ int Test_Stack_RefClear(void) {
         }
     }
 
-    if (0 != Stack_Clear(Stack)) {
+    if ( 0 != Stack_Clear(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Clear() on Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
     }
 
-    if (!Stack_IsEmpty(Stack)) {
+    if ( !Stack_IsEmpty(Stack) ) {
         TEST_PRINTF("%s", "Test Failure - Stack reporting non-empty after Clear().");
         Stack_Release(Stack);
         TEST_FAILURE;

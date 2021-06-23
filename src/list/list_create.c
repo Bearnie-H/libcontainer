@@ -31,29 +31,29 @@ List_t *List_Create(void) {
 
     /* Allocate the memory for the list. */
     List = (List_t *)calloc(1, sizeof(List_t));
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "Error, Failed to allocate memory for List_t.");
         return NULL;
     }
 
     /* Set the default starting values. */
-    List->Head = NULL;
-    List->Tail = NULL;
+    List->Head     = NULL;
+    List->Tail     = NULL;
     List->Iterator = NULL;
-    List->Length = 0;
+    List->Length   = 0;
 
     return List;
 }
 
 int List_Clear(List_t *List) {
 
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "NULL List* provided, nothing to remove.");
         return 0;
     }
 
-    while (0 != List_Length(List)) {
-        if (0 != List_Remove(List, 0)) {
+    while ( 0 != List_Length(List) ) {
+        if ( 0 != List_Remove(List, 0) ) {
             DEBUG_PRINTF("%s", "Error: Failed to remove item during List_Clear().");
             return 1;
         }
@@ -66,14 +66,14 @@ int List_Clear(List_t *List) {
 void List_Release(List_t *List) {
 
     List_Node_t *Current = NULL;
-    List_Node_t *Next = NULL;
+    List_Node_t *Next    = NULL;
 
-    if (NULL == List) {
+    if ( NULL == List ) {
         DEBUG_PRINTF("%s", "NULL List_t* provided, nothing to release.");
         return;
     }
 
-    for (Current = List->Head; Current != NULL;) {
+    for ( Current = List->Head; Current != NULL; ) {
         Next = Current->Next;
         ListNode_Release(Current);
         Current = Next;

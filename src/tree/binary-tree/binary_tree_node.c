@@ -31,25 +31,25 @@
 Binary_Tree_Node_t *Binary_Tree_Node_Create(int Key, size_t ValueSize, void *Value,
                                             ReleaseFunc_t *ReleaseFunc) {
 
-    Binary_Tree_Node_t *Node = NULL;
-    uint8_t *Contents = NULL;
+    Binary_Tree_Node_t *Node     = NULL;
+    uint8_t *           Contents = NULL;
 
-    if (NULL == ReleaseFunc) {
+    if ( NULL == ReleaseFunc ) {
         DEBUG_PRINTF("%s", "Note: NULL ReleaseFunc provided, defaulting to free().");
         ReleaseFunc = free;
     }
 
     Node = (Binary_Tree_Node_t *)calloc(1, sizeof(Binary_Tree_Node_t));
-    if (NULL == Node) {
+    if ( NULL == Node ) {
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Binary_Tree_Node_t.");
         return NULL;
     }
 
-    if ((NULL == Value) || (ValueSize == 0)) {
+    if ( (NULL == Value) || (ValueSize == 0) ) {
         Contents = (uint8_t *)Value;
     } else {
         Contents = (uint8_t *)calloc(ValueSize, sizeof(uint8_t));
-        if (NULL == Contents) {
+        if ( NULL == Contents ) {
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Binary_Tree_Node_t contents.");
             free(Node);
             return NULL;
@@ -59,13 +59,13 @@ Binary_Tree_Node_t *Binary_Tree_Node_Create(int Key, size_t ValueSize, void *Val
 
     Node->Key = Key;
 
-    Node->Parent = NULL;
-    Node->LeftChild = NULL;
+    Node->Parent     = NULL;
+    Node->LeftChild  = NULL;
     Node->RightChild = NULL;
 
-    Node->ReleaseFunc = ReleaseFunc;
+    Node->ReleaseFunc      = ReleaseFunc;
     Node->Value.ValueBytes = Contents;
-    Node->ValueSize = ValueSize;
+    Node->ValueSize        = ValueSize;
 
     DEBUG_PRINTF("%s", "Successfully created Binary_Tree_Node_t.");
     return Node;
@@ -75,14 +75,14 @@ size_t Binary_Tree_Node_Height(Binary_Tree_Node_t *Root) {
 
     size_t LeftHeight = 0, RightHeight = 0;
 
-    if (NULL == Root) {
+    if ( NULL == Root ) {
         return 0;
     }
 
-    LeftHeight = Binary_Tree_Node_Height(Root->LeftChild);
+    LeftHeight  = Binary_Tree_Node_Height(Root->LeftChild);
     RightHeight = Binary_Tree_Node_Height(Root->RightChild);
 
-    if (LeftHeight >= RightHeight) {
+    if ( LeftHeight >= RightHeight ) {
         return 1 + LeftHeight;
     } else {
         return 1 + RightHeight;
@@ -93,25 +93,25 @@ int Binary_Tree_Node_Update(Binary_Tree_Node_t *Node, void *NewValue, size_t Val
 
     uint8_t *TempValue = NULL;
 
-    if ((NULL == NewValue) || (0 == ValueSize)) {
+    if ( (NULL == NewValue) || (0 == ValueSize) ) {
         TempValue = (uint8_t *)NewValue;
     } else {
         TempValue = (uint8_t *)calloc(ValueSize, sizeof(uint8_t));
-        if (NULL == TempValue) {
+        if ( NULL == TempValue ) {
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory for new Value.");
             return 1;
         }
         memcpy(TempValue, NewValue, ValueSize);
     }
 
-    if (Node->Value.ValueRaw != NULL) {
+    if ( Node->Value.ValueRaw != NULL ) {
         DEBUG_PRINTF("%s", "Binary_Tree_Node_t has non-NULL value, releasing.");
         Node->ReleaseFunc(Node->Value.ValueRaw);
     }
 
     DEBUG_PRINTF("%s", "Successfully updated value of Binary_Tree_Node_t.");
     Node->Value.ValueBytes = TempValue;
-    Node->ValueSize = ValueSize;
+    Node->ValueSize        = ValueSize;
     return 0;
 }
 
@@ -119,22 +119,22 @@ void Binary_Tree_Node_Release(Binary_Tree_Node_t *Node) {
 
     Binary_Tree_Node_t *Parent = NULL;
 
-    if (NULL == Node) {
+    if ( NULL == Node ) {
         return;
     }
 
     Binary_Tree_Node_Release(Node->LeftChild);
     Binary_Tree_Node_Release(Node->RightChild);
 
-    if (NULL != Node->Value.ValueRaw) {
+    if ( NULL != Node->Value.ValueRaw ) {
         Node->ReleaseFunc(Node->Value.ValueRaw);
     }
 
     Parent = Node->Parent;
-    if (NULL != Parent) {
-        if (Node == Parent->LeftChild) {
+    if ( NULL != Parent ) {
+        if ( Node == Parent->LeftChild ) {
             Parent->LeftChild = NULL;
-        } else if (Node == Parent->RightChild) {
+        } else if ( Node == Parent->RightChild ) {
             Parent->RightChild = NULL;
         } else {
             DEBUG_PRINTF("%s", "Error: Node* is not a child of its Parent!");

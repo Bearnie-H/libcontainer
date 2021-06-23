@@ -26,7 +26,9 @@
 #include "../logging/logging.h"
 #include "include/array.h"
 
-int Array_Prepend(Array_t *Array, void *Element) { return Array_InsertN(Array, Element, 0, 1); }
+int Array_Prepend(Array_t *Array, void *Element) {
+    return Array_InsertN(Array, Element, 0, 1);
+}
 
 int Array_Append(Array_t *Array, void *Element) {
     return Array_InsertN(Array, Element, Array->Length, 1);
@@ -40,28 +42,28 @@ int Array_InsertN(Array_t *Array, void *Elements, size_t Index, size_t Count) {
 
     size_t i = 0;
 
-    if ((NULL == Array) || (NULL == Elements)) {
+    if ( (NULL == Array) || (NULL == Elements) ) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t or Element provided.");
         return 1;
     }
 
     Iterator_Invalidate(&(Array->Iterator));
 
-    if ((Array->Length < Index)) {
+    if ( (Array->Length < Index) ) {
         DEBUG_PRINTF("Index (%d) is out of bounds.", (int)Index);
         return 1;
     }
 
-    if (0 != Array_Grow(Array, Count)) {
+    if ( 0 != Array_Grow(Array, Count) ) {
         DEBUG_PRINTF("%s", "Error, failed to ensure array has room to insert new element.");
         return 1;
     }
 
-    if (0 == Array->ElementSize) {
+    if ( 0 == Array->ElementSize ) {
         memmove(&(Array->Contents.ContentRefs[Index + Count]),
                 &(Array->Contents.ContentRefs[Index]), (Array->Length - Index) * sizeof(void *));
 
-        for (i = 0; i < Count; i++) {
+        for ( i = 0; i < Count; i++ ) {
             Array->Contents.ContentRefs[Index + i] = ((void **)Elements)[i];
         }
 
@@ -81,27 +83,29 @@ int Array_InsertN(Array_t *Array, void *Elements, size_t Index, size_t Count) {
     return 0;
 }
 
-int Array_Remove(Array_t *Array, size_t Index) { return Array_RemoveN(Array, Index, 1); }
+int Array_Remove(Array_t *Array, size_t Index) {
+    return Array_RemoveN(Array, Index, 1);
+}
 
 int Array_RemoveN(Array_t *Array, size_t Index, size_t Count) {
 
     size_t ReleaseIndex = 0;
 
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t provided.");
         return 1;
     }
 
     Iterator_Invalidate(&(Array->Iterator));
 
-    if ((0 == Array->Length) || (Array->Length < Index)) {
+    if ( (0 == Array->Length) || (Array->Length < Index) ) {
         DEBUG_PRINTF("Index (%d) is out of bounds.", (int)Index);
         return 1;
     }
 
     /* If the count would go over the end of the array, truncate to stop at the
      * end instead. */
-    if ((Index + Count) > Array->Length) {
+    if ( (Index + Count) > Array->Length ) {
         Count = Array->Length - Index;
     }
 
@@ -110,8 +114,8 @@ int Array_RemoveN(Array_t *Array, size_t Index, size_t Count) {
        deleted, call their release function before the memmove() to prevent
        leaks.
     */
-    if (0 == Array->ElementSize) {
-        for (ReleaseIndex = 0; ReleaseIndex < Count; ReleaseIndex++) {
+    if ( 0 == Array->ElementSize ) {
+        for ( ReleaseIndex = 0; ReleaseIndex < Count; ReleaseIndex++ ) {
             Array->ReleaseFunc(Array->Contents.ContentRefs[Index]);
         }
 
@@ -140,18 +144,18 @@ int Array_ReplaceN(Array_t *Array, void *Elements, size_t Index, size_t Count) {
 
     size_t ElementSize = sizeof(void *), i = 0;
 
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
         return 1;
     }
 
-    if ((Array->Length < Index)) {
+    if ( (Array->Length < Index) ) {
         DEBUG_PRINTF("Error: Index (%d) is out of bounds.", (int)Index);
         return 1;
     }
 
-    if (0 == Array->ElementSize) {
-        for (i = 0; i < Count; i++) {
+    if ( 0 == Array->ElementSize ) {
+        for ( i = 0; i < Count; i++ ) {
             Array->ReleaseFunc(Array->Contents.ContentRefs[Index + i]);
             Array->Contents.ContentRefs[Index + i] = ((void **)Elements)[i];
         }
@@ -167,17 +171,17 @@ void *Array_GetElement(Array_t *Array, size_t Index) {
 
     void *Element = NULL;
 
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t provided.");
         return NULL;
     }
 
-    if ((0 == Array->Length) || (Array->Length < Index)) {
+    if ( (0 == Array->Length) || (Array->Length < Index) ) {
         DEBUG_PRINTF("Error, requested index [ %d ] is out of bounds.", (int)Index);
         return NULL;
     }
 
-    if (0 == Array->ElementSize) {
+    if ( 0 == Array->ElementSize ) {
         Element = Array->Contents.ContentRefs[Index];
     } else {
         Element = (void *)&(Array->Contents.ContentBytes[Index * Array->ElementSize]);
@@ -192,12 +196,12 @@ int Array_SetElement(Array_t *Array, void *Element, size_t Index) {
     void *ExistingElement = NULL;
 
     ExistingElement = Array_GetElement(Array, Index);
-    if (NULL == ExistingElement) {
+    if ( NULL == ExistingElement ) {
         DEBUG_PRINTF("Error: Failed to get element at index [ %d ] to update value.", (int)Index);
         return 1;
     }
 
-    if (0 == Array->ElementSize) {
+    if ( 0 == Array->ElementSize ) {
         Array->Contents.ContentRefs[Index] = Element;
     } else {
         memcpy(ExistingElement, Element, Array->ElementSize);
@@ -211,7 +215,7 @@ void *Array_PopElement(Array_t *Array, size_t Index) {
 
     void *ElementContents = NULL;
 
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
         return NULL;
     }
@@ -221,13 +225,13 @@ void *Array_PopElement(Array_t *Array, size_t Index) {
     /* Get the contents to be returned to the caller (also validate arguments).
      */
     ElementContents = Array_GetElement(Array, Index);
-    if (NULL == ElementContents) {
+    if ( NULL == ElementContents ) {
         DEBUG_PRINTF("%s", "Error, Failed to GetElement during PopElement.");
         return NULL;
     }
 
     /* Resize the array, removing the element. */
-    if (0 == Array->ElementSize) {
+    if ( 0 == Array->ElementSize ) {
         memmove(Array->Contents.ContentRefs[Index], Array->Contents.ContentRefs[Index + 1],
                 (Array->Length - Index - 1) * sizeof(void *));
 

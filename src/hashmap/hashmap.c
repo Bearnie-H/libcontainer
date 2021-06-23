@@ -33,43 +33,43 @@
 
 Hashmap_t *Hashmap_Create(HashFunc_t *HashFunc, size_t KeySize, ReleaseFunc_t *KeyReleaseFunc) {
 
-    Hashmap_t *Map = NULL;
-    List_t *NewList = NULL;
-    size_t BucketIndex = 0;
+    Hashmap_t *Map         = NULL;
+    List_t *   NewList     = NULL;
+    size_t     BucketIndex = 0;
 
-    if (NULL == HashFunc) {
+    if ( NULL == HashFunc ) {
         DEBUG_PRINTF("%s", "Note: NULL HashFunc provided, defaulting to HashFunc_String.");
         HashFunc = HashFunc_String;
-    } else if (HashFunc_Int == HashFunc) {
+    } else if ( HashFunc_Int == HashFunc ) {
         KeySize = sizeof(int);
-    } else if (HashFunc_Long == HashFunc) {
+    } else if ( HashFunc_Long == HashFunc ) {
         KeySize = sizeof(long);
-    } else if (HashFunc_Double == HashFunc) {
+    } else if ( HashFunc_Double == HashFunc ) {
         KeySize = sizeof(double);
     }
 
-    if (NULL == KeyReleaseFunc) {
+    if ( NULL == KeyReleaseFunc ) {
         DEBUG_PRINTF("%s", "Note: NULL KeyReleaseFunc* provided, defaulting to free().");
         KeyReleaseFunc = (ReleaseFunc_t *)free;
     }
 
     Map = (Hashmap_t *)calloc(1, sizeof(Hashmap_t));
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Hashmap.");
         return NULL;
     }
 
     Map->Buckets =
         Array_RefCreate(LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY, (ReleaseFunc_t *)List_Release);
-    if (NULL == Map->Buckets) {
+    if ( NULL == Map->Buckets ) {
         DEBUG_PRINTF("%s", "Error: Failed to create Array_t of Buckets.");
         Hashmap_Release(Map);
         return NULL;
     }
 
-    for (BucketIndex = 0; BucketIndex < LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY; BucketIndex++) {
+    for ( BucketIndex = 0; BucketIndex < LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY; BucketIndex++ ) {
         NewList = List_Create();
-        if (0 != Array_Append(Map->Buckets, &NewList)) {
+        if ( 0 != Array_Append(Map->Buckets, &NewList) ) {
             DEBUG_PRINTF("Error: Failed to initialize Map bucket [ %ld ].",
                          (unsigned long)BucketIndex);
             Hashmap_Release(Map);
@@ -77,10 +77,10 @@ Hashmap_t *Hashmap_Create(HashFunc_t *HashFunc, size_t KeySize, ReleaseFunc_t *K
         }
     }
 
-    Map->HashFunc = HashFunc;
+    Map->HashFunc       = HashFunc;
     Map->KeyReleaseFunc = KeyReleaseFunc;
-    Map->ItemCount = 0;
-    Map->KeySize = KeySize;
+    Map->ItemCount      = 0;
+    Map->KeySize        = KeySize;
 
     DEBUG_PRINTF("%s", "Successfully created and initialized Hashmap_t.");
     return Map;
@@ -89,23 +89,23 @@ Hashmap_t *Hashmap_Create(HashFunc_t *HashFunc, size_t KeySize, ReleaseFunc_t *K
 int Hashmap_Insert(Hashmap_t *Map, void *Key, void *Value, size_t KeySize, size_t ValueSize,
                    ReleaseFunc_t *ValueReleaseFunc) {
 
-    Hashmap_Entry_t *Entry = NULL;
-    unsigned int HashValue = 0;
+    Hashmap_Entry_t *Entry     = NULL;
+    unsigned int     HashValue = 0;
 
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
         return 1;
     }
 
     Iterator_Invalidate(&(Map->Iterator));
 
-    if ((NULL == Key) || (NULL == Value)) {
+    if ( (NULL == Key) || (NULL == Value) ) {
         DEBUG_PRINTF("%s", "Error: NULL Key* or Value* provided.");
         return 1;
     }
 
-    if (NULL == ValueReleaseFunc) {
-        if (0 == ValueSize) {
+    if ( NULL == ValueReleaseFunc ) {
+        if ( 0 == ValueSize ) {
             DEBUG_PRINTF("%s", "Error: NULL ValueReleaseFunc for Reference-type value.");
             return 1;
         } else {
@@ -114,8 +114,8 @@ int Hashmap_Insert(Hashmap_t *Map, void *Key, void *Value, size_t KeySize, size_
         }
     }
 
-    if (0 != Map->KeySize) {
-        if ((0 != KeySize) && (KeySize != Map->KeySize)) {
+    if ( 0 != Map->KeySize ) {
+        if ( (0 != KeySize) && (KeySize != Map->KeySize) ) {
             DEBUG_PRINTF("Error: Unexpected KeySize. Expected (%ld), got (%ld).",
                          (unsigned long)Map->KeySize, (unsigned long)KeySize);
             return 1;
@@ -128,7 +128,7 @@ int Hashmap_Insert(Hashmap_t *Map, void *Key, void *Value, size_t KeySize, size_
 
     Entry = Hashmap_Entry_Create(Key, Value, KeySize, ValueSize, HashValue, Map->KeyReleaseFunc,
                                  ValueReleaseFunc);
-    if (NULL == Entry) {
+    if ( NULL == Entry ) {
         DEBUG_PRINTF("%s", "Error: Failed to create new Hashmap_Entry_t to insert into Hashmap.");
         return 1;
     }
@@ -139,24 +139,24 @@ int Hashmap_Insert(Hashmap_t *Map, void *Key, void *Value, size_t KeySize, size_
 void *Hashmap_Retrieve(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
     unsigned int HashValue = 0;
-    List_t *Bucket = NULL;
+    List_t *     Bucket    = NULL;
 
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
         return NULL;
     }
 
-    if ((0 != Map->KeySize) && (0 == KeySize)) {
+    if ( (0 != Map->KeySize) && (0 == KeySize) ) {
         KeySize = Map->KeySize;
     }
 
-    if (NULL == Key) {
+    if ( NULL == Key ) {
         DEBUG_PRINTF("%s", "Error: NULL Key* provided.");
         return NULL;
     }
 
     Bucket = Hashmap_getBucket(Map, Key, KeySize, &HashValue);
-    if (NULL == Bucket) {
+    if ( NULL == Bucket ) {
         return NULL;
     }
 
@@ -165,7 +165,7 @@ void *Hashmap_Retrieve(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
 size_t Hashmap_Length(Hashmap_t *Map) {
 
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "Warning: NULL Map* provided, no length to report.");
         return 0;
     }
@@ -179,38 +179,38 @@ bool Hashmap_KeyExists(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
 int Hashmap_Remove(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
-    unsigned int HashValue = 0;
-    List_t *Bucket = NULL;
-    List_Node_t *Node = NULL;
-    Hashmap_Entry_t *Entry = NULL;
+    unsigned int     HashValue = 0;
+    List_t *         Bucket    = NULL;
+    List_Node_t *    Node      = NULL;
+    Hashmap_Entry_t *Entry     = NULL;
 
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "Warning: NULL Map* provided, not attempting to remove item.");
         return 0;
     }
 
     Iterator_Invalidate(&(Map->Iterator));
 
-    if (0 == Hashmap_Length(Map)) {
+    if ( 0 == Hashmap_Length(Map) ) {
         DEBUG_PRINTF("%s", "Note: Hashmap has no elements, nothing to remove.");
         return 0;
     }
 
-    if ((0 != Map->KeySize) && (0 == KeySize)) {
+    if ( (0 != Map->KeySize) && (0 == KeySize) ) {
         KeySize = Map->KeySize;
     }
 
     Bucket = Hashmap_getBucket(Map, Key, KeySize, &HashValue);
-    if (NULL == Bucket) {
+    if ( NULL == Bucket ) {
         DEBUG_PRINTF("%s", "Error: Failed to get Bucket for provided Key*.");
         return 1;
     }
 
     Node = Bucket->Head;
-    while (Node != NULL) {
+    while ( Node != NULL ) {
         Entry = (Hashmap_Entry_t *)Node->Contents.ContentRaw;
-        if (Entry->HashValue == HashValue) {
-            if (0 == memcmp(Key, Entry->Key, KeySize)) {
+        if ( Entry->HashValue == HashValue ) {
+            if ( 0 == memcmp(Key, Entry->Key, KeySize) ) {
                 List_removeNode(Bucket, Node);
                 Map->ItemCount -= 1;
                 DEBUG_PRINTF("%s", "Successfully removed item from Hashmap.");
@@ -226,41 +226,41 @@ int Hashmap_Remove(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
 void *Hashmap_Pop(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
-    List_t *Bucket = NULL;
-    List_Node_t *Node = NULL;
-    Hashmap_Entry_t *Entry = NULL;
-    unsigned int HashValue = 0;
-    void *Value = NULL;
+    List_t *         Bucket    = NULL;
+    List_Node_t *    Node      = NULL;
+    Hashmap_Entry_t *Entry     = NULL;
+    unsigned int     HashValue = 0;
+    void *           Value     = NULL;
 
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
         return NULL;
     }
 
     Iterator_Invalidate(&(Map->Iterator));
 
-    if (NULL == Key) {
+    if ( NULL == Key ) {
         DEBUG_PRINTF("%s", "Error: NULL Key* provided.");
         return NULL;
     }
 
-    if ((0 != Map->KeySize) && (0 == KeySize)) {
+    if ( (0 != Map->KeySize) && (0 == KeySize) ) {
         KeySize = Map->KeySize;
     }
 
     Bucket = Hashmap_getBucket(Map, Key, KeySize, &HashValue);
-    if (NULL == Bucket) {
+    if ( NULL == Bucket ) {
         DEBUG_PRINTF("%s", "Error: Failed to find Bucket containing requested value.");
         return NULL;
     }
 
     Node = Bucket->Head;
-    while (NULL != Node) {
+    while ( NULL != Node ) {
         Entry = (Hashmap_Entry_t *)Node->Contents.ContentRaw;
-        if (Entry->HashValue == HashValue) {
-            if (0 == memcmp(Key, Entry->Key, Entry->KeySize)) {
+        if ( Entry->HashValue == HashValue ) {
+            if ( 0 == memcmp(Key, Entry->Key, Entry->KeySize) ) {
                 Entry->ValueSize = 0;
-                Value = Entry->Value.ValueRaw;
+                Value            = Entry->Value.ValueRaw;
                 List_removeNode(Bucket, Node);
                 Map->ItemCount -= 1;
                 return Value;
@@ -273,14 +273,14 @@ void *Hashmap_Pop(Hashmap_t *Map, const void *Key, size_t KeySize) {
 
 int Hashmap_Clear(Hashmap_t *Map) {
 
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "NULL Map* provided, nothing to clear.");
         return 0;
     }
 
     Iterator_Invalidate(&(Map->Iterator));
 
-    if (0 != Array_DoCallback(Map->Buckets, (CallbackFunc_t *)List_Clear)) {
+    if ( 0 != Array_DoCallback(Map->Buckets, (CallbackFunc_t *)List_Clear) ) {
         DEBUG_PRINTF("%s", "Error: Failed to clear all buckets within Hashmap.");
         return 1;
     }
@@ -292,12 +292,12 @@ int Hashmap_Clear(Hashmap_t *Map) {
 
 void Hashmap_Release(Hashmap_t *Map) {
 
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "Warning, NULL Map* provided, nothing to release.");
         return;
     }
 
-    if (NULL != Map->Buckets) {
+    if ( NULL != Map->Buckets ) {
         Array_Release(Map->Buckets);
     }
 
@@ -317,7 +317,7 @@ List_t *Hashmap_getBucket(Hashmap_t *Map, const void *Key, size_t KeySize,
 
     size_t BucketIndex = 0;
 
-    if (0 == *HashValue) {
+    if ( 0 == *HashValue ) {
         *HashValue = Map->HashFunc(Key, KeySize);
     } else {
         DEBUG_PRINTF("%s", "Note: Using cached HashValue instead of recomputing.");
@@ -333,9 +333,9 @@ void *Hashmap_findInBucket(List_t *Bucket, const void *Key, size_t KeySize,
 
     Hashmap_Entry_t *Entry = NULL;
 
-    while (NULL != (Entry = (Hashmap_Entry_t *)List_Next(Bucket))) {
-        if (Entry->HashValue == HashValue) {
-            if (0 == memcmp(Key, Entry->Key, KeySize)) {
+    while ( NULL != (Entry = (Hashmap_Entry_t *)List_Next(Bucket)) ) {
+        if ( Entry->HashValue == HashValue ) {
+            if ( 0 == memcmp(Key, Entry->Key, KeySize) ) {
                 Iterator_Invalidate(&(Bucket->Iterator));
                 DEBUG_PRINTF("%s", "Successfully found and returned requested item from Hashmap.");
                 return Entry->Value.ValueRaw;
@@ -351,26 +351,26 @@ int Hashmap_insertEntry(Hashmap_t *Map, Hashmap_Entry_t *Entry, bool AttemptReha
 
     List_t *Bucket = NULL;
 
-    if ((NULL == Map) || (NULL == Entry)) {
+    if ( (NULL == Map) || (NULL == Entry) ) {
         DEBUG_PRINTF("%s", "Error: NULL Map* or Entry* provided.");
         return 1;
     }
 
     Bucket = Hashmap_getBucket(Map, (const void *)Entry->Key, Entry->KeySize, &Entry->HashValue);
-    if (NULL == Bucket) {
+    if ( NULL == Bucket ) {
         DEBUG_PRINTF("%s", "Error: Failed to get Bucket for given Key*.");
         Hashmap_Entry_Release(Entry);
         return 1;
     }
 
-    if (0 != List_RefPrepend(Bucket, Entry, (ReleaseFunc_t *)Hashmap_Entry_Release)) {
+    if ( 0 != List_RefPrepend(Bucket, Entry, (ReleaseFunc_t *)Hashmap_Entry_Release) ) {
         DEBUG_PRINTF("%s", "Error: Failed to add new Hashmap_Entry_t to Hashmap.");
         Hashmap_Entry_Release(Entry);
         return 1;
     }
     Map->ItemCount += 1;
 
-    if (AttemptRehash) {
+    if ( AttemptRehash ) {
         Hashmap_rehash(Map);
     }
 
@@ -380,12 +380,12 @@ int Hashmap_insertEntry(Hashmap_t *Map, Hashmap_Entry_t *Entry, bool AttemptReha
 
 void Hashmap_rehash(Hashmap_t *Map) {
 
-    double LoadFactor = 0;
-    List_t *Bucket = NULL;
-    Hashmap_Entry_t *Entry = NULL;
+    double           LoadFactor = 0;
+    List_t *         Bucket     = NULL;
+    Hashmap_Entry_t *Entry      = NULL;
     size_t BucketIndex = 0, BucketLength = 0, OriginalBucketCount = 0, NewBucketCount = 0, i = 0;
 
-    if (NULL == Map) {
+    if ( NULL == Map ) {
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
         return;
     }
@@ -393,38 +393,38 @@ void Hashmap_rehash(Hashmap_t *Map) {
     OriginalBucketCount = Array_Length(Map->Buckets);
 
     LoadFactor = ((double)(Map->ItemCount) / (double)(OriginalBucketCount));
-    if (LoadFactor <= LIBCONTAINER_HASHMAP_LOAD_FACTOR) {
+    if ( LoadFactor <= LIBCONTAINER_HASHMAP_LOAD_FACTOR ) {
         DEBUG_PRINTF("Note: Hashmap Load factor of [ %f ] is below rehash threshold [ %f ].",
                      LoadFactor, (double)LIBCONTAINER_HASHMAP_LOAD_FACTOR);
         return;
     }
 
-    if (ARRAY_DOUBLING_THRESHOLD >= OriginalBucketCount) {
+    if ( ARRAY_DOUBLING_THRESHOLD >= OriginalBucketCount ) {
         NewBucketCount = OriginalBucketCount;
     } else {
         NewBucketCount = ARRAY_DOUBLING_THRESHOLD;
     }
 
-    if (0 != Array_Grow(Map->Buckets, NewBucketCount - 1)) {
+    if ( 0 != Array_Grow(Map->Buckets, NewBucketCount - 1) ) {
         DEBUG_PRINTF("%s", "Warning: Failed to grow internal Buckets array, aborting rehash.");
         return;
     }
 
-    for (i = 0; i < NewBucketCount; i++) {
+    for ( i = 0; i < NewBucketCount; i++ ) {
         Bucket = List_Create();
-        if (0 != Array_Append(Map->Buckets, &Bucket)) {
+        if ( 0 != Array_Append(Map->Buckets, &Bucket) ) {
             DEBUG_PRINTF("%s", "Error: Failed to add new Bucket to expand Hashmap_t.");
             return;
         }
     }
 
-    for (BucketIndex = 0; BucketIndex < OriginalBucketCount; BucketIndex++) {
-        Bucket = (List_t *)Array_GetElement(Map->Buckets, BucketIndex);
+    for ( BucketIndex = 0; BucketIndex < OriginalBucketCount; BucketIndex++ ) {
+        Bucket       = (List_t *)Array_GetElement(Map->Buckets, BucketIndex);
         BucketLength = List_Length(Bucket);
 
-        for (i = 0; i < BucketLength; i++) {
+        for ( i = 0; i < BucketLength; i++ ) {
             Entry = (Hashmap_Entry_t *)List_PopBack(Bucket);
-            if (0 != Hashmap_insertEntry(Map, Entry, false)) {
+            if ( 0 != Hashmap_insertEntry(Map, Entry, false) ) {
                 DEBUG_PRINTF("%s",
                              "Error: Failed to rehash item for expanded Hashmap_t, dropping item.");
                 Hashmap_Entry_Release(Entry);

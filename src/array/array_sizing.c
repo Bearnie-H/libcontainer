@@ -28,20 +28,20 @@
 
 int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
 
-    size_t NewCap = 1, MinCap = 0, ElementSize = sizeof(void *);
+    size_t   NewCap = 1, MinCap = 0, ElementSize = sizeof(void *);
     uint8_t *Temp = NULL;
 
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t* provided.");
         return 1;
     }
 
-    if (NULL == Array->Contents.ContentBytes) {
+    if ( NULL == Array->Contents.ContentBytes ) {
         DEBUG_PRINTF("%s", "Error, Array_t* in invalid state with NULL Contents pointer.");
         return 1;
     }
 
-    if (0 != Array->ElementSize) {
+    if ( 0 != Array->ElementSize ) {
         ElementSize = Array->ElementSize;
     }
 
@@ -51,18 +51,18 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
     NewCap = Array->Capacity;
 
     /* Explicitly assert non-zero capacity. */
-    if (0 == NewCap) {
+    if ( 0 == NewCap ) {
         NewCap = 1;
     }
 
-    if (Array->Capacity >= MinCap) {
+    if ( Array->Capacity >= MinCap ) {
         DEBUG_PRINTF("%s", "Array_t capacity is already large enough to hold "
                            "the requested elements.");
         return 0;
     }
 
-    while (NewCap <= MinCap) {
-        if (NewCap <= ARRAY_DOUBLING_THRESHOLD) {
+    while ( NewCap <= MinCap ) {
+        if ( NewCap <= ARRAY_DOUBLING_THRESHOLD ) {
             NewCap *= 2;
         } else {
             NewCap += ARRAY_DOUBLING_THRESHOLD;
@@ -70,13 +70,13 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
     }
 
     Temp = (uint8_t *)realloc(Array->Contents.ContentBytes, NewCap * ElementSize);
-    if (NULL == Temp) {
+    if ( NULL == Temp ) {
         DEBUG_PRINTF("%s", "Failed to reallocate and grow Array_t Contents");
         return 1;
     }
 
     Array->Contents.ContentBytes = Temp;
-    Array->Capacity = NewCap;
+    Array->Capacity              = NewCap;
 
     DEBUG_PRINTF("Successfully increased Array_t capacity to [ %ld ]", (unsigned long)NewCap);
     return 0;
@@ -84,7 +84,7 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
 
 size_t Array_Length(Array_t *Array) {
 
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t* provided.");
         return 0;
     }
@@ -94,7 +94,7 @@ size_t Array_Length(Array_t *Array) {
 
 size_t Array_Capacity(Array_t *Array) {
 
-    if (NULL == Array) {
+    if ( NULL == Array ) {
         DEBUG_PRINTF("%s", "Error, NULL Array_t* provided.");
         return 0;
     }

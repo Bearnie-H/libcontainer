@@ -37,7 +37,7 @@ static int TestCallbackFunc_PrintIntValue(void *Value) {
         This check is only here to suppress the compiler warning
         -Wunused-parameter.
     */
-    if (NULL == IntValue) {
+    if ( NULL == IntValue ) {
         TEST_PRINTF("%s", "Error: NULL Value* provided.");
         return 1;
     }
@@ -50,14 +50,14 @@ static int TestCallbackFunc_PrintIntValue(void *Value) {
 static int TestCallbackArgFunc_PrintIntValue(void *Value, void *Args) {
 
     int *IntValue = (int *)Value;
-    int *Divisor = (int *)Args;
+    int *Divisor  = (int *)Args;
 
-    if (NULL == Divisor) {
+    if ( NULL == Divisor ) {
         TEST_PRINTF("%s", "Error: NULL Divisor* provided.");
         return 1;
     }
 
-    if (0 == (*IntValue % *Divisor)) {
+    if ( 0 == (*IntValue % *Divisor) ) {
         DEBUG_PRINTF("List value [ %d ] is divisible by [ %d ]!", *IntValue, *Divisor);
     } else {
         DEBUG_PRINTF("List value [ %d ] is NOT divisible by [ %d ]!", *IntValue, *Divisor);
@@ -79,24 +79,24 @@ int Test_list_callbacks(void) {
 int Test_List_DoCallback(void) {
 
     List_t *List = NULL;
-    size_t Size = 64;
-    int i = 0;
+    size_t  Size = 64;
+    int     i    = 0;
 
     List = List_Create();
-    if (NULL == List) {
+    if ( NULL == List ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create List_t* for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < (int)Size; i++) {
-        if (0 != List_Append(List, &i, sizeof(i))) {
+    for ( i = 0; i < (int)Size; i++ ) {
+        if ( 0 != List_Append(List, &i, sizeof(i)) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to append value to List_t.");
             List_Release(List);
             TEST_FAILURE;
         }
     }
 
-    if (0 != List_DoCallback(List, TestCallbackFunc_PrintIntValue)) {
+    if ( 0 != List_DoCallback(List, TestCallbackFunc_PrintIntValue) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform List_DoCallback().");
         List_Release(List);
         TEST_FAILURE;
@@ -109,24 +109,24 @@ int Test_List_DoCallback(void) {
 int Test_List_DoCallbackArg(void) {
 
     List_t *List = NULL;
-    size_t Size = 64;
-    int i = 0, Divisor = 6;
+    size_t  Size = 64;
+    int     i = 0, Divisor = 6;
 
     List = List_Create();
-    if (NULL == List) {
+    if ( NULL == List ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create List_t* for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < (int)Size; i++) {
-        if (0 != List_Append(List, &i, sizeof(i))) {
+    for ( i = 0; i < (int)Size; i++ ) {
+        if ( 0 != List_Append(List, &i, sizeof(i)) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to append value to List_t.");
             List_Release(List);
             TEST_FAILURE;
         }
     }
 
-    if (0 != List_DoCallbackArg(List, TestCallbackArgFunc_PrintIntValue, &Divisor)) {
+    if ( 0 != List_DoCallbackArg(List, TestCallbackArgFunc_PrintIntValue, &Divisor) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform List_DoCallbackArg().");
         List_Release(List);
         TEST_FAILURE;

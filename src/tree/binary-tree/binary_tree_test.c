@@ -73,19 +73,19 @@ static int PrintBinaryTreeCallback(void *KeyValuePair) {
 
     Binary_Tree_KeyValuePair_t Pair;
 
-    if (NULL == KeyValuePair) {
+    if ( NULL == KeyValuePair ) {
         TEST_PRINTF("%s", "Test Failure - NULL KeyValuePair* provided.");
         TEST_FAILURE;
     }
 
     Pair = *(Binary_Tree_KeyValuePair_t *)KeyValuePair;
 
-    if (NULL == Pair.Value) {
+    if ( NULL == Pair.Value ) {
         TEST_PRINTF("%s", "Test Failure - NULL Value* provided.");
         TEST_FAILURE;
     }
 
-    DEBUG_PRINTF("(%d,%d) ", Pair.Key, *(int*)Pair.Value);
+    DEBUG_PRINTF("(%d,%d) ", Pair.Key, *(int *)Pair.Value);
 
     return 0;
 }
@@ -94,23 +94,23 @@ static int PrintBinaryTreeCallbackArgs(void *KeyValuePair, void *Args) {
 
     Binary_Tree_KeyValuePair_t Pair;
 
-    if (NULL == Args) {
+    if ( NULL == Args ) {
         DEBUG_PRINTF("%s", "Note: NULL Args* provided.");
     }
 
-    if (NULL == KeyValuePair) {
+    if ( NULL == KeyValuePair ) {
         TEST_PRINTF("%s", "Test Failure - NULL KeyValuePair* provided.");
         TEST_FAILURE;
     }
 
     Pair = *(Binary_Tree_KeyValuePair_t *)KeyValuePair;
 
-    if (NULL == Pair.Value) {
+    if ( NULL == Pair.Value ) {
         TEST_PRINTF("%s", "Test Failure - NULL Value* provided.");
         TEST_FAILURE;
     }
 
-    DEBUG_PRINTF("(%d,%d) ", Pair.Key, *(int*)Pair.Value);
+    DEBUG_PRINTF("(%d,%d) ", Pair.Key, *(int *)Pair.Value);
 
     return 0;
 }
@@ -142,7 +142,7 @@ int Test_Binary_Tree_Create() {
     Binary_Tree_t *Tree = NULL;
 
     Tree = Binary_Tree_Create(sizeof(int), NULL);
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
     }
@@ -153,22 +153,22 @@ int Test_Binary_Tree_Create() {
 
 int Test_Binary_Tree_Insert() {
 
-    Binary_Tree_t *Tree = NULL;
-    size_t Count = 16, i = 0;
-    int Key = 0, Value = 0, Modulo = 1000;
+    Binary_Tree_t *Tree  = NULL;
+    size_t         Count = 16, i = 0;
+    int            Key = 0, Value = 0, Modulo = 1000;
 
     Tree = Binary_Tree_Create(sizeof(Value), NULL);
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
     }
 
-    for (i = Count; i > 0; i--) {
+    for ( i = Count; i > 0; i-- ) {
 
-        Key = (int)i;
+        Key   = (int)i;
         Value = rand() % Modulo;
 
-        if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
+        if ( 0 != Binary_Tree_Insert(Tree, Key, &Value) ) {
             TEST_PRINTF(
                 "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
                 Key, Value, (unsigned long)i);
@@ -186,22 +186,22 @@ int Test_Binary_Tree_Insert() {
 
 int Test_Binary_Tree_Get() {
 
-    Binary_Tree_t *Tree = NULL;
-    size_t Count = 32, i = 0;
-    int Key = 0, Value = 0, *CheckValue = NULL;
+    Binary_Tree_t *Tree  = NULL;
+    size_t         Count = 32, i = 0;
+    int            Key = 0, Value = 0, *CheckValue = NULL;
 
     Tree = Binary_Tree_Create(sizeof(Value), NULL);
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
+    for ( i = 0; i < Count; i++ ) {
 
-        Key = (int)i;
+        Key   = (int)i;
         Value = (int)i * 2;
 
-        if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
+        if ( 0 != Binary_Tree_Insert(Tree, Key, &Value) ) {
             TEST_PRINTF(
                 "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
                 Key, Value, (unsigned long)i);
@@ -210,18 +210,18 @@ int Test_Binary_Tree_Get() {
         }
     }
 
-    for (i = 0; i < Count; i++) {
-        Key = (int)i;
+    for ( i = 0; i < Count; i++ ) {
+        Key   = (int)i;
         Value = (int)i * 2;
 
         CheckValue = (int *)Binary_Tree_Get(Tree, Key);
-        if (NULL == CheckValue) {
+        if ( NULL == CheckValue ) {
             TEST_PRINTF("Test Failure - Failed to get item with Key [ %d ] from Tree.", Key);
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
 
-        if (*CheckValue != Value) {
+        if ( *CheckValue != Value ) {
             TEST_PRINTF("Test Failure - Item with Key [ %d ] has unexpected value, got [ %d ] but "
                         "expected [ %d ] ",
                         Key, *CheckValue, Value);
@@ -236,22 +236,22 @@ int Test_Binary_Tree_Get() {
 
 int Test_Binary_Tree_Pop() {
 
-    Binary_Tree_t *Tree = NULL;
-    size_t Count = 32, i = 0;
-    int Key = 0, Value = 0, *CheckValue = NULL;
+    Binary_Tree_t *Tree  = NULL;
+    size_t         Count = 32, i = 0;
+    int            Key = 0, Value = 0, *CheckValue = NULL;
 
     Tree = Binary_Tree_Create(sizeof(Value), NULL);
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
     }
 
-    while (Binary_Tree_Length(Tree) != Count) {
+    while ( Binary_Tree_Length(Tree) != Count ) {
 
-        Key = rand() % (int)Count;
+        Key   = rand() % (int)Count;
         Value = Key * 2;
 
-        if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
+        if ( 0 != Binary_Tree_Insert(Tree, Key, &Value) ) {
             TEST_PRINTF(
                 "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
                 Key, Value, (unsigned long)i);
@@ -260,22 +260,22 @@ int Test_Binary_Tree_Pop() {
         }
     }
 
-    while (0 != Binary_Tree_Length(Tree)) {
+    while ( 0 != Binary_Tree_Length(Tree) ) {
 
         Key = rand() % (int)Count;
-        if (!Binary_Tree_KeyExists(Tree, Key)) {
+        if ( !Binary_Tree_KeyExists(Tree, Key) ) {
             continue;
         }
         Value = Key * 2;
 
         CheckValue = (int *)Binary_Tree_Pop(Tree, Key);
-        if (NULL == CheckValue) {
+        if ( NULL == CheckValue ) {
             TEST_PRINTF("Test Failure - Failed to get item with Key [ %d ] from Tree.", Key);
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
 
-        if (*CheckValue != Value) {
+        if ( *CheckValue != Value ) {
             TEST_PRINTF("Test Failure - Item with Key [ %d ] has unexpected value, got [ %d ] but "
                         "expected [ %d ] ",
                         Key, *CheckValue, Value);
@@ -286,7 +286,7 @@ int Test_Binary_Tree_Pop() {
         free(CheckValue);
     }
 
-    if (NULL != Tree->Root) {
+    if ( NULL != Tree->Root ) {
         TEST_PRINTF("%s", "Test Failure - Empty Tree has non-NULL Root.");
         Binary_Tree_Release(Tree);
         TEST_FAILURE;
@@ -298,22 +298,22 @@ int Test_Binary_Tree_Pop() {
 
 int Test_Binary_Tree_DoCallback() {
 
-    Binary_Tree_t *Tree = NULL;
-    size_t Count = 32, i = 0;
-    int Key = 0, Value = 0, Modulo = 1000;
+    Binary_Tree_t *Tree  = NULL;
+    size_t         Count = 32, i = 0;
+    int            Key = 0, Value = 0, Modulo = 1000;
 
     Tree = Binary_Tree_Create(sizeof(Value), NULL);
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
+    for ( i = 0; i < Count; i++ ) {
 
-        Key = (int)i;
+        Key   = (int)i;
         Value = rand() % Modulo;
 
-        if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
+        if ( 0 != Binary_Tree_Insert(Tree, Key, &Value) ) {
             TEST_PRINTF(
                 "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
                 Key, Value, (unsigned long)i);
@@ -322,7 +322,7 @@ int Test_Binary_Tree_DoCallback() {
         }
     }
 
-    if (0 != Binary_Tree_DoCallback(Tree, Direction_InOrder, PrintBinaryTreeCallback)) {
+    if ( 0 != Binary_Tree_DoCallback(Tree, Direction_InOrder, PrintBinaryTreeCallback) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform InOrder Binary_Tree_DoCallback().");
         Binary_Tree_Release(Tree);
         TEST_FAILURE;
@@ -334,22 +334,22 @@ int Test_Binary_Tree_DoCallback() {
 
 int Test_Binary_Tree_DoCallbackArg() {
 
-    Binary_Tree_t *Tree = NULL;
-    size_t Count = 32, i = 0;
-    int Key = 0, Value = 0, Modulo = 1000;
+    Binary_Tree_t *Tree  = NULL;
+    size_t         Count = 32, i = 0;
+    int            Key = 0, Value = 0, Modulo = 1000;
 
     Tree = Binary_Tree_Create(sizeof(Value), NULL);
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < Count; i++) {
+    for ( i = 0; i < Count; i++ ) {
 
-        Key = (int)i;
+        Key   = (int)i;
         Value = rand() % Modulo;
 
-        if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
+        if ( 0 != Binary_Tree_Insert(Tree, Key, &Value) ) {
             TEST_PRINTF(
                 "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
                 Key, Value, (unsigned long)i);
@@ -358,8 +358,8 @@ int Test_Binary_Tree_DoCallbackArg() {
         }
     }
 
-    if (0 !=
-        Binary_Tree_DoCallbackArg(Tree, Direction_InOrder, PrintBinaryTreeCallbackArgs, NULL)) {
+    if ( 0 !=
+         Binary_Tree_DoCallbackArg(Tree, Direction_InOrder, PrintBinaryTreeCallbackArgs, NULL) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform InOrder Binary_Tree_DoCallbackArg().");
         Binary_Tree_Release(Tree);
         TEST_FAILURE;
@@ -371,22 +371,22 @@ int Test_Binary_Tree_DoCallbackArg() {
 
 int Test_Binary_Tree_Remove() {
 
-    Binary_Tree_t *Tree = NULL;
-    size_t Count = 32, i = 0;
-    int Key = 0, Value = 0;
+    Binary_Tree_t *Tree  = NULL;
+    size_t         Count = 32, i = 0;
+    int            Key = 0, Value = 0;
 
     Tree = Binary_Tree_Create(sizeof(Value), NULL);
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
     }
 
-    while (Binary_Tree_Length(Tree) != Count) {
+    while ( Binary_Tree_Length(Tree) != Count ) {
 
-        Key = rand() % (int)Count;
+        Key   = rand() % (int)Count;
         Value = (int)i * 2;
 
-        if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
+        if ( 0 != Binary_Tree_Insert(Tree, Key, &Value) ) {
             TEST_PRINTF(
                 "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
                 Key, Value, (unsigned long)i);
@@ -395,27 +395,27 @@ int Test_Binary_Tree_Remove() {
         }
     }
 
-    while (0 != Binary_Tree_Length(Tree)) {
+    while ( 0 != Binary_Tree_Length(Tree) ) {
 
         Key = rand() % (int)Count;
-        if (!Binary_Tree_KeyExists(Tree, Key)) {
+        if ( !Binary_Tree_KeyExists(Tree, Key) ) {
             continue;
         }
 
-        if (0 != Binary_Tree_Remove(Tree, Key)) {
+        if ( 0 != Binary_Tree_Remove(Tree, Key) ) {
             TEST_PRINTF("Test Failure - Failed to remove item with Key [ %d ] from Tree.", Key);
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
 
-        if (Binary_Tree_KeyExists(Tree, Key)) {
+        if ( Binary_Tree_KeyExists(Tree, Key) ) {
             TEST_PRINTF("Test Failure - Key [ %d ] found in Tree after removal.", Key);
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
     }
 
-    if (NULL != Tree->Root) {
+    if ( NULL != Tree->Root ) {
         TEST_PRINTF("%s", "Test Failure - Empty Tree has non-NULL Root.");
         Binary_Tree_Release(Tree);
         TEST_FAILURE;
@@ -427,29 +427,29 @@ int Test_Binary_Tree_Remove() {
 
 int Test_Binary_Tree_Balancing() {
 
-    Binary_Tree_t *Tree = NULL;
-    size_t OperationCount = 1 << 10, i = 0;
-    int Key = 0, Value = 0, OperationType = 0;
+    Binary_Tree_t *Tree           = NULL;
+    size_t         OperationCount = 1 << 10, i = 0;
+    int            Key = 0, Value = 0, OperationType = 0;
 
     Tree = Binary_Tree_Create(sizeof(Value), NULL);
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
     }
 
-    for (i = 0; i < OperationCount; i++) {
+    for ( i = 0; i < OperationCount; i++ ) {
         OperationType = rand() & 0x01;
-        if (0 == OperationType) {
+        if ( 0 == OperationType ) {
             /* Do Insert operation. */
-            Key = rand();
+            Key   = rand();
             Value = rand();
-            if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
+            if ( 0 != Binary_Tree_Insert(Tree, Key, &Value) ) {
                 TEST_PRINTF("Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree.",
                             Key, Value);
                 Binary_Tree_Release(Tree);
                 TEST_FAILURE;
             }
-            if (!Binary_Tree_KeyExists(Tree, Key)) {
+            if ( !Binary_Tree_KeyExists(Tree, Key) ) {
                 TEST_PRINTF("Test Failure - Insertion of item with Key [ %d ] reported success, "
                             "but failed to be found in Tree.",
                             Key);
@@ -459,14 +459,14 @@ int Test_Binary_Tree_Balancing() {
         } else {
             /* Do Remove operation. */
             Key = rand();
-            if (0 != Binary_Tree_Remove(Tree, Key)) {
+            if ( 0 != Binary_Tree_Remove(Tree, Key) ) {
                 TEST_PRINTF("Test Failure - Error while attempting to remove item with Key [ %d ] "
                             "from Tree.",
                             Key);
                 Binary_Tree_Release(Tree);
                 TEST_FAILURE;
             }
-            if (Binary_Tree_KeyExists(Tree, Key)) {
+            if ( Binary_Tree_KeyExists(Tree, Key) ) {
                 TEST_PRINTF("Test Failure - Removal of item with Key [ %d ] reported success, but "
                             "key was found in Tree.",
                             Key);
@@ -474,7 +474,7 @@ int Test_Binary_Tree_Balancing() {
                 TEST_FAILURE;
             }
         }
-        if (!Binary_Tree_isAVLTree(Tree->Root)) {
+        if ( !Binary_Tree_isAVLTree(Tree->Root) ) {
             TEST_PRINTF("%s", "Test Failure - Tree failed to satisfy AVL criteria.");
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
@@ -487,22 +487,22 @@ int Test_Binary_Tree_Balancing() {
 
 int Test_Binary_Tree_Clear(void) {
 
-    Binary_Tree_t *Tree = NULL;
-    size_t Count = 16, i = 0;
-    int Key = 0, Value = 0, Modulo = 1000;
+    Binary_Tree_t *Tree  = NULL;
+    size_t         Count = 16, i = 0;
+    int            Key = 0, Value = 0, Modulo = 1000;
 
     Tree = Binary_Tree_Create(sizeof(Value), NULL);
-    if (NULL == Tree) {
+    if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
     }
 
-    for (i = Count; i > 0; i--) {
+    for ( i = Count; i > 0; i-- ) {
 
-        Key = (int)i;
+        Key   = (int)i;
         Value = rand() % Modulo;
 
-        if (0 != Binary_Tree_Insert(Tree, Key, &Value)) {
+        if ( 0 != Binary_Tree_Insert(Tree, Key, &Value) ) {
             TEST_PRINTF(
                 "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
                 Key, Value, (unsigned long)i);
@@ -511,13 +511,13 @@ int Test_Binary_Tree_Clear(void) {
         }
     }
 
-    if (0 != Binary_Tree_Clear(Tree)) {
+    if ( 0 != Binary_Tree_Clear(Tree) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to clear Binary tree.");
         Binary_Tree_Release(Tree);
         TEST_FAILURE;
     }
 
-    if (0 != Binary_Tree_Length(Tree)) {
+    if ( 0 != Binary_Tree_Length(Tree) ) {
         TEST_PRINTF("%s",
                     "Test Failure - Binary Tree contains non-zero items after being cleared.");
         Binary_Tree_Release(Tree);
