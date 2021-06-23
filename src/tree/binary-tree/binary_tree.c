@@ -78,6 +78,8 @@ int Binary_Tree_Insert(Binary_Tree_t *Tree, int Key, void *Value) {
         return 1;
     }
 
+    Iterator_Invalidate(&(Tree->Iterator));
+
     if (NULL == Value) {
         DEBUG_PRINTF("%s", "Note: NULL Value* provided, just inserting Key.");
     }
@@ -136,6 +138,8 @@ void *Binary_Tree_Pop(Binary_Tree_t *Tree, int Key) {
         return NULL;
     }
 
+    Iterator_Invalidate(&(Tree->Iterator));
+
     Node = Binary_Tree_find(Tree->Root, Key);
     if (NULL == Node) {
         DEBUG_PRINTF("%s", "Error: Failed to find Key in Tree.");
@@ -161,6 +165,8 @@ int Binary_Tree_Remove(Binary_Tree_t *Tree, int Key) {
         return 1;
     }
 
+    Iterator_Invalidate(&(Tree->Iterator));
+
     DecrementSize = Binary_Tree_KeyExists(Tree, Key);
 
     Tree->Root = Binary_Tree_removeNode(Tree->Root, Key);
@@ -170,7 +176,12 @@ int Binary_Tree_Remove(Binary_Tree_t *Tree, int Key) {
     return 0;
 }
 
-int Binary_Tree_DoCallback(Binary_Tree_t *Tree, CallbackFunc_t *Callback) {
+int Binary_Tree_DoCallback(Binary_Tree_t *Tree, Binary_Tree_Direction_t Direction,
+                           CallbackFunc_t *Callback) {
+
+    Binary_Tree_KeyValuePair_t KeyValuePair = {0, NULL};
+    size_t NodesVisited = 0;
+    int RetVal = 0;
 
     if (NULL == Tree) {
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
@@ -187,10 +198,47 @@ int Binary_Tree_DoCallback(Binary_Tree_t *Tree, CallbackFunc_t *Callback) {
         return 0;
     }
 
-    return Binary_Tree_doCallback(Tree->Root, Callback);
+    switch (Direction) {
+    case Direction_InOrder:
+        break;
+    case Direction_PreOrder:
+        break;
+    case Direction_PostOrder:
+        break;
+    default:
+        DEBUG_PRINTF("Error: Unknown tree traversal direction [ %d ].", Direction);
+        return 1;
+    }
+
+    for (NodesVisited = 0, KeyValuePair = Binary_Tree_Next(Tree, Direction);
+         NULL != KeyValuePair.Value;
+         NodesVisited++, KeyValuePair = Binary_Tree_Next(Tree, Direction)) {
+        if (0 != Callback(&(KeyValuePair))) {
+            DEBUG_PRINTF("%s",
+                         "Error: Callback function returned non-zero for item with Key [ %d ].");
+            RetVal |= 1;
+        }
+    }
+
+    Iterator_Invalidate(&(Tree->Iterator));
+
+    if (NodesVisited != Binary_Tree_Length(Tree)) {
+        DEBUG_PRINTF("Error: Callback function not called on as many elements as tree reports it "
+                     "has. (%lu vs. %lu)",
+                     (unsigned long)NodesVisited, (unsigned long)Binary_Tree_Length(Tree));
+        return 1;
+    }
+
+    DEBUG_PRINTF("%s", "Finished performing Callback on Binary Tree.");
+    return RetVal;
 }
 
-int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, CallbackArgFunc_t *Callback, void *Args) {
+int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, Binary_Tree_Direction_t Direction,
+                              CallbackArgFunc_t *Callback, void *Args) {
+
+    Binary_Tree_KeyValuePair_t KeyValuePair = {0, NULL};
+    size_t NodesVisited = 0;
+    int RetVal = 0;
 
     if (NULL == Tree) {
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
@@ -207,7 +255,39 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, CallbackArgFunc_t *Callback, 
         return 0;
     }
 
-    return Binary_Tree_doCallbackArg(Tree->Root, Callback, Args);
+    switch (Direction) {
+    case Direction_InOrder:
+        break;
+    case Direction_PreOrder:
+        break;
+    case Direction_PostOrder:
+        break;
+    default:
+        DEBUG_PRINTF("Error: Unknown tree traversal direction [ %d ].", Direction);
+        return 1;
+    }
+
+    for (NodesVisited = 0, KeyValuePair = Binary_Tree_Next(Tree, Direction);
+         NULL != KeyValuePair.Value;
+         NodesVisited++, KeyValuePair = Binary_Tree_Next(Tree, Direction)) {
+        if (0 != Callback(&(KeyValuePair), Args)) {
+            DEBUG_PRINTF("%s",
+                         "Error: Callback function returned non-zero for item with Key [ %d ].");
+            RetVal |= 1;
+        }
+    }
+
+    Iterator_Invalidate(&(Tree->Iterator));
+
+    if (NodesVisited != Binary_Tree_Length(Tree)) {
+        DEBUG_PRINTF("Error: Callback function not called on as many elements as tree reports it "
+                     "has. (%lu vs. %lu)",
+                     (unsigned long)NodesVisited, (unsigned long)Binary_Tree_Length(Tree));
+        return 1;
+    }
+
+    DEBUG_PRINTF("%s", "Finished performing Callback on Binary Tree.");
+    return RetVal;
 }
 
 int Binary_Tree_Clear(Binary_Tree_t *Tree) {
@@ -216,6 +296,8 @@ int Binary_Tree_Clear(Binary_Tree_t *Tree) {
         DEBUG_PRINTF("%s", "NULL Tree* provided, nothing to clear.");
         return 0;
     }
+
+    Iterator_Invalidate(&(Tree->Iterator));
 
     Binary_Tree_Node_Release(Tree->Root);
     Tree->Root = NULL;
@@ -249,8 +331,10 @@ Binary_Tree_Node_t *Binary_Tree_insertNode(Binary_Tree_Node_t *Root, Binary_Tree
         return Node;
     } else if (Root->Key > Node->Key) {
         Root->LeftChild = Binary_Tree_insertNode(Root->LeftChild, Node);
+        Root->LeftChild->Parent = Root;
     } else if (Root->Key < Node->Key) {
         Root->RightChild = Binary_Tree_insertNode(Root->RightChild, Node);
+        Root->RightChild->Parent = Root;
     } else {
         Binary_Tree_Node_Update(Root, Node->Value.ValueRaw, Node->ValueSize);
         Binary_Tree_Node_Release(Node);
@@ -361,42 +445,6 @@ Binary_Tree_Node_t *Binary_Tree_findMinimum(Binary_Tree_Node_t *Root) {
         ;
     };
     return Root;
-}
-
-int Binary_Tree_doCallback(Binary_Tree_Node_t *Root, CallbackFunc_t *Callback) {
-
-    void **KeyValuePair[2] = {NULL, NULL};
-    int RetVal = 0;
-
-    if (NULL != Root) {
-
-        KeyValuePair[0] = (void *)&(Root->Key);
-        KeyValuePair[1] = (Root->Value.ValueRaw);
-
-        RetVal |= Binary_Tree_doCallback(Root->LeftChild, Callback);
-        RetVal |= Callback(KeyValuePair);
-        RetVal |= Binary_Tree_doCallback(Root->RightChild, Callback);
-    }
-
-    return RetVal;
-}
-
-int Binary_Tree_doCallbackArg(Binary_Tree_Node_t *Root, CallbackArgFunc_t *Callback, void *Args) {
-
-    void **KeyValuePair[2] = {NULL, NULL};
-    int RetVal = 0;
-
-    if (NULL != Root) {
-
-        KeyValuePair[0] = (void *)&(Root->Key);
-        KeyValuePair[1] = (Root->Value.ValueRaw);
-
-        RetVal |= Binary_Tree_doCallbackArg(Root->LeftChild, Callback, Args);
-        RetVal |= Callback(KeyValuePair, Args);
-        RetVal |= Binary_Tree_doCallbackArg(Root->RightChild, Callback, Args);
-    }
-
-    return RetVal;
 }
 
 bool Binary_Tree_isAVLTree(Binary_Tree_Node_t *Root) {

@@ -36,21 +36,11 @@ extern "C" {
 
 #define LIBCONTAINER_ENABLE_BINARY_TREE
 #include "../../../../include/libcontainer.h"
+
+#include "../../../iterator/include/iterator.h"
+
 #include "binary_tree_node.h"
 #include "tree_rotations.h"
-
-/*
-    Binary_Tree_Direction_t
-
-    This enum defines the different directions in which a Binary_Tree_t can be
-    traversed. This is currently unused and all traversals defer to In-Order
-    traversal.
-*/
-typedef enum Binary_Tree_Direction_t {
-    Direction_PreOrder,
-    Direction_InOrder,
-    Direction_PostOrder
-} Binary_Tree_Direction_t;
 
 struct Binary_Tree_t {
 
@@ -69,6 +59,12 @@ struct Binary_Tree_t {
         tree destruction.
     */
     ReleaseFunc_t* ReleaseFunc;
+
+    /*
+        Iterator is the struct containing the necessary information and context
+        to be able to single-step iterate over the Binary Tree in an arbitrary direction.
+    */
+    Iterator_t* Iterator;
 
     /*
         The total number of elements in the tree. Allows O(1) checks of the
@@ -162,52 +158,20 @@ Binary_Tree_Node_t* Binary_Tree_insertNode(Binary_Tree_Node_t* Root, Binary_Tree
 Binary_Tree_Node_t* Binary_Tree_removeNode(Binary_Tree_Node_t *Root, int Key);
 
 /*
-    Binary_Tree_doCallback
+    Binary_Tree_leftmostLeaf
 
-    This function implements the underlying logic of the Binary_Tree_DoCallback()
-    function. The function exposed by the public API simply performs input
-    validation and then defers to this, to allow this function to recursively
-    traverse the tree and perform the Callback.
-
-    Inputs:
-    Tree        -   Pointer to the Tree to operate on.
-    Callback    -   Pointer to the Callback function to call for each item
-                        in the Tree.
-
-    Outputs:
-    int     -   Returns 0 on success, non-zero if any Callback fails.
-
-    Note:
-    The "Value*" provided to the Callback function consists of a
-        void*[2] = { Key, Value }
-    A pointer to the Key, and the pointer to the Value of each item.
-*/
-int Binary_Tree_doCallback(Binary_Tree_Node_t* Root, CallbackFunc_t* Callback);
-
-/*
-    Binary_Tree_doCallbackArg
-
-    This function implements the underlying logic of the Binary_Tree_DoCallbackArg()
-    function. The function exposed by the public API simply performs input
-    validation and then defers to this, to allow this function to recursively
-    traverse the tree and perform the Callback.
+    This function searches the subtree, finding the left-most leaf, which may or may not
+    be the left-most node. This is a helpful behaviour for the single-step iteration
+    functions.
 
     Inputs:
-    Tree        -   Pointer to the Tree to operate on.
-    Callback    -   Pointer to the Callback function to call for each item
-                        in the Tree.
-    Args        -   Optional additional arguments to pass to the Callback
-                        function along with the Key-Value pair.
+    Root    -   The root of the sub-tree to search through.
 
     Outputs:
-    int     -   Returns 0 on success, non-zero if any Callback fails.
-
-    Note:
-    The "Value*" provided to the Callback function consists of a
-        void*[2] = { Key, Value }
-    A pointer to the Key, and the pointer to the Value of each item.
+    Binary_Tree_Node_t* -   A pointer to the resulting left-most leaf node, or NULL
+                                on error or if it doesn't exist.
 */
-int Binary_Tree_doCallbackArg(Binary_Tree_Node_t* Root, CallbackArgFunc_t* Callback, void* Args);
+Binary_Tree_Node_t* Binary_Tree_leftmostLeaf(Binary_Tree_Node_t *Root);
 
 /*
     Binary_Tree_isAVLTree

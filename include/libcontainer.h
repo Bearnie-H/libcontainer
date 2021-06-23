@@ -233,6 +233,42 @@ typedef struct Hashmap_KeyValuePair_t {
 */
 typedef struct Binary_Tree_t Binary_Tree_t;
 
+/*
+    Binary_Tree_Direction_t
+
+    This enum defines the different directions in which a Binary_Tree_t can be
+    traversed. One of these directions is required for the single-step iteration
+    over the Tree as provided by the "next" interface.
+*/
+typedef enum Binary_Tree_Direction_t {
+    Direction_InOrder,
+    Direction_PreOrder,
+    Direction_PostOrder
+} Binary_Tree_Direction_t;
+
+/*
+    Binary_Tree_KeyValuePair_t
+
+    This type represents the basic container to simplify working with
+    the Key-Value data-types used in the Binary_Tree_t container.
+
+    Note that the Value pointer here is a reference to the actual contents
+    within the tree. Modifications made here are reflected in future
+    operations on the Tree.
+*/
+typedef struct Binary_Tree_KeyValuePair_t {
+    /*
+        The integer key associated with an item within the Binary Tree.
+    */
+    int Key;
+
+    /*
+        Pointer to the actual item Value within the Binary Tree.
+    */
+    void* Value;
+
+} Binary_Tree_KeyValuePair_t;
+
 /* --------- Public Binary_Tree_t Typedefs --------- */
 #endif
 
@@ -1787,6 +1823,8 @@ void* Binary_Tree_Pop(Binary_Tree_t* Tree, int Key);
 
     Inputs:
     Tree        -   Pointer to the Tree to operate on.
+    Direction   -   The (forward-only) direction to traverse the tree in order to perform
+                        the Callback function on each item.
     Callback    -   Pointer to the Callback function to call for each item
                         in the Tree.
 
@@ -1798,7 +1836,7 @@ void* Binary_Tree_Pop(Binary_Tree_t* Tree, int Key);
         void*[2] = { Key, Value }
     A pointer to the Key, and the pointer to the Value of each item.
 */
-int Binary_Tree_DoCallback(Binary_Tree_t* Tree, CallbackFunc_t* Callback);
+int Binary_Tree_DoCallback(Binary_Tree_t* Tree,Binary_Tree_Direction_t Direction, CallbackFunc_t* Callback);
 
 /*
     Binary_Tree_DoCallbackArg
@@ -1808,6 +1846,8 @@ int Binary_Tree_DoCallback(Binary_Tree_t* Tree, CallbackFunc_t* Callback);
 
     Inputs:
     Tree        -   Pointer to the Tree to operate on.
+    Direction   -   The (forward-only) direction to traverse the tree in order to perform
+                        the Callback function on each item.
     Callback    -   Pointer to the Callback function to call for each item
                         in the Tree.
     Args        -   Optional additional arguments to pass to the Callback
@@ -1821,7 +1861,7 @@ int Binary_Tree_DoCallback(Binary_Tree_t* Tree, CallbackFunc_t* Callback);
         void*[2] = { Key, Value }
     A pointer to the Key, and the pointer to the Value of each item.
 */
-int Binary_Tree_DoCallbackArg(Binary_Tree_t* Tree, CallbackArgFunc_t* Callback, void* Args);
+int Binary_Tree_DoCallbackArg(Binary_Tree_t* Tree,Binary_Tree_Direction_t Direction, CallbackArgFunc_t* Callback, void* Args);
 
 /*
     Binary_Tree_Remove
@@ -1837,6 +1877,65 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t* Tree, CallbackArgFunc_t* Callback, 
     int     -   Returns 0 on success, non-zero on failure.
 */
 int Binary_Tree_Remove(Binary_Tree_t* Tree, int Key);
+
+/*
+    Binary_Tree_Next
+
+    This function allows for single-step iteration over the Binary Tree, in the specified
+    direction. This iterates in the "Forward" direction, defined based on the ordering
+    of the Key field of the Binary Tree items. This is more efficient for iterating
+    over the tree than trying to retrieve the keys and perform a traversal to retrieve
+    each item.
+
+    Inputs:
+    Tree        -   Pointer to the Binary Tree to iterate over.
+    Direction   -   The (forward-only) direction to traverse the tree in order to perform
+                        the Callback function on each item.
+
+    Outputs:
+    Binary_Tree_KeyValuePair_t  -   A simple struct containing a copy of the integer
+                                        Key associated with the item, and a pointer to the
+                                        actual item contents itself.
+
+    Note:
+    Since the Key field of the returned Binary_Tree_KeyValuePair_t is an integer, the Value
+    pointer is used to define whether or not the returned value has meaning. A NULL Value
+    pointer implies that iteration has finished.
+
+    Also note that changing the *Direction* value during iteration may not lead to helpful
+    behaviour. The returned value is correct for the given Direction and most recently
+    returned value, however by changing direction, this may ignore or repeat sections of the
+    tree.
+*/
+Binary_Tree_KeyValuePair_t Binary_Tree_Next(Binary_Tree_t* Tree, Binary_Tree_Direction_t Direction);
+
+/*
+    Binary_Tree_Previous
+
+    This function is exactly the same as Binary_Tree_Next(), except that it iterates
+    in the reverse order for a given Tree and Direction.
+
+    Inputs:
+    Tree        -   Pointer to the Binary Tree to iterate over.
+    Direction   -   The (forward-only) direction to traverse the tree in order to perform
+                        the Callback function on each item.
+
+    Outputs:
+    Binary_Tree_KeyValuePair_t  -   A simple struct containing a copy of the integer
+                                        Key associated with the item, and a pointer to the
+                                        actual item contents itself.
+
+    Note:
+    Since the Key field of the returned Binary_Tree_KeyValuePair_t is an integer, the Value
+    pointer is used to define whether or not the returned value has meaning. A NULL Value
+    pointer implies that iteration has finished.
+
+    Also note that changing the *Direction* value during iteration may not lead to helpful
+    behaviour. The returned value is correct for the given Direction and most recently
+    returned value, however by changing direction, this may ignore or repeat sections of the
+    tree.
+*/
+Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t* Tree, Binary_Tree_Direction_t Direction);
 
 /*
     Binary_Tree_Clear

@@ -28,6 +28,7 @@
 
 #include "../../logging/logging.h"
 #include "include/binary_tree.h"
+#include "include/binary_tree_iterator.h"
 #include "include/tree_rotations.h"
 
 /* Temporary Function for printing Binary Trees.
@@ -148,6 +149,8 @@ int Test_binary_tree(void) {
     FailedTests += Test_Binary_Tree_Remove();
     FailedTests += Test_Binary_Tree_Balancing();
     FailedTests += Test_Binary_Tree_Clear();
+
+    FailedTests += Test_binary_tree_iterator();
 
     return FailedTests;
 }
@@ -337,7 +340,7 @@ int Test_Binary_Tree_DoCallback() {
         }
     }
 
-    if (0 != Binary_Tree_DoCallback(Tree, PrintBinaryTreeCallback)) {
+    if (0 != Binary_Tree_DoCallback(Tree, Direction_InOrder, PrintBinaryTreeCallback)) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform InOrder Binary_Tree_DoCallback().");
         Binary_Tree_Release(Tree);
         TEST_FAILURE;
@@ -373,7 +376,8 @@ int Test_Binary_Tree_DoCallbackArg() {
         }
     }
 
-    if (0 != Binary_Tree_DoCallbackArg(Tree, PrintBinaryTreeCallbackArgs, NULL)) {
+    if (0 !=
+        Binary_Tree_DoCallbackArg(Tree, Direction_InOrder, PrintBinaryTreeCallbackArgs, NULL)) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform InOrder Binary_Tree_DoCallbackArg().");
         Binary_Tree_Release(Tree);
         TEST_FAILURE;
