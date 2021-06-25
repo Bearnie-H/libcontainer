@@ -232,7 +232,7 @@ char *String_ToCString(String_t *String) {
     }
 
     /* Grow the string to hold a NUL-terminator, if there isn't room. */
-    if ( Array_Capacity(String->Contents) == Array_Length(String->Contents) ) {
+    if ( String->Contents->Capacity == String->Contents->Length ) {
         if ( 0 != Array_Grow(String->Contents, 1) ) {
             DEBUG_PRINTF("%s", "Error: Failed to grow Array to accommodate NULL-terminator.");
             return NULL;
@@ -310,6 +310,8 @@ String_t *String_Substring(String_t *String, size_t Index, size_t Length) {
 int String_Compare(String_t *A, String_t *B) {
 
     size_t MinLength = 0;
+    size_t LengthA   = 0;
+    size_t LengthB   = 0;
 
     if ( (NULL == A) && (NULL == B) ) {
         return 0;
@@ -319,7 +321,10 @@ int String_Compare(String_t *A, String_t *B) {
         return -1;
     }
 
-    MinLength = (String_Length(A) < String_Length(B)) ? (String_Length(A)) : (String_Length(B));
+    LengthA = String_Length(A);
+    LengthB = String_Length(B);
+
+    MinLength = (LengthA < LengthB) ? LengthA : LengthB;
 
     return memcmp(String_ToCString(A), String_ToCString(B), MinLength);
 }

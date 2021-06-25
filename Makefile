@@ -28,7 +28,7 @@
 #   Version Settings
 MAJOR_VERSION   := 0
 MINOR_VERSION   := 8
-PATCH_VERSION   := 1
+PATCH_VERSION   := 2
 BUILD_DATE      := $(shell date "+%A %d %B %Y %T %Z")
 BUILD_DATESTAMP := $(shell date "+%Y%m%d")
 VERSION         := v$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)

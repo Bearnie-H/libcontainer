@@ -28,29 +28,29 @@
 #include "../../include/libcontainer.h"
 
 #ifndef LIBCONTAINER_MAJOR_VERSION
-#define LIBCONTAINER_MAJOR_VERSION 0
+#define LIBCONTAINER_MAJOR_VERSION -1
 #endif
 
 #ifndef LIBCONTAINER_MINOR_VERSION
-#define LIBCONTAINER_MINOR_VERSION 0
+#define LIBCONTAINER_MINOR_VERSION -1
 #endif
 
 #ifndef LIBCONTAINER_PATCH_VERSION
-#define LIBCONTAINER_PATCH_VERSION 0
+#define LIBCONTAINER_PATCH_VERSION -1
 #endif
 
 #ifndef LIBCONTAINER_BUILD_DATE
-#define LIBCONTAINER_BUILD_DATE "Unknown"
+#define LIBCONTAINER_BUILD_DATE "Unknown compilation time"
 #endif
 
 #ifndef LIBCONTAINER_BUILD_DATESTAMP
-#define LIBCONTAINER_BUILD_DATESTAMP 0
+#define LIBCONTAINER_BUILD_DATESTAMP -1
 #endif
 
 void Print_Libcontainer_Library_Version(void) {
 
     printf("libcontainer - A C library providing generic container structs.\n"
-           "Version: %02d.%02d.%02d\n"
+           "Version: %d.%d.%d\n"
            "Compiled on: %s\n",
            LIBCONTAINER_MAJOR_VERSION, LIBCONTAINER_MINOR_VERSION, LIBCONTAINER_PATCH_VERSION,
            LIBCONTAINER_BUILD_DATE);
@@ -60,15 +60,12 @@ void Print_Libcontainer_Library_Version(void) {
 
 long Libcontainer_Library_Version(void) {
 
-    long FormattedVersionNumber = 0;
-    char VersionString[7]       = {0x00};
+    char VersionString[7] = {0x00};
 
     sprintf(VersionString, "%02d%02d%02d", LIBCONTAINER_MAJOR_VERSION, LIBCONTAINER_MINOR_VERSION,
             LIBCONTAINER_PATCH_VERSION);
 
-    FormattedVersionNumber = atol(VersionString);
-
-    return FormattedVersionNumber;
+    return atol(VersionString);
 }
 
 long Libcontainer_Build_Time(void) {

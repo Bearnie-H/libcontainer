@@ -80,6 +80,9 @@ ssize_t Array_doPartition(Array_t *Array, CompareFunc_t *CompareFunc, ssize_t Lo
 
     void *  Pivot = NULL, *Test = NULL;
     ssize_t i = Lower, j = Lower;
+    ssize_t p = ((ssize_t)rand() % (Upper - Lower + 1)) + Lower;
+
+    Array_swapItems(Array, (size_t)p, (size_t)Upper);
 
     Pivot = Array_GetElement(Array, (size_t)Upper);
     if ( NULL == Pivot ) {
@@ -94,7 +97,7 @@ ssize_t Array_doPartition(Array_t *Array, CompareFunc_t *CompareFunc, ssize_t Lo
             return -1;
         }
 
-        if ( 0 >= CompareFunc(Test, Pivot) ) {
+        if ( 0 >= CompareFunc(Test, Pivot, Array->ElementSize) ) {
             Array_swapItems(Array, (size_t)j, (size_t)i);
             i += 1;
         }

@@ -199,15 +199,17 @@ int Binary_Tree_DoCallback(Binary_Tree_t *Tree, Binary_Tree_Direction_t Directio
     }
 
     switch ( Direction ) {
-    case Direction_InOrder: break;
-    case Direction_PreOrder: break;
-    case Direction_PostOrder: break;
-    default: DEBUG_PRINTF("Error: Unknown tree traversal direction [ %d ].", Direction); return 1;
+        case Direction_InOrder: break;
+        case Direction_PreOrder: break;
+        case Direction_PostOrder: break;
+        default:
+            DEBUG_PRINTF("Error: Unknown tree traversal direction [ %d ].", Direction);
+            return 1;
     }
 
-    for ( NodesVisited = 0, KeyValuePair = Binary_Tree_Next(Tree, Direction);
-          NULL != KeyValuePair.Value;
-          NodesVisited++, KeyValuePair = Binary_Tree_Next(Tree, Direction) ) {
+    NodesVisited = 0;
+    BINARY_TREE_FOREACH(Tree, KeyValuePair, Direction) {
+        NodesVisited++;
         if ( 0 != Callback(&(KeyValuePair)) ) {
             DEBUG_PRINTF("%s",
                          "Error: Callback function returned non-zero for item with Key [ %d ].");
@@ -251,15 +253,17 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, Binary_Tree_Direction_t Direc
     }
 
     switch ( Direction ) {
-    case Direction_InOrder: break;
-    case Direction_PreOrder: break;
-    case Direction_PostOrder: break;
-    default: DEBUG_PRINTF("Error: Unknown tree traversal direction [ %d ].", Direction); return 1;
+        case Direction_InOrder: break;
+        case Direction_PreOrder: break;
+        case Direction_PostOrder: break;
+        default:
+            DEBUG_PRINTF("Error: Unknown tree traversal direction [ %d ].", Direction);
+            return 1;
     }
 
-    for ( NodesVisited = 0, KeyValuePair = Binary_Tree_Next(Tree, Direction);
-          NULL != KeyValuePair.Value;
-          NodesVisited++, KeyValuePair = Binary_Tree_Next(Tree, Direction) ) {
+    NodesVisited = 0;
+    BINARY_TREE_FOREACH(Tree, KeyValuePair, Direction) {
+        NodesVisited++;
         if ( 0 != Callback(&(KeyValuePair), Args) ) {
             DEBUG_PRINTF("%s",
                          "Error: Callback function returned non-zero for item with Key [ %d ].");

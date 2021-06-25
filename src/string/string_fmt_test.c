@@ -148,6 +148,4 @@ int Test_String_Appendf(void) {
 
     String_Release(String);
     TEST_SUCCESSFUL;
-
-    TEST_NOT_IMPLEMENTED;
 }

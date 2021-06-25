@@ -167,12 +167,12 @@ void Hashmap_Entry_Release(Hashmap_Entry_t *Entry) {
     }
 
     /* If the pointer isn't NULL, AND this Entry owns the memory, release it. */
-    if ( (NULL != Entry->Value.ValueRaw) && (0 != Entry->ValueSize) ) {
+    if ( (NULL != Entry->Value.ValueRaw) && (NULL != Entry->ValueReleaseFunc) ) {
         Entry->ValueReleaseFunc(Entry->Value.ValueRaw);
     }
 
     /* If the pointer isn't NULL, AND this Entry owns the memory, release it. */
-    if ( (NULL != Entry->Key) && (0 != Entry->KeySize) ) {
+    if ( (NULL != Entry->Key) && (NULL != Entry->KeyReleaseFunc) ) {
         Entry->KeyReleaseFunc(Entry->Key);
     }
 

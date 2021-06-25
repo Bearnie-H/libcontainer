@@ -161,7 +161,7 @@ __attribute__((__format__(printf, 2, 0))) int String_VAppendf(String_t *String, 
         return 1;
     }
 
-    if ( 0 != String_grow(String, (size_t)Length) ) {
+    if ( 0 != String_grow(String, (size_t)Length + 1) ) {
         DEBUG_PRINTF("%s", "Error: Failed to grow String to accommodate formatted string.");
         return 1;
     }

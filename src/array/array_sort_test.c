@@ -28,11 +28,12 @@
 #include "../logging/logging.h"
 #include "include/array.h"
 
-static int ArrayCompareFunc_Int(const void *A, const void *B) {
+static int ArrayCompareFunc_Int(const void *A, const void *B, __attribute__((unused)) size_t Size) {
     return (*(const int *)A) - (*(const int *)B);
 }
 
-static int ArrayCompareFunc_Double(const void *A, const void *B) {
+static int ArrayCompareFunc_Double(const void *A, const void *B,
+                                   __attribute__((unused)) size_t Size) {
     if ( *(const double *)A < *(const double *)B ) {
         return -1;
     } else if ( *(const double *)B < *(const double *)A ) {

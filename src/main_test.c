@@ -22,12 +22,7 @@
 
 #include <stdio.h>
 
-#define LIBCONTAINER_ENABLE_ARRAY
-#define LIBCONTAINER_ENABLE_LIST
-#define LIBCONTAINER_ENABLE_HASHMAP
-#define LIBCONTAINER_ENABLE_BINARY_TREE
-#define LIBCONTAINER_ENABLE_STACK
-#define LIBCONTAINER_ENABLE_STRING
+#define LIBCONTAINER_ENABLE_ALL
 
 #include "../include/libcontainer.h"
 #include "array/include/array.h"
@@ -48,7 +43,7 @@ int Test_main(void) {
 
     Print_Libcontainer_Library_Version();
     printf("Libcontainer Version code: %ld\n", Libcontainer_Library_Version());
-    printf("Libcontainer Compile Datestamp: %ld\n", Libcontainer_Build_Time());
+    printf("Libcontainer Compilation Datestamp: %ld\n", Libcontainer_Build_Time());
 
     FailedTests += Test_array();
     FailedTests += Test_list();

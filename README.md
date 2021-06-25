@@ -113,6 +113,9 @@ currently the Binary_Tree_t implementation is based on an [AVL Tree](https://en.
 but no part of this implementation is externally visible. This library will always ensure
 the public interface does not rely on the specific implementation of the underlying container.
 
+If you wish to enable all containers, the macro `LIBCONTAINER_ENABLE_ALL` is a shorthand to
+enable all containers available in the library.
+
 ### Future Containers and Updates
 
 In addition to the set of containers listed in the section above, there are plans to
@@ -132,7 +135,6 @@ These include:
 
 * Extending `Binary_Tree_t` to accept a generic Key, not limited to `int`.
 * Extending `Binary_Tree_t` to specify duplicate-item handling, i.e. ignore-new, overwrite, error, etc.
-* Extending all containers with a `*_Next()` interface for single-step iteration over the Values.
 
 ## License
 

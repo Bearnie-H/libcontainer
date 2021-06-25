@@ -49,6 +49,15 @@ extern "C" {
     needing to explicitly enable everything.
 */
 
+#ifdef LIBCONTAINER_ENABLE_ALL
+#define LIBCONTAINER_ENABLE_ARRAY
+#define LIBCONTAINER_ENABLE_LIST
+#define LIBCONTAINER_ENABLE_HASHMAP
+#define LIBCONTAINER_ENABLE_BINARY_TREE
+#define LIBCONTAINER_ENABLE_STACK
+#define LIBCONTAINER_ENABLE_STRING
+#endif
+
 /*
     The Hashmap_t container requires the Array_t container for the
     Hashmap_Keys() and Hashmap_Values() functions.
@@ -61,6 +70,69 @@ extern "C" {
 /* ---------- Cross-Container Macro Enabling ---------- */
 
 /* ++++++++++ Exported Library Macros ++++++++++ */
+
+
+#ifdef LIBCONTAINER_ENABLE_ARRAY
+
+/*
+    ARRAY_FOREACH
+
+    This macro expands to a simple for-each loop over an Array_t container.
+    This allows for simpler use of the iteration interface.
+
+    Inputs:
+    Array   -   The array to iterate over.
+    Value   -   The local variable to hold each next item from the Array.
+*/
+#define ARRAY_FOREACH(Array, Value) for ((Value) = Array_Next(Array); NULL != (Value); (Value) = Array_Next(Array))
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_LIST
+
+/*
+    LIST_FOREACH
+
+    This macro expands to a simple for-each loop over a List_t container.
+    This allows for simpler use of the iteration interface.
+
+    Inputs:
+    List    -   The List to iterate over.
+    Value   -   The local variable to hold each next item from the List.
+*/
+#define LIST_FOREACH(List, Value) for ((Value) = List_Next(List); (NULL != (Value)); (Value) = List_Next(List))
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_HASHMAP
+
+/*
+    HASHMAP_FOREACH
+
+    This macro expands to a simple for-each loop over a Hashmap_t container.
+    This allows for simpler use of the iteration interface.
+
+    Inputs:
+    Hashmap         -   The Hashmap to iterate over.
+    KeyValuePair    -   The local variable to hold each next item from the Hashmap.
+*/
+#define HASHMAP_FOREACH(Hashmap, KeyValuePair) for ((KeyValuePair) = Hashmap_Next(Hashmap); ((NULL != (KeyValuePair).Key) && (NULL !=(KeyValuePair).Value)); (KeyValuePair) = Hashmap_Next(Hashmap))
+
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_BINARY_TREE
+
+/*
+    BINARY_TREE_FOREACH
+
+    This macro expands to a simple for-each loop over a List_t container.
+    This allows for simpler use of the iteration interface.
+
+    Inputs:
+    Tree        -   The Binary Tree to iterate over.
+    KeyValuePair-   The local variable to hold each next item from the List.
+    Direction   -   The forward iteration direction to traverse the tree in.
+*/
+#define BINARY_TREE_FOREACH(List, KeyValuePair, Direction) for ((KeyValuePair) = Binary_Tree_Next((Tree), (Direction)); (NULL != (KeyValuePair).Value); (KeyValuePair) = Binary_Tree_Next((Tree), (Direction)))
+#endif
 
 /* ---------- Exported Library Macros ---------- */
 
@@ -399,6 +471,7 @@ typedef int(CallbackArgFunc_t)(void*, void*);
     Inputs:
     void*   -   Pointer to the first item to be compared.
     void*   -   Pointer to the second item to be compared.
+    size_t  -   Size of the items to compare
 
     Outputs:
     int     -   Must return negative if First < Second,
@@ -409,13 +482,13 @@ typedef int(CallbackArgFunc_t)(void*, void*);
     The library will assert that NULL pointers are NEVER passed to this
     function type. If, however, the "Value" held by a container is a
     pointer-to-pointer type, this inner pointer MAY be NULL, and you must
-    check for this. See the documentation for strcmp() for an example
+    check for this. See the documentation for memcmp() for an example
     function which satisfies these requirements.
 
     The size of the values is not provided, as this is known by the container,
     and should be known by the author of such CompareFunc_t implementations.
 */
-typedef int(CompareFunc_t)(const void*, const void*);
+typedef int(CompareFunc_t)(const void*, const void*, size_t);
 
 /* ---------- General Public Library Typedefs ---------- */
 

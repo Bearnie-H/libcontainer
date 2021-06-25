@@ -102,7 +102,7 @@ void ListNode_Release(List_Node_t *Node) {
         return;
     }
 
-    if ( NULL != Node->Contents.ContentRaw ) {
+    if ( (NULL != Node->Contents.ContentRaw) && (NULL != Node->ReleaseFunc) ) {
         Node->ReleaseFunc(Node->Contents.ContentRaw);
     }
 
@@ -177,7 +177,7 @@ void ListNode_Delete(List_Node_t *Node) {
     ZERO_CONTAINER(Node, List_Node_t);
     free(Node);
 
-    DEBUG_PRINTF("%s", "Successfully deleted List_Node_t but not its contents.");
+    DEBUG_PRINTF("%s", "Successfully deleted List_Node_t.");
     return;
 }
 

@@ -28,7 +28,8 @@
 
 Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
 
-    Array_t *Array = NULL;
+    Array_t *Array    = NULL;
+    size_t   Capacity = 1;
 
     if ( 0 == ElementSize ) {
         DEBUG_PRINTF("Error, invalid ElementSize [ %ld ].", (unsigned long)ElementSize);
@@ -45,14 +46,19 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
         return NULL;
     }
 
-    Array->Contents.ContentBytes = (uint8_t *)calloc(StartingCapacity, ElementSize);
+    /*
+        Ensure the capacity is aligned to a power of 2 boundary.
+    */
+    while ( Capacity <= StartingCapacity ) { Capacity <<= 1; }
+
+    Array->Contents.ContentBytes = (uint8_t *)calloc(Capacity, ElementSize);
     if ( NULL == Array->Contents.ContentBytes ) {
         DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t->Contents.");
         free(Array);
         return NULL;
     }
 
-    Array->Capacity    = StartingCapacity;
+    Array->Capacity    = Capacity;
     Array->ElementSize = ElementSize;
     Array->Length      = 0;
     Array->ReleaseFunc = NULL;
@@ -64,7 +70,8 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
 
 Array_t *Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t *ReleaseFunc) {
 
-    Array_t *Array = NULL;
+    Array_t *Array    = NULL;
+    size_t   Capacity = 1;
 
     if ( NULL == ReleaseFunc ) {
         DEBUG_PRINTF("%s", "NULL ReleaseFunc provided, defaulting to free().");
@@ -81,14 +88,19 @@ Array_t *Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t *ReleaseFunc) {
         return NULL;
     }
 
-    Array->Contents.ContentRefs = (void **)calloc(StartingCapacity, sizeof(void *));
+    /*
+        Ensure the capacity is aligned to a power of 2 boundary.
+    */
+    while ( Capacity <= StartingCapacity ) { Capacity <<= 1; }
+
+    Array->Contents.ContentRefs = (void **)calloc(Capacity, sizeof(void *));
     if ( NULL == Array->Contents.ContentRefs ) {
         DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t->Contents.");
         free(Array);
         return NULL;
     }
 
-    Array->Capacity    = StartingCapacity;
+    Array->Capacity    = Capacity;
     Array->ElementSize = 0;
     Array->Length      = 0;
     Array->ReleaseFunc = ReleaseFunc;
@@ -150,9 +162,7 @@ void Array_Release(Array_t *Array) {
         DEBUG_PRINTF("%s", "Array_t has NULL contents pointer, no contents to release.");
     }
 
-    if ( NULL != Array->Iterator ) {
-        Iterator_Invalidate(&(Array->Iterator));
-    }
+    Iterator_Invalidate(&(Array->Iterator));
 
     ZERO_CONTAINER(Array, Array_t);
     free(Array);

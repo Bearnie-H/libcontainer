@@ -63,7 +63,7 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
 
     while ( NewCap <= MinCap ) {
         if ( NewCap <= ARRAY_DOUBLING_THRESHOLD ) {
-            NewCap *= 2;
+            NewCap <<= 1;
         } else {
             NewCap += ARRAY_DOUBLING_THRESHOLD;
         }
@@ -78,7 +78,8 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
     Array->Contents.ContentBytes = Temp;
     Array->Capacity              = NewCap;
 
-    DEBUG_PRINTF("Successfully increased Array_t capacity to [ %ld ]", (unsigned long)NewCap);
+    DEBUG_PRINTF("Successfully increased Array_t capacity to [ %ld ]",
+                 (unsigned long)Array->Capacity);
     return 0;
 }
 

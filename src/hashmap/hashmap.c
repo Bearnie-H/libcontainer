@@ -40,6 +40,7 @@ Hashmap_t *Hashmap_Create(HashFunc_t *HashFunc, size_t KeySize, ReleaseFunc_t *K
     if ( NULL == HashFunc ) {
         DEBUG_PRINTF("%s", "Note: NULL HashFunc provided, defaulting to HashFunc_String.");
         HashFunc = HashFunc_String;
+        KeySize  = 0;
     } else if ( HashFunc_Int == HashFunc ) {
         KeySize = sizeof(int);
     } else if ( HashFunc_Long == HashFunc ) {
@@ -259,8 +260,8 @@ void *Hashmap_Pop(Hashmap_t *Map, const void *Key, size_t KeySize) {
         Entry = (Hashmap_Entry_t *)Node->Contents.ContentRaw;
         if ( Entry->HashValue == HashValue ) {
             if ( 0 == memcmp(Key, Entry->Key, Entry->KeySize) ) {
-                Entry->ValueSize = 0;
-                Value            = Entry->Value.ValueRaw;
+                Entry->ValueReleaseFunc = NULL;
+                Value                   = Entry->Value.ValueRaw;
                 List_removeNode(Bucket, Node);
                 Map->ItemCount -= 1;
                 return Value;

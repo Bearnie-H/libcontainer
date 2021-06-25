@@ -53,30 +53,31 @@ int Iterator_Initialize_Binary_Tree(Binary_Tree_t *Tree, Binary_Tree_Direction_t
 
     Node = Tree->Root;
     switch ( Direction ) {
-    case Direction_InOrder:
-        if ( Forward ) {
-            for ( ; NULL != Node->LeftChild; Node = Node->LeftChild ) { ; }
-        } else {
-            for ( ; NULL != Node->RightChild; Node = Node->RightChild ) { ; }
-        }
-        break;
-    case Direction_PreOrder:
-        if ( !Forward ) {
-            for ( ; NULL != Node->RightChild; Node = Node->RightChild ) { ; }
-        }
-        break;
-    case Direction_PostOrder:
-        if ( Forward ) {
-            Node = Binary_Tree_leftmostLeaf(Tree->Root);
-            if ( NULL == Node ) {
-                DEBUG_PRINTF(
-                    "%s", "Error: Failed to find Left-most leaf of Binary Tree to start Iterator.");
-                free(Iterator);
-                return 1;
+        case Direction_InOrder:
+            if ( Forward ) {
+                for ( ; NULL != Node->LeftChild; Node = Node->LeftChild ) { ; }
+            } else {
+                for ( ; NULL != Node->RightChild; Node = Node->RightChild ) { ; }
             }
-        }
-        break;
-    default: DEBUG_PRINTF("%s", "Error: Unknown traversal direction specified."); return 1;
+            break;
+        case Direction_PreOrder:
+            if ( !Forward ) {
+                for ( ; NULL != Node->RightChild; Node = Node->RightChild ) { ; }
+            }
+            break;
+        case Direction_PostOrder:
+            if ( Forward ) {
+                Node = Binary_Tree_leftmostLeaf(Tree->Root);
+                if ( NULL == Node ) {
+                    DEBUG_PRINTF(
+                        "%s",
+                        "Error: Failed to find Left-most leaf of Binary Tree to start Iterator.");
+                    free(Iterator);
+                    return 1;
+                }
+            }
+            break;
+        default: DEBUG_PRINTF("%s", "Error: Unknown traversal direction specified."); return 1;
     }
 
     Iterator->Context        = Node;
@@ -114,12 +115,12 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Next(Binary_Tree_t *         Tree,
     Current = (Binary_Tree_Node_t *)Tree->Iterator->Context;
 
     switch ( Direction ) {
-    case Direction_InOrder: Current = Binary_Tree_inOrderNext(Current); break;
-    case Direction_PreOrder: Current = Binary_Tree_preOrderNext(Current); break;
-    case Direction_PostOrder: Current = Binary_Tree_postOrderNext(Current); break;
-    default:
-        DEBUG_PRINTF("%s", "Error: Unknown Tree traversal direction specified.");
-        return KeyValuePair;
+        case Direction_InOrder: Current = Binary_Tree_inOrderNext(Current); break;
+        case Direction_PreOrder: Current = Binary_Tree_preOrderNext(Current); break;
+        case Direction_PostOrder: Current = Binary_Tree_postOrderNext(Current); break;
+        default:
+            DEBUG_PRINTF("%s", "Error: Unknown Tree traversal direction specified.");
+            return KeyValuePair;
     }
 
     if ( NULL == Current ) {
@@ -161,12 +162,12 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t *         Tree,
     Current = (Binary_Tree_Node_t *)Tree->Iterator->Context;
 
     switch ( Direction ) {
-    case Direction_InOrder: Current = Binary_Tree_inOrderPrevious(Current); break;
-    case Direction_PreOrder: Current = Binary_Tree_preOrderPrevious(Current); break;
-    case Direction_PostOrder: Current = Binary_Tree_postOrderPrevious(Current); break;
-    default:
-        DEBUG_PRINTF("%s", "Error: Unknown Tree traversal direction specified.");
-        return KeyValuePair;
+        case Direction_InOrder: Current = Binary_Tree_inOrderPrevious(Current); break;
+        case Direction_PreOrder: Current = Binary_Tree_preOrderPrevious(Current); break;
+        case Direction_PostOrder: Current = Binary_Tree_postOrderPrevious(Current); break;
+        default:
+            DEBUG_PRINTF("%s", "Error: Unknown Tree traversal direction specified.");
+            return KeyValuePair;
     }
 
     if ( NULL == Current ) {
