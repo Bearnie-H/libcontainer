@@ -70,12 +70,6 @@ static void PrintBinaryTree(const Binary_Tree_Node_t *Root) {
 
 */
 
-static CompareFunc_t CompareFunc_Int;
-
-static int CompareFunc_Int(const void *A, const void *B, __attribute__((unused)) size_t Size) {
-    return (*(const int *)A - *(const int *)B);
-}
-
 static int PrintBinaryTreeCallback(void *KeyValuePair) {
 
     Binary_Tree_KeyValuePair_t Pair;

@@ -628,6 +628,57 @@ long Libcontainer_Build_Time(void);
 
 /* ----- General Library Version Functions ----- */
 
+/* ++++++++++ Default CompareFunc Implementations ++++++++++ */
+
+/*
+    CompareFunc_Int
+
+    This function is a suitable comparison function for "int" types where this library
+    uses a CompareFunc_t. This function is guaranteed to work in the expected ordering
+    for all containers and uses which rely on a CompareFunc_t.
+
+    Inputs:
+    A       -   Pointer to the first item to compare.
+    B       -   Pointer to the second item to compare.
+    Size    -   (unused) The size of each item, in bytes.
+
+    Outputs:
+    int     -   Returns postive if A > B, 0 if A == B, and negative if A < B.
+
+    Note:
+    A suitable comparison function must follow this return interpretation to be useful.
+    See the implementations for these functions, as well as the documentation for strncmp()
+    and memcmp() for additional information about these kinds of comparison functions.
+*/
+CompareFunc_t CompareFunc_Int;
+
+/*
+    CompareFunc_String
+
+    This function is a suitable comparison function for "char*" types where this library
+    uses a CompareFunc_t. This function is guaranteed to work in the expected ordering
+    for all containers and uses which rely on a CompareFunc_t. If the Size parameter
+    is non-zero, this can be used for non NUL-terminated strings. If a Size of 0 is
+    given, this will use strlen() to compute the size of the strings, and this may not
+    be valid for non NUL-terminated strings.
+
+    Inputs:
+    A       -   Pointer to the first item to compare.
+    B       -   Pointer to the second item to compare.
+    Size    -   The size of the strings, or at least the smaller string.
+
+    Outputs:
+    int     -   Returns postive if A > B, 0 if A == B, and negative if A < B.
+
+    Note:
+    A suitable comparison function must follow this return interpretation to be useful.
+    See the implementations for these functions, as well as the documentation for strncmp()
+    and memcmp() for additional information about these kinds of comparison functions.
+*/
+CompareFunc_t CompareFunc_String;
+
+/* ---------- Default CompareFunc Implementations ---------- */
+
 #ifdef LIBCONTAINER_ENABLE_ARRAY
 /* ++++++++++ Public Array_t Functions ++++++++++ */
 
@@ -2112,7 +2163,7 @@ void Binary_Tree_Release(Binary_Tree_t* Tree);
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_SET
-/* ++++++++++ Public Set_t Typedefs ++++++++++ */
+/* ++++++++++ Public Set_t Functions ++++++++++ */
 
 /*
     Set_Create
@@ -2292,7 +2343,7 @@ int Set_Clear(Set_t* Set);
 */
 void Set_Release(Set_t* Set);
 
-/* ---------- Public Set_t Typedefs ---------- */
+/* ---------- Public Set_t Functions ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_STACK

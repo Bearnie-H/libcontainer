@@ -28,12 +28,6 @@
 #include "../logging/logging.h"
 #include "include/set.h"
 
-static CompareFunc_t CompareFunc_Int;
-
-static int CompareFunc_Int(const void *A, const void *B, __attribute__((unused)) size_t Size) {
-    return (*(const int *)A - *(const int *)B);
-}
-
 static CallbackFunc_t    CallbackFunc_Int;
 static CallbackArgFunc_t CallbackArgFunc_Int;
 

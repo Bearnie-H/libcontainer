@@ -25,6 +25,7 @@
 #define LIBCONTAINER_ENABLE_ALL
 
 #include "../include/libcontainer.h"
+#include "CompareFunc/include/CompareFunc.h"
 #include "array/include/array.h"
 #include "hashmap/include/hashmap.h"
 #include "list/include/list.h"
@@ -53,6 +54,7 @@ int Test_main(void) {
     FailedTests += Test_stack();
     FailedTests += Test_string();
     FailedTests += Test_set();
+    FailedTests += Test_CompareFunc();
 
     /* Returning non-zero indicates to the Makefile during make to abort.
         This lets failing tests block further builds with the "all" target
