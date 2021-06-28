@@ -122,6 +122,23 @@ static int PrintBinaryTreeCallbackArgs(void *KeyValuePair, void *Args) {
     return 0;
 }
 
+static int Binary_Tree_Validate_Parents(Binary_Tree_Node_t *Root) {
+
+    if ( NULL == Root ) {
+        return 0;
+    }
+
+    if ( NULL != Root->Parent ) {
+        if ( (Root != Root->Parent->LeftChild) && (Root != Root->Parent->RightChild) ) {
+            TEST_PRINTF("%s", "Error: Node* is not a child of its parent!");
+            return 1 + Binary_Tree_Validate_Parents(Root->LeftChild) +
+                   Binary_Tree_Validate_Parents(Root->RightChild);
+        }
+    }
+
+    return 0;
+}
+
 int Test_binary_tree(void) {
 
     int FailedTests = 0;
@@ -170,7 +187,7 @@ int Test_Binary_Tree_Insert() {
         TEST_FAILURE;
     }
 
-    for ( i = Count; i > 0; i-- ) {
+    for ( i = 0; i < Count; i++ ) {
 
         Key   = (int)i;
         Value = rand() % Modulo;
@@ -179,6 +196,13 @@ int Test_Binary_Tree_Insert() {
             TEST_PRINTF(
                 "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
                 Key, Value, (unsigned long)i);
+            Binary_Tree_Release(Tree);
+            TEST_FAILURE;
+        }
+
+        if ( 0 != Binary_Tree_Validate_Parents(Tree->Root) ) {
+            TEST_PRINTF("Error: [ %d/%d ] Nodes within Tree are not the child of their parent.",
+                        Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
@@ -213,6 +237,13 @@ int Test_Binary_Tree_Get() {
             TEST_PRINTF(
                 "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
                 Key, Value, (unsigned long)i);
+            Binary_Tree_Release(Tree);
+            TEST_FAILURE;
+        }
+
+        if ( 0 != Binary_Tree_Validate_Parents(Tree->Root) ) {
+            TEST_PRINTF("Error: [ %d/%d ] Nodes within Tree are not the child of their parent.",
+                        Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
@@ -267,6 +298,13 @@ int Test_Binary_Tree_Pop() {
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
+
+        if ( 0 != Binary_Tree_Validate_Parents(Tree->Root) ) {
+            TEST_PRINTF("Error: [ %d/%d ] Nodes within Tree are not the child of their parent.",
+                        Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
+            Binary_Tree_Release(Tree);
+            TEST_FAILURE;
+        }
     }
 
     while ( 0 != Binary_Tree_Length(Tree) ) {
@@ -278,8 +316,10 @@ int Test_Binary_Tree_Pop() {
         Value = Key * 2;
 
         KeyValuePair = Binary_Tree_Pop(Tree, &Key, sizeof(Key));
-        if ( NULL == KeyValuePair.Value ) {
-            TEST_PRINTF("Test Failure - Failed to get item with Key [ %d ] from Tree.", Key);
+
+        if ( 0 != Binary_Tree_Validate_Parents(Tree->Root) ) {
+            TEST_PRINTF("Error: [ %d/%d ] Nodes within Tree are not the child of their parent.",
+                        Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
@@ -293,8 +333,10 @@ int Test_Binary_Tree_Pop() {
             free(KeyValuePair.Value);
             TEST_FAILURE;
         }
+
         free(KeyValuePair.Key);
         free(KeyValuePair.Value);
+        memset(&KeyValuePair, 0x00, sizeof(KeyValuePair));
     }
 
     if ( NULL != Tree->Root ) {
@@ -331,6 +373,13 @@ int Test_Binary_Tree_DoCallback() {
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
+
+        if ( 0 != Binary_Tree_Validate_Parents(Tree->Root) ) {
+            TEST_PRINTF("Error: [ %d/%d ] Nodes within Tree are not the child of their parent.",
+                        Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
+            Binary_Tree_Release(Tree);
+            TEST_FAILURE;
+        }
     }
 
     if ( 0 != Binary_Tree_DoCallback(Tree, Direction_InOrder, PrintBinaryTreeCallback) ) {
@@ -364,6 +413,13 @@ int Test_Binary_Tree_DoCallbackArg() {
             TEST_PRINTF(
                 "Test Failure - Failed to insert Key (%d) Value (%d) pair into Tree (item #%lu).",
                 Key, Value, (unsigned long)i);
+            Binary_Tree_Release(Tree);
+            TEST_FAILURE;
+        }
+
+        if ( 0 != Binary_Tree_Validate_Parents(Tree->Root) ) {
+            TEST_PRINTF("Error: [ %d/%d ] Nodes within Tree are not the child of their parent.",
+                        Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
@@ -404,6 +460,13 @@ int Test_Binary_Tree_Remove() {
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
+
+        if ( 0 != Binary_Tree_Validate_Parents(Tree->Root) ) {
+            TEST_PRINTF("Error: [ %d/%d ] Nodes within Tree are not the child of their parent.",
+                        Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
+            Binary_Tree_Release(Tree);
+            TEST_FAILURE;
+        }
     }
 
     while ( 0 != Binary_Tree_Length(Tree) ) {
@@ -415,6 +478,13 @@ int Test_Binary_Tree_Remove() {
 
         if ( 0 != Binary_Tree_Remove(Tree, &Key, sizeof(Key)) ) {
             TEST_PRINTF("Test Failure - Failed to remove item with Key [ %d ] from Tree.", Key);
+            Binary_Tree_Release(Tree);
+            TEST_FAILURE;
+        }
+
+        if ( 0 != Binary_Tree_Validate_Parents(Tree->Root) ) {
+            TEST_PRINTF("Error: [ %d/%d ] Nodes within Tree are not the child of their parent.",
+                        Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
         }
@@ -485,6 +555,14 @@ int Test_Binary_Tree_Balancing() {
                 TEST_FAILURE;
             }
         }
+
+        if ( 0 != Binary_Tree_Validate_Parents(Tree->Root) ) {
+            TEST_PRINTF("Error: [ %d/%d ] Nodes within Tree are not the child of their parent.",
+                        Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
+            Binary_Tree_Release(Tree);
+            TEST_FAILURE;
+        }
+
         if ( !Binary_Tree_isAVLTree(Tree->Root) ) {
             TEST_PRINTF("%s", "Test Failure - Tree failed to satisfy AVL criteria.");
             Binary_Tree_Release(Tree);

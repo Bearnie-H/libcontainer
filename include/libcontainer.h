@@ -54,6 +54,7 @@ extern "C" {
 #define LIBCONTAINER_ENABLE_LIST
 #define LIBCONTAINER_ENABLE_HASHMAP
 #define LIBCONTAINER_ENABLE_BINARY_TREE
+#define LIBCONTAINER_ENABLE_SET
 #define LIBCONTAINER_ENABLE_STACK
 #define LIBCONTAINER_ENABLE_STRING
 #endif
@@ -138,6 +139,23 @@ extern "C" {
     Direction   -   The forward iteration direction to traverse the tree in.
 */
 #define BINARY_TREE_FOREACH(List, KeyValuePair, Direction) for ((KeyValuePair) = Binary_Tree_Next((Tree), (Direction)); (NULL != (KeyValuePair).Value); (KeyValuePair) = Binary_Tree_Next((Tree), (Direction)))
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_SET
+
+/*
+    SET_FOREACH
+
+    This macro defines the idiomatic method to iterate over a Set_t container.
+    This will initialize iteration, and return each "next" value to the body of the
+    for loop. At the end of this FOREACH loop, the Value will be NULL, and the iterator
+    will be reset.
+
+    Inputs:
+    Set     -   Pointer to the Set_t to iterate over.
+    Value   -   Pointer with a type matching that of the items within the Set_t.
+*/
+#define SET_FOREACH(Set, Value) for ((Value) = Set_Next(Set); (NULL != (Value)); (Value) = Set_Next(Set))
 #endif
 
 /* ---------- Exported Library Macros ---------- */
@@ -296,12 +314,6 @@ typedef struct Hashmap_KeyValuePair_t {
     Note, This API may change in the future to allow choosing a policy for
     handling duplicate items.
 
-    Currently, this container can ONLY operate with keys of type "int".
-    This may change in the future to allow arbitrary Key types with a
-    provided comparison function, leaving it up to the user to ensure
-    a Key type which defines a total pre-order over the set of possible
-    values.
-
     This struct is opaque to ensure all accesses are performed
     through the functions provided in this library to ensure
     safe access and operation.
@@ -371,6 +383,34 @@ typedef struct Binary_Tree_KeyValuePair_t {
 } Binary_Tree_KeyValuePair_t;
 
 /* --------- Public Binary_Tree_t Typedefs --------- */
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_SET
+/* ++++++++++ Public Set_t Typedefs ++++++++++ */
+
+/*
+    Set_t
+
+    A Set_t is a generic container which contains unique items.
+    This acts similarly to the C++ std::ordered_set, and provides
+    an API for adding, removing, and iterating over the collection
+    of ordered, unique items.
+
+    All items within a single Set_t must be homogeneous in type,
+    but not necessarily in size. For example, a Set_t can contain
+    char* strings of differing size, or some constant-size type
+    like a struct or integral type.
+
+    This struct is opaque to ensure all accesses are performed
+    through the functions provided in this library to ensure
+    safe access and operation.
+
+    See the functions prefixed with "Set_" for the available operations
+    on this container.
+*/
+typedef struct Set_t Set_t;
+
+/* ---------- Public Set_t Typedefs ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_STACK
@@ -2069,6 +2109,190 @@ int Binary_Tree_Clear(Binary_Tree_t* Tree);
 void Binary_Tree_Release(Binary_Tree_t* Tree);
 
 /* --------- Public Binary_Tree_t Functions --------- */
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_SET
+/* ++++++++++ Public Set_t Typedefs ++++++++++ */
+
+/*
+    Set_Create
+
+    This function will create and initialize a new Set_t, preparing it to
+    be used.
+
+    Inputs:
+    CompareFunc -   Pointer to the function to use to compare different values within
+                        the Set_t, to provide the uniqueness and ordering guarantees.
+                        if NULL, this will default to memcmp(). See the documentation
+                        for CompareFunc_t for more information on creating a function to satisfy
+                        this type.
+    ValueSize   -   The size of the values to be added to the Set_t. Pass 0
+                        if the values are pointer-types. This value, if non-zero,
+                        will be cached for use with the rest of the Set_t API functions.
+    ReleaseFunc -   Pointer to the function to call to release a Value from the Set_t.
+                        If NULL, this will default to free().
+
+    Outputs:
+    Set_t*  -   Pointer to a created and initialized Set_t on success, NULL on failure.
+*/
+Set_t* Set_Create(CompareFunc_t* CompareFunc, size_t ValueSize, ReleaseFunc_t* ReleaseFunc);
+
+/*
+    Set_Length
+
+    This function returns the number of items contained within the Set_t.
+
+    Inputs:
+    Set     -   Pointer to the Set_t to operate on.
+
+    Outputs:
+    size_t  -   The number of items contained within the Set_t.
+
+    Note:
+    This function also reports 0 for a NULL Set_t.
+*/
+size_t Set_Length(Set_t* Set);
+
+/*
+    Set_Insert
+
+    This function attempts to add the given Value to the Set_t. This will fail if the item
+    already exists in the Set.
+
+    Inputs:
+    Set         -   Pointer to the Set_t to operate on.
+    Value       -   Pointer to the Value to <> to the Set_t.
+    ValueSize   -   The size of the Value, in bytes.
+
+    Outputs:
+    int     -   Returns 0 on success, positive on error, negative if the item already exists.
+*/
+int Set_Insert(Set_t* Set, void* Value, size_t ValueSize);
+
+/*
+    Set_ValueExists
+
+    This function checks if a given Value exists within the Set_t.
+
+    Inputs:
+    Set         -   Pointer to the Set_t to operate on.
+    Value       -   Pointer to the Value to <> to the Set_t.
+    ValueSize   -   The size of the Value, in bytes.
+
+    Outputs:
+    bool    -   True if the item exists, false if the item doesn't exist.
+
+    Note:
+    This also returns false if given a NULL Set_t.
+*/
+bool Set_ValueExists(Set_t* Set, void* Value, size_t ValueSize);
+
+/*
+    Set_Next
+
+    This function returns the "Next" value from the Set_t. The ordering
+    depends on the ordering implied by the CompareFunc_t given when
+    the container was initialized.
+
+    Inputs:
+    Set     -   Pointer to the Set_t to operate on.
+
+    Outputs:
+    void*   -   Pointer to the Next item from the container on success,
+                    NULL on error, or when iteration finished.
+
+    Note:
+    The Set_t container provides a SORTED iterator over the items it contains.
+    The exact ordering depends on the order defined by the comparison function
+    the Set_t uses. For integral types, this is generally ascending order,
+    and for char* (C-String) types, this is lexicographic order.
+
+    Any ordering is possible, you simply have to specify a comparison function
+    which defines that ordering over the Value type.
+*/
+void* Set_Next(Set_t* Set);
+
+/*
+    Set_DoCallback
+
+    This function performs a Callback function on each item within the container,
+    in sorted order. This provides a more compact mechanism than directly using the
+    *_Next() function.
+
+    Inputs:
+    Set     -   Pointer to the Set_t to operate on.
+
+    Outputs:
+    int     -   Returns the count of how many Callback calls returned non-zero.
+                    For a compliant CallbackFunc_t*, this should be 0 on success.
+*/
+int Set_DoCallback(Set_t* Set, CallbackFunc_t* Callback);
+
+/*
+    Set_DoCallbackArgs
+
+    This function performs a Callback function on each item within the container,
+    in sorted order. This provides a more compact mechanism than directly using the
+    *_Next() function. This function extends the behaviour of Set_DoCallback()
+    to allow providing an additional void* of arbitrary arguments to the Callback function.
+    See the documentation for pthread_create() for an example of a similarly
+    themed function.
+
+    Inputs:
+    Set     -   Pointer to the Set_t to operate on.
+
+    Outputs:
+    int     -   Returns the count of how many Callback calls returned non-zero.
+                    For a compliant CallbackArgFunc_t*, this should be 0 on success.
+*/
+int Set_DoCallbackArgs(Set_t* Set, CallbackArgFunc_t* Callback, void* Args);
+
+/*
+    Set_Remove
+
+    This function removes the given Value from the Set_t, if it exists.
+    If the Value does not exist within the Set_t, this call does nothing.
+
+    Inputs:
+    Set         -   Pointer to the Set_t to operate on.
+    Value       -   Pointer to the Value to <> to the Set_t.
+    ValueSize   -   The size of the Value, in bytes.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Set_Remove(Set_t* Set, void* Value, size_t ValueSize);
+
+/*
+    Set_Clear
+
+    This function removes ALL items from the Set_t, while maintaining
+    ownership of the Set_t. This is a looser function than Set_Release(),
+    in that the Set_t is still valid for use after a call to Clear().
+
+    Inputs:
+    Set     -   Pointer to the Set_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Set_Clear(Set_t* Set);
+
+/*
+    Set_Release
+
+    This function fully releases a Set_t and all held items. Once passed
+    to this function, the given Set_t is no longer valid for use.
+
+    Inputs:
+    Set     -   Pointer to the Set_t to operate on.
+
+    Outputs:
+    None, the Set_t and all held contents are fully and completely released.
+*/
+void Set_Release(Set_t* Set);
+
+/* ---------- Public Set_t Typedefs ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_STACK

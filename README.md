@@ -107,6 +107,7 @@ Currently, this library provides the following containers for use:
 | `Binary_Tree_t` | `LIBCONTAINER_ENABLE_BINARY_TREE` | Self-balancing binary search tree of key-value pairs |
 | `Stack_t`       | `LIBCONTAINER_ENABLE_STACK`       | LIFO (Last-In-First-Out), single-item access         |
 | `String_t`      | `LIBCONTAINER_ENABLE_STRING`      | Richer, safe, dynamically growable String type       |
+| `Set_t`         | `LIBCONTAINER_ENABLE_SET`         | Container of explicitly unique keys                  |
 
 The internal implementations of these containers should not be a concern for their use. For example,
 currently the Binary_Tree_t implementation is based on an [AVL Tree](https://en.wikipedia.org/wiki/AVL_tree),
@@ -122,8 +123,7 @@ In addition to the set of containers listed in the section above, there are plan
 implement the following additional containers:
 | Container | Enable Macro | Description |
 | :--- | :--- | :--- |
-| `Set_t`            | `LIBCONTAINER_ENABLE_SET`            | Container of explicitly unique keys                    |
-| `Binary_Heap_t`    | `LIBCONTAINER_ENABLE_BINARY_HEAP`    | Generic Binary heap |
+| `Binary_Heap_t`    | `LIBCONTAINER_ENABLE_BINARY_HEAP`    | Generic Binary heap                                    |
 | `Queue_t`          | `LIBCONTAINER_ENABLE_QUEUE`          | FIFO (First-In First-Out) item access                  |
 | `Priority_Queue_t` | `LIBCONTAINER_ENABLE_PRIORITY_QUEUE` | Priority-ordered FIFO (First-In First-Out) item access |
 

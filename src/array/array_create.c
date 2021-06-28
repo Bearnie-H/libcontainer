@@ -32,7 +32,7 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
     size_t   Capacity = 1;
 
     if ( 0 == ElementSize ) {
-        DEBUG_PRINTF("Error, invalid ElementSize [ %ld ].", (unsigned long)ElementSize);
+        DEBUG_PRINTF("Error, invalid ElementSize [ %lu ].", (unsigned long)ElementSize);
         return NULL;
     }
 

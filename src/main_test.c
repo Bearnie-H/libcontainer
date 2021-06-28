@@ -28,6 +28,7 @@
 #include "array/include/array.h"
 #include "hashmap/include/hashmap.h"
 #include "list/include/list.h"
+#include "set/include/set.h"
 #include "stack/include/stack.h"
 #include "string/include/string.h"
 #include "tree/binary-tree/include/binary_tree.h"
@@ -51,6 +52,7 @@ int Test_main(void) {
     FailedTests += Test_binary_tree();
     FailedTests += Test_stack();
     FailedTests += Test_string();
+    FailedTests += Test_set();
 
     /* Returning non-zero indicates to the Makefile during make to abort.
         This lets failing tests block further builds with the "all" target

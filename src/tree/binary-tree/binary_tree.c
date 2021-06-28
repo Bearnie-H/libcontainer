@@ -96,7 +96,7 @@ int Binary_Tree_Insert(Binary_Tree_t *Tree, void *Key, size_t KeySize, void *Val
     if ( 0 == KeySize ) {
         if ( 0 != Tree->KeySize ) {
             DEBUG_PRINTF("Note: KeySize of 0 provided, using cached value from tree initialization "
-                         "of [ %ld ].",
+                         "of [ %lu ].",
                          (unsigned long)Tree->KeySize);
             KeySize = Tree->KeySize;
         } else {
@@ -162,7 +162,7 @@ bool Binary_Tree_KeyExists(Binary_Tree_t *Tree, void *Key, size_t KeySize) {
     }
 
     if ( (0 == KeySize) && (0 != Tree->KeySize) ) {
-        DEBUG_PRINTF("Note: Using cached KeySize of [ %ld ].", (unsigned long)Tree->KeySize);
+        DEBUG_PRINTF("Note: Using cached KeySize of [ %lu ].", (unsigned long)Tree->KeySize);
         KeySize = Tree->KeySize;
     }
 
@@ -185,7 +185,7 @@ void *Binary_Tree_Get(Binary_Tree_t *Tree, void *Key, size_t KeySize) {
     }
 
     if ( (0 == KeySize) && (0 != Tree->KeySize) ) {
-        DEBUG_PRINTF("Note: Using cached KeySize of [ %ld ].", (unsigned long)Tree->KeySize);
+        DEBUG_PRINTF("Note: Using cached KeySize of [ %lu ].", (unsigned long)Tree->KeySize);
         KeySize = Tree->KeySize;
     }
 
@@ -210,7 +210,7 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Pop(Binary_Tree_t *Tree, void *Key, size_
     }
 
     if ( (0 == KeySize) && (0 != Tree->KeySize) ) {
-        DEBUG_PRINTF("Note: Using cached KeySize of [ %ld ].", (unsigned long)Tree->KeySize);
+        DEBUG_PRINTF("Note: Using cached KeySize of [ %lu ].", (unsigned long)Tree->KeySize);
         KeySize = Tree->KeySize;
     }
 
@@ -224,8 +224,8 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Pop(Binary_Tree_t *Tree, void *Key, size_
 
     KeyValuePair.Key       = Node->Key.KeyRaw;
     KeyValuePair.Value     = Node->Value.ValueRaw;
-    Node->ValueReleaseFunc = NULL;
     Node->KeyReleaseFunc   = NULL;
+    Node->ValueReleaseFunc = NULL;
 
     Tree->Root = Binary_Tree_removeNode(Tree->Root, Key, KeySize, Tree->KeyCompareFunc);
 
@@ -244,7 +244,7 @@ int Binary_Tree_Remove(Binary_Tree_t *Tree, void *Key, size_t KeySize) {
     }
 
     if ( (0 == KeySize) && (0 != Tree->KeySize) ) {
-        DEBUG_PRINTF("Note: Using cached KeySize of [ %ld ].", (unsigned long)Tree->KeySize);
+        DEBUG_PRINTF("Note: Using cached KeySize of [ %lu ].", (unsigned long)Tree->KeySize);
         KeySize = Tree->KeySize;
     }
 
@@ -480,6 +480,7 @@ Binary_Tree_Node_t *Binary_Tree_removeNode(Binary_Tree_Node_t *Root, void *Key, 
                 }
             }
             Root->LeftChild = NULL;
+            Root->Parent    = NULL;
             Binary_Tree_Node_Release(Root);
             Root = Child;
         } else if ( (NULL == Root->LeftChild) && (NULL != Root->RightChild) ) {
@@ -499,6 +500,7 @@ Binary_Tree_Node_t *Binary_Tree_removeNode(Binary_Tree_Node_t *Root, void *Key, 
                 }
             }
             Root->RightChild = NULL;
+            Root->Parent     = NULL;
             Binary_Tree_Node_Release(Root);
             Root = Child;
         } else {

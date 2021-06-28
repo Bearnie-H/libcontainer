@@ -119,7 +119,7 @@ int Test_Binary_Tree_Iterate_Next_InOrder(void) {
     }
 
     if ( i != ItemCount ) {
-        TEST_PRINTF("Test Failure - Iteration did not pass by all expected items (Count = %ld).",
+        TEST_PRINTF("Test Failure - Iteration did not pass by all expected items (Count = %lu).",
                     (unsigned long)i);
         Binary_Tree_Release(Tree);
         TEST_FAILURE;
@@ -164,7 +164,7 @@ int Test_Binary_Tree_Iterate_Next_PreOrder(void) {
     }
 
     if ( i != ItemCount ) {
-        TEST_PRINTF("Test Failure - Iteration did not pass by all expected items (Count = %ld).",
+        TEST_PRINTF("Test Failure - Iteration did not pass by all expected items (Count = %lu).",
                     (unsigned long)i);
         Binary_Tree_Release(Tree);
         TEST_FAILURE;
@@ -209,7 +209,7 @@ int Test_Binary_Tree_Iterate_Next_PostOrder(void) {
     }
 
     if ( i != ItemCount ) {
-        TEST_PRINTF("Test Failure - Iteration did not pass by all expected items (Count = %ld).",
+        TEST_PRINTF("Test Failure - Iteration did not pass by all expected items (Count = %lu).",
                     (unsigned long)i);
         Binary_Tree_Release(Tree);
         TEST_FAILURE;

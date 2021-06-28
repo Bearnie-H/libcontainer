@@ -44,8 +44,8 @@ int Test_Array_Grow(void) {
     }
 
     if ( Array->Capacity < DesiredCapacity ) {
-        TEST_PRINTF("Test Failure - Actual Array_t Capacity (%ld) is not large "
-                    "enough to hold desired extra length (%ld).",
+        TEST_PRINTF("Test Failure - Actual Array_t Capacity (%lu) is not large "
+                    "enough to hold desired extra length (%lu).",
                     (unsigned long)Array->Capacity,
                     (unsigned long)(InitialCapacity + DesiredCapacity));
         Array_Release(Array);

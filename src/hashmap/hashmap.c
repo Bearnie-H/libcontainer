@@ -71,7 +71,7 @@ Hashmap_t *Hashmap_Create(HashFunc_t *HashFunc, size_t KeySize, ReleaseFunc_t *K
     for ( BucketIndex = 0; BucketIndex < LIBCONTAINER_HASHMAP_DEFAULT_CAPACITY; BucketIndex++ ) {
         NewList = List_Create();
         if ( 0 != Array_Append(Map->Buckets, &NewList) ) {
-            DEBUG_PRINTF("Error: Failed to initialize Map bucket [ %ld ].",
+            DEBUG_PRINTF("Error: Failed to initialize Map bucket [ %lu ].",
                          (unsigned long)BucketIndex);
             Hashmap_Release(Map);
             return NULL;
@@ -117,7 +117,7 @@ int Hashmap_Insert(Hashmap_t *Map, void *Key, void *Value, size_t KeySize, size_
 
     if ( 0 != Map->KeySize ) {
         if ( (0 != KeySize) && (KeySize != Map->KeySize) ) {
-            DEBUG_PRINTF("Error: Unexpected KeySize. Expected (%ld), got (%ld).",
+            DEBUG_PRINTF("Error: Unexpected KeySize. Expected (%lu), got (%lu).",
                          (unsigned long)Map->KeySize, (unsigned long)KeySize);
             return 1;
         }

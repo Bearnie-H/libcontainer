@@ -111,7 +111,7 @@ unsigned int HashFunc_String(const void *Key, size_t KeySize) {
         KeySize = strlen(KeyValue);
     }
 
-    for ( Index = 0; Index < KeySize; Index++ ) {
+    for ( Index = 0; (Index < KeySize) && (KeyValue[Index]); Index++ ) {
         HashValue = (HashValue << 5) + HashValue + (unsigned int)KeyValue[Index];
     }
 

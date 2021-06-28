@@ -78,7 +78,7 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
     Array->Contents.ContentBytes = Temp;
     Array->Capacity              = NewCap;
 
-    DEBUG_PRINTF("Successfully increased Array_t capacity to [ %ld ]",
+    DEBUG_PRINTF("Successfully increased Array_t capacity to [ %lu ]",
                  (unsigned long)Array->Capacity);
     return 0;
 }

@@ -41,7 +41,7 @@ static void PrintHashmapBucketUtilization(Hashmap_t *Map) {
     BucketCount = Array_Length(Map->Buckets);
     for (i = 0; i < BucketCount; i++) {
         Bucket = (List_t *)Array_GetElement(Map->Buckets, i);
-        printf("%ld ", (unsigned long)List_Length(Bucket));
+        printf("%lu ", (unsigned long)List_Length(Bucket));
     }
     printf("]\n");
 
@@ -137,7 +137,7 @@ int Test_Hashmap_Insert_DoubleKey(void) {
     }
 
     if ( (size_t)Count != Hashmap_Length(Map) ) {
-        TEST_PRINTF("Test Failure - Hashmap Length (%ld) not equal to expected value (%d).",
+        TEST_PRINTF("Test Failure - Hashmap Length (%lu) not equal to expected value (%d).",
                     (unsigned long)Hashmap_Length(Map), 1);
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -215,7 +215,7 @@ int Test_Hashmap_Retrieve_DoubleKey(void) {
     }
 
     if ( (size_t)Count != Hashmap_Length(Map) ) {
-        TEST_PRINTF("Test Failure - Hashmap Length (%ld) not equal to expected value (%d).",
+        TEST_PRINTF("Test Failure - Hashmap Length (%lu) not equal to expected value (%d).",
                     (unsigned long)Hashmap_Length(Map), 1);
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -351,7 +351,7 @@ int Test_Hashmap_Pop_DoubleKey(void) {
     }
 
     if ( 0 != Hashmap_Length(Map) ) {
-        TEST_PRINTF("Test Failure - Hashmap Length (%ld) not equal to expectation (%d).",
+        TEST_PRINTF("Test Failure - Hashmap Length (%lu) not equal to expectation (%d).",
                     (unsigned long)Hashmap_Length(Map), 0);
         Hashmap_Release(Map);
         free(PoppedValue);
@@ -387,7 +387,7 @@ int Test_Hashmap_Clear_DoubleKey(void) {
     }
 
     if ( (size_t)Count != Hashmap_Length(Map) ) {
-        TEST_PRINTF("Test Failure - Hashmap Length (%ld) not equal to expected value (%d).",
+        TEST_PRINTF("Test Failure - Hashmap Length (%lu) not equal to expected value (%d).",
                     (unsigned long)Hashmap_Length(Map), 1);
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -448,7 +448,7 @@ int Test_Hashmap_Insert_StringKey(void) {
     }
 
     if ( (size_t)Count != Hashmap_Length(Map) ) {
-        TEST_PRINTF("Test Failure - Hashmap Length(%ld) not equal to expected value (%ld)",
+        TEST_PRINTF("Test Failure - Hashmap Length(%lu) not equal to expected value (%lu)",
                     (unsigned long)Hashmap_Length(Map), (unsigned long)Count);
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -657,7 +657,7 @@ int Test_Hashmap_Pop_StringKey(void) {
     }
 
     if ( 0 != Hashmap_Length(Map) ) {
-        TEST_PRINTF("Test Failure - Hashmap Length (%ld) not equal to expectation (%d).",
+        TEST_PRINTF("Test Failure - Hashmap Length (%lu) not equal to expectation (%d).",
                     (unsigned long)Hashmap_Length(Map), 0);
         Hashmap_Release(Map);
         free(PoppedValue);
@@ -694,7 +694,7 @@ int Test_Hashmap_Clear_StringKey(void) {
     }
 
     if ( (size_t)Count != Hashmap_Length(Map) ) {
-        TEST_PRINTF("Test Failure - Hashmap Length(%ld) not equal to expected value (%ld)",
+        TEST_PRINTF("Test Failure - Hashmap Length(%lu) not equal to expected value (%lu)",
                     (unsigned long)Hashmap_Length(Map), (unsigned long)Count);
         Hashmap_Release(Map);
         TEST_FAILURE;

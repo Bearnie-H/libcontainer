@@ -42,7 +42,7 @@ int Test_Hashmap_Keys_DoubleKey(void) {
 
     Hashmap_t *Map      = NULL;
     Array_t *  Keys     = NULL;
-    double     KeyValue = 3.1415, TempKey = 0.0;
+    double     KeyValue = 3.1415, TempKey = 0.0, *KeyArrayValue = NULL;
     int        Value = 0xBEEF, TempValue = 0, Count = 256, i = 0;
     size_t     KeyIndex = 0;
 
@@ -63,7 +63,7 @@ int Test_Hashmap_Keys_DoubleKey(void) {
     }
 
     if ( (size_t)Count != Hashmap_Length(Map) ) {
-        TEST_PRINTF("Test Failure - Hashmap Length (%ld) not equal to expected value (%d).",
+        TEST_PRINTF("Test Failure - Hashmap Length (%lu) not equal to expected value (%d).",
                     (unsigned long)Hashmap_Length(Map), 1);
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -77,7 +77,8 @@ int Test_Hashmap_Keys_DoubleKey(void) {
         TEST_FAILURE;
     }
 
-    for ( KeyIndex = 0; KeyIndex < Array_Length(Keys); KeyIndex++ ) {
+    KeyIndex = 0;
+    ARRAY_FOREACH(Keys, KeyArrayValue) {
         if ( !Hashmap_KeyExists(Map, Array_GetElement(Keys, KeyIndex), 0) ) {
             TEST_PRINTF("%s", "Test Failure - Key returned in Keys array, but does not report as "
                               "found in Hashmap.");
@@ -85,6 +86,15 @@ int Test_Hashmap_Keys_DoubleKey(void) {
             Array_Release(Keys);
             TEST_FAILURE;
         }
+        KeyIndex++;
+    }
+
+    if ( KeyIndex != Array_Length(Keys) ) {
+        TEST_PRINTF("Test Failure - Iteration did not reach all Keys (%lu/%lu).",
+                    (unsigned long)KeyIndex, (unsigned long)Array_Length(Keys));
+        Hashmap_Release(Map);
+        Array_Release(Keys);
+        TEST_FAILURE;
     }
 
     Hashmap_Release(Map);
@@ -96,7 +106,7 @@ int Test_Hashmap_Keys_StringKey(void) {
 
     Hashmap_t *Map          = NULL;
     Array_t *  Keys         = NULL;
-    char       KeyValue[16] = {0x00};
+    char       KeyValue[16] = {0x00}, *KeyArrayValue = NULL;
     int        Value = 0xBEEF, TempValue = 0, Count = 256, i = 0;
     size_t     KeyIndex = 0;
 
@@ -109,7 +119,7 @@ int Test_Hashmap_Keys_StringKey(void) {
     for ( i = 0; i < Count; i++ ) {
         snprintf(KeyValue, sizeof(KeyValue), "Key %d", i);
         TempValue = Value * i;
-        if ( 0 != Hashmap_Insert(Map, KeyValue, &TempValue, strlen(KeyValue), sizeof(TempValue),
+        if ( 0 != Hashmap_Insert(Map, KeyValue, &TempValue, 1 + strlen(KeyValue), sizeof(TempValue),
                                  NULL) ) {
             TEST_PRINTF("Test Failure - Failed to insert key (%s) and value (%d) to Hashmap",
                         KeyValue, TempValue);
@@ -119,7 +129,7 @@ int Test_Hashmap_Keys_StringKey(void) {
     }
 
     if ( (size_t)Count != Hashmap_Length(Map) ) {
-        TEST_PRINTF("Test Failure - Hashmap Length(%ld) not equal to expected value (%ld)",
+        TEST_PRINTF("Test Failure - Hashmap Length(%lu) not equal to expected value (%lu)",
                     (unsigned long)Hashmap_Length(Map), (unsigned long)Count);
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -133,14 +143,24 @@ int Test_Hashmap_Keys_StringKey(void) {
         TEST_FAILURE;
     }
 
-    for ( KeyIndex = 0; KeyIndex < Array_Length(Keys); KeyIndex++ ) {
-        if ( !Hashmap_KeyExists(Map, Array_GetElement(Keys, KeyIndex), 0) ) {
+    KeyIndex = 0;
+    ARRAY_FOREACH(Keys, KeyArrayValue) {
+        if ( !Hashmap_KeyExists(Map, KeyArrayValue, 0) ) {
             TEST_PRINTF("%s", "Test Failure - Key returned in Keys array, but does not report as "
                               "found in Hashmap.");
             Hashmap_Release(Map);
             Array_Release(Keys);
             TEST_FAILURE;
         }
+        KeyIndex++;
+    }
+
+    if ( KeyIndex != Array_Length(Keys) ) {
+        TEST_PRINTF("Test Failure - Iteration did not reach all Keys (%lu/%lu).",
+                    (unsigned long)KeyIndex, (unsigned long)Array_Length(Keys));
+        Hashmap_Release(Map);
+        Array_Release(Keys);
+        TEST_FAILURE;
     }
 
     Hashmap_Release(Map);

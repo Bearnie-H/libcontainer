@@ -83,7 +83,7 @@ TESTSUFFIX   := .out
 #    will only be built into the "test" and "debugger" targets.
 #   For something like a library, the "src" should be moved to the TESTCOMPONENTS
 #    to allow it to be used as driver code for running something like an internal test suite.
-COMPONENTS     := src/array src/list src/hashmap src/tree/binary-tree src/stack src/string src/version src/iterator
+COMPONENTS     := src/array src/list src/hashmap src/tree/binary-tree src/stack src/string src/version src/iterator src/set
 TESTCOMPONENTS := src
 
 #   Additional Libraries to include when building the final applications
