@@ -116,6 +116,12 @@ extern "C" {
 */
 #define HASHMAP_FOREACH(Hashmap, KeyValuePair) for ((KeyValuePair) = Hashmap_Next(Hashmap); ((NULL != (KeyValuePair).Key) && (NULL !=(KeyValuePair).Value)); (KeyValuePair) = Hashmap_Next(Hashmap))
 
+#define HASHMAP_SORTED_FOREACH(Hashmap, KeyValuePair, CompareFunc) \
+            for \
+            ((KeyValuePair) = Hashmap_SortedNext((Hashmap), (CompareFunc));\
+            ((NULL != (KeyValuePair).Key) && (NULL != (KeyValuePair).Value));\
+            (KeyValuePair) = Hashmap_SortedNext((Hashmap), NULL))
+
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_BINARY_TREE
@@ -319,20 +325,43 @@ typedef enum Binary_Tree_Direction_t {
 } Binary_Tree_Direction_t;
 
 /*
+    Binary_Tree_DuplicatePolicy_t
+
+    This enum defines the behaviour a binary tree will take when
+    trying to insert a Key which already exists in the tree.
+*/
+typedef enum Binary_Tree_DuplicatePolicy_t {
+
+    /*
+        Policy_Overwrite - Overwrite the existing item with the newly added value,
+            releasing the existing item.
+    */
+    Policy_Overwrite,
+
+    /*
+        Policy_Error    -   Return with an error code if the entry already exists
+            in the Tree.
+    */
+    Policy_Error
+
+} Binary_Tree_DuplicatePolicy_t;
+
+/*
     Binary_Tree_KeyValuePair_t
 
     This type represents the basic container to simplify working with
     the Key-Value data-types used in the Binary_Tree_t container.
 
-    Note that the Value pointer here is a reference to the actual contents
+    Note that the pointers here are a reference to the actual contents
     within the tree. Modifications made here are reflected in future
     operations on the Tree.
 */
 typedef struct Binary_Tree_KeyValuePair_t {
+
     /*
-        The integer key associated with an item within the Binary Tree.
+        Pointer to key associated with an item within the Binary Tree.
     */
-    int Key;
+    void* Key;
 
     /*
         Pointer to the actual item Value within the Binary Tree.
@@ -1781,17 +1810,17 @@ void Hashmap_Release(Hashmap_t* Map);
     provided here are cached for when items are added.
 
     Inputs:
-    ValueSize   -   The size (in bytes) of the Value associated with a given item. If 0,
-                        this indicates a Reference-Type item, and the Tree will not own
-                        the memory associated with the item.
-    ReleaseFunc -   The function to call to release the resources associated with an item
-                        in the Tree. If NULL, the free() function from stdlib.h will be used.
+    KeyCompareFunc  -   Pointer to the function to use to compare keys. Leave NULL to default to memcmp().
+    KeySize         -   The size of the Key, measured in bytes, if the keys are all the same size.
+                            Allows caching to not be required for future operations on the tree.
+    KeyReleaseFunc  -   Pointer to the function to use to release a Key. Leave NULL to default to free().
+    Policy          -   The policy for how to handle duplicated Keys within the Tree.
 
     Outputs:
     Binary_Tree_t*  -   Pointer to a fully constructed and initialized Binary Tree, or NULL
                             on failure.
 */
-Binary_Tree_t* Binary_Tree_Create(size_t ValueSize, ReleaseFunc_t* ReleaseFunc);
+Binary_Tree_t* Binary_Tree_Create(CompareFunc_t* KeyCompareFunc, size_t KeySize, ReleaseFunc_t* KeyReleaseFunc, Binary_Tree_DuplicatePolicy_t Policy);
 
 /*
     Binary_Tree_Length
@@ -1817,19 +1846,19 @@ size_t Binary_Tree_Length(Binary_Tree_t* Tree);
     found within the Tree, the existing item will be overwritten with the new Value.
 
     Inputs:
-    Tree    -   Pointer to the Tree to operate on.
-    Key     -   The Key value of the item to operate on.
-    Value   -   Pointer to the Value to associate with the given Key. Can be NULL,
-                    in which case the item only contains a Key.
+    Tree                -   Pointer to the Tree to operate on.
+    Key                 -   Pointer to the Key value to insert.
+    KeySize             -   The size of the Key value to be inserted.
+    Value               -   Pointer to the Value to insert.
+    ValueSize           -   The size of the Value to be inserted.
+    ValueReleaseFunc    -   Pointer to the function to call to release the resources associated
+                                with the Value.
 
     Outputs:
-    int     -   Returns 0 on success, non-zero on failure.
-
-    Note:
-    The policy for handling duplicate Keys may change in the future to allow user-specification
-    for how to handle duplicates.
+    int     -   Returns 0 on success, positive on error. If the Duplicate Policy is set to "Policy_Error",
+                    returns negative if the item already exists.
 */
-int Binary_Tree_Insert(Binary_Tree_t* Tree, int Key, void* Value);
+int Binary_Tree_Insert(Binary_Tree_t* Tree, void* Key, size_t KeySize, void* Value, size_t ValueSize, ReleaseFunc_t* ValueReleaseFunc);
 
 /*
     Binary_Tree_KeyExists
@@ -1840,12 +1869,13 @@ int Binary_Tree_Insert(Binary_Tree_t* Tree, int Key, void* Value);
 
     Inputs:
     Tree    -   Pointer to the Tree to operate on.
-    Key     -   The Key value of the item to operate on.
+    Key     -   Pointer to the Key value to insert.
+    KeySize -   The size of the Key value to be inserted.
 
     Outputs:
     bool    -   Returns true if the Key exists within the tree, false if it does not.
 */
-bool Binary_Tree_KeyExists(Binary_Tree_t* Tree, int Key);
+bool Binary_Tree_KeyExists(Binary_Tree_t* Tree, void* Key, size_t KeySize);
 
 /*
     Binary_Tree_Get
@@ -1855,17 +1885,14 @@ bool Binary_Tree_KeyExists(Binary_Tree_t* Tree, int Key);
 
     Inputs:
     Tree    -   Pointer to the Tree to operate on.
-    Key     -   The Key value of the item to operate on.
+    Key     -   Pointer to the Key value to insert.
+    KeySize -   The size of the Key value to be inserted.
 
     Outputs:
-    void*   -   Pointer to the value of the item registered with the given Key, or NULL if
-                    the Key does not exist in the Tree.
-
-    Note:
-    This simply provides a pointer to the value still within the tree. Modifications
-    through this pointer will affect the value in the Tree.
+    void*   -   Pointer to the Value corresponding to the given Key. NULL on error,
+        or if the key doesn't exist.
 */
-void* Binary_Tree_Get(Binary_Tree_t* Tree, int Key);
+void* Binary_Tree_Get(Binary_Tree_t* Tree, void* Key, size_t KeySize);
 
 /*
     Binary_Tree_Pop
@@ -1876,17 +1903,18 @@ void* Binary_Tree_Get(Binary_Tree_t* Tree, int Key);
 
     Inputs:
     Tree    -   Pointer to the Tree to operate on.
-    Key     -   The Key value of the item to operate on.
+    Key     -   Pointer to the Key value to insert.
+    KeySize -   The size of the Key value to be inserted.
 
     Outputs:
-    void*   -   Pointer to the value of the item registered with the given Key, or NULL if
-                    the Key does not exist in the Tree.
+    Binary_Tree_KeyValuePair_t  -   A pair of pointers holding the returned
+        Key-Value pair from the Tree.
 
     Note:
     Ownership of the resources of the Value popped from the tree are transferred to the
     caller.
 */
-void* Binary_Tree_Pop(Binary_Tree_t* Tree, int Key);
+Binary_Tree_KeyValuePair_t Binary_Tree_Pop(Binary_Tree_t* Tree, void* Key, size_t KeySize);
 
 /*
     Binary_Tree_DoCallback
@@ -1909,7 +1937,7 @@ void* Binary_Tree_Pop(Binary_Tree_t* Tree, int Key);
         void*[2] = { Key, Value }
     A pointer to the Key, and the pointer to the Value of each item.
 */
-int Binary_Tree_DoCallback(Binary_Tree_t* Tree,Binary_Tree_Direction_t Direction, CallbackFunc_t* Callback);
+int Binary_Tree_DoCallback(Binary_Tree_t* Tree, Binary_Tree_Direction_t Direction, CallbackFunc_t* Callback);
 
 /*
     Binary_Tree_DoCallbackArg
@@ -1934,7 +1962,7 @@ int Binary_Tree_DoCallback(Binary_Tree_t* Tree,Binary_Tree_Direction_t Direction
         void*[2] = { Key, Value }
     A pointer to the Key, and the pointer to the Value of each item.
 */
-int Binary_Tree_DoCallbackArg(Binary_Tree_t* Tree,Binary_Tree_Direction_t Direction, CallbackArgFunc_t* Callback, void* Args);
+int Binary_Tree_DoCallbackArg(Binary_Tree_t* Tree, Binary_Tree_Direction_t Direction, CallbackArgFunc_t* Callback, void* Args);
 
 /*
     Binary_Tree_Remove
@@ -1944,12 +1972,13 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t* Tree,Binary_Tree_Direction_t Direct
 
     Inputs:
     Tree    -   Pointer to the Tree to operate on.
-    Key     -   The Key value of the item to operate on.
+    Key     -   Pointer to the Key value to insert.
+    KeySize -   The size of the Key value to be inserted.
 
     Outputs:
     int     -   Returns 0 on success, non-zero on failure.
 */
-int Binary_Tree_Remove(Binary_Tree_t* Tree, int Key);
+int Binary_Tree_Remove(Binary_Tree_t* Tree, void* Key, size_t KeySize);
 
 /*
     Binary_Tree_Next

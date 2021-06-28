@@ -58,7 +58,19 @@ struct Binary_Tree_t {
         Nodes within the tree so they can release their contents on removal or
         tree destruction.
     */
-    ReleaseFunc_t* ReleaseFunc;
+    ReleaseFunc_t* ValueReleaseFunc;
+
+    /*
+        KeyReleaseFunc is a pointer to the function to call to safely release the
+        resources associated with the Key when the Node is released.
+    */
+    ReleaseFunc_t* KeyReleaseFunc;
+
+    /*
+        KeyCompareFunc is the generalized comparison function to apply to determine
+        the ordering of the Keys within the Tree.
+    */
+    CompareFunc_t* KeyCompareFunc;
 
     /*
         Iterator is the struct containing the necessary information and context
@@ -73,10 +85,15 @@ struct Binary_Tree_t {
     size_t TreeSize;
 
     /*
-        ValueSize caches the size of the values held by this tree. If this is set to 0,
+        KeySize caches the size of the Keys held by this tree. If this is set to 0,
         the tree will only hold references to the items, and not own the resources itself.
     */
-    size_t ValueSize;
+    size_t KeySize;
+
+    /*
+        DuplicatePolicy notes how the tree will handle duplicate Keys.
+    */
+    Binary_Tree_DuplicatePolicy_t DuplicatePolicy;
 };
 
 /* ++++++++++ Private Functions ++++++++++ */
@@ -93,7 +110,7 @@ struct Binary_Tree_t {
     Outputs:
     Binary_Tree_Node_t* -   Pointer to the node which has the desired Key, or NULL if it doesn't exist.
 */
-Binary_Tree_Node_t* Binary_Tree_find(Binary_Tree_Node_t* Root, int Key);
+Binary_Tree_Node_t* Binary_Tree_find(Binary_Tree_Node_t* Root, void* Key, size_t KeySize, CompareFunc_t* KeyCompareFunc);
 
 /*
     Binary_Tree_findMinimum
@@ -134,7 +151,7 @@ Binary_Tree_Node_t* Binary_Tree_findMinimum(Binary_Tree_Node_t* Root);
     This can shift which node is the Root of a given sub-tree, which is why
     this returns a pointer to a Node.
 */
-Binary_Tree_Node_t* Binary_Tree_insertNode(Binary_Tree_Node_t* Root, Binary_Tree_Node_t* Node);
+Binary_Tree_Node_t* Binary_Tree_insertNode(Binary_Tree_Node_t* Root, CompareFunc_t* KeyCompareFunc, Binary_Tree_Node_t* Node);
 
 /*
     Binary_Tree_removeNode
@@ -155,7 +172,7 @@ Binary_Tree_Node_t* Binary_Tree_insertNode(Binary_Tree_Node_t* Root, Binary_Tree
     This can shift which node is the Root of a given sub-tree, which is why
     this returns a pointer to a Node.
 */
-Binary_Tree_Node_t* Binary_Tree_removeNode(Binary_Tree_Node_t *Root, int Key);
+Binary_Tree_Node_t* Binary_Tree_removeNode(Binary_Tree_Node_t *Root, void* Key, size_t KeySize, CompareFunc_t* KeyCompareFunc);
 
 /*
     Binary_Tree_leftmostLeaf

@@ -38,7 +38,8 @@ extern "C" {
 int Test_binary_tree_node(void);
 
 int Test_Binary_Tree_Node_Create(void);
-int Test_Binary_Tree_Node_Update(void);
+int Test_Binary_Tree_Node_UpdateKey(void);
+int Test_Binary_Tree_Node_UpdateValue(void);
 
 #ifdef __cplusplus
 }

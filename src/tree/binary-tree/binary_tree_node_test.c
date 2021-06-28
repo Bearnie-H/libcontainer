@@ -34,7 +34,8 @@ int Test_binary_tree_node(void) {
     int FailedTests = 0;
 
     FailedTests += Test_Binary_Tree_Node_Create();
-    FailedTests += Test_Binary_Tree_Node_Update();
+    FailedTests += Test_Binary_Tree_Node_UpdateKey();
+    FailedTests += Test_Binary_Tree_Node_UpdateValue();
 
     return FailedTests;
 }
@@ -44,7 +45,7 @@ int Test_Binary_Tree_Node_Create(void) {
     Binary_Tree_Node_t *Node = NULL;
     int                 Key = 0xBEEF, Value = 0xCAFE;
 
-    Node = Binary_Tree_Node_Create(Key, sizeof(Value), &Value, NULL);
+    Node = Binary_Tree_Node_Create(&Key, sizeof(Value), NULL, &Value, sizeof(Value), NULL);
     if ( NULL == Node ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create new Binary_Tree_Node_t for testing.");
         TEST_FAILURE;
@@ -53,18 +54,47 @@ int Test_Binary_Tree_Node_Create(void) {
     Binary_Tree_Node_Release(Node);
     TEST_SUCCESSFUL;
 }
-int Test_Binary_Tree_Node_Update(void) {
+
+int Test_Binary_Tree_Node_UpdateKey(void) {
 
     Binary_Tree_Node_t *Node = NULL;
-    int                 Key = 0xBEEF, Value = 0xCAFE, NewValue = 0xBABE;
+    int                 Key = 0xBEEF, Value = 0xCAFE, NewKey = 0xBABE;
 
-    Node = Binary_Tree_Node_Create(Key, sizeof(Value), &Value, NULL);
+    Node = Binary_Tree_Node_Create(&Key, sizeof(Key), NULL, &Value, sizeof(Value), NULL);
     if ( NULL == Node ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create new Binary_Tree_Node_t for testing.");
         TEST_FAILURE;
     }
 
-    if ( 0 != Binary_Tree_Node_Update(Node, &NewValue, sizeof(NewValue)) ) {
+    if ( 0 != Binary_Tree_Node_UpdateKey(Node, &NewKey, sizeof(NewKey)) ) {
+        TEST_PRINTF("%s", "Test Failure - Failed to update Node Key.");
+        Binary_Tree_Node_Release(Node);
+        TEST_FAILURE;
+    }
+
+    if ( 0 != memcmp(Node->Key.KeyBytes, &NewKey, sizeof(NewKey)) ) {
+        TEST_PRINTF("Test Failure - Node Key (%d) not equal to expected Key (%d).",
+                    *(int *)(Node->Key.KeyRaw), NewKey);
+        Binary_Tree_Node_Release(Node);
+        TEST_FAILURE;
+    }
+
+    Binary_Tree_Node_Release(Node);
+    TEST_SUCCESSFUL;
+}
+
+int Test_Binary_Tree_Node_UpdateValue(void) {
+
+    Binary_Tree_Node_t *Node = NULL;
+    int                 Key = 0xBEEF, Value = 0xCAFE, NewValue = 0xBABE;
+
+    Node = Binary_Tree_Node_Create(&Key, sizeof(Key), NULL, &Value, sizeof(Value), NULL);
+    if ( NULL == Node ) {
+        TEST_PRINTF("%s", "Test Failure - Failed to create new Binary_Tree_Node_t for testing.");
+        TEST_FAILURE;
+    }
+
+    if ( 0 != Binary_Tree_Node_UpdateValue(Node, &NewValue, sizeof(NewValue)) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to update Node value.");
         Binary_Tree_Node_Release(Node);
         TEST_FAILURE;

@@ -92,7 +92,7 @@ int Iterator_Initialize_Binary_Tree(Binary_Tree_t *Tree, Binary_Tree_Direction_t
 Binary_Tree_KeyValuePair_t Binary_Tree_Next(Binary_Tree_t *         Tree,
                                             Binary_Tree_Direction_t Direction) {
 
-    Binary_Tree_KeyValuePair_t KeyValuePair = {0, NULL};
+    Binary_Tree_KeyValuePair_t KeyValuePair = {NULL, NULL};
     Binary_Tree_Node_t *       Current      = NULL;
 
     if ( NULL == Tree ) {
@@ -107,7 +107,7 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Next(Binary_Tree_t *         Tree,
         }
         Current = (Binary_Tree_Node_t *)Tree->Iterator->Context;
 
-        KeyValuePair.Key   = Current->Key;
+        KeyValuePair.Key   = Current->Key.KeyRaw;
         KeyValuePair.Value = Current->Value.ValueRaw;
         return KeyValuePair;
     }
@@ -130,7 +130,7 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Next(Binary_Tree_t *         Tree,
     }
 
     Tree->Iterator->Context = Current;
-    KeyValuePair.Key        = Current->Key;
+    KeyValuePair.Key        = Current->Key.KeyRaw;
     KeyValuePair.Value      = Current->Value.ValueRaw;
 
     return KeyValuePair;
@@ -139,7 +139,7 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Next(Binary_Tree_t *         Tree,
 Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t *         Tree,
                                                 Binary_Tree_Direction_t Direction) {
 
-    Binary_Tree_KeyValuePair_t KeyValuePair = {0, NULL};
+    Binary_Tree_KeyValuePair_t KeyValuePair = {NULL, NULL};
     Binary_Tree_Node_t *       Current      = NULL;
 
     if ( NULL == Tree ) {
@@ -154,7 +154,7 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t *         Tree,
         }
         Current = (Binary_Tree_Node_t *)Tree->Iterator->Context;
 
-        KeyValuePair.Key   = Current->Key;
+        KeyValuePair.Key   = Current->Key.KeyRaw;
         KeyValuePair.Value = Current->Value.ValueRaw;
         return KeyValuePair;
     }
@@ -177,7 +177,7 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t *         Tree,
     }
 
     Tree->Iterator->Context = Current;
-    KeyValuePair.Key        = Current->Key;
+    KeyValuePair.Key        = Current->Key.KeyRaw;
     KeyValuePair.Value      = Current->Value.ValueRaw;
 
     return KeyValuePair;

@@ -343,6 +343,7 @@ void *Hashmap_findInBucket(List_t *Bucket, const void *Key, size_t KeySize,
             }
         }
     }
+
     Iterator_Invalidate(&(Bucket->Iterator));
     DEBUG_PRINTF("%s", "Error: Failed to find requested item in Hashmap.");
     return NULL;

@@ -53,6 +53,17 @@ static void PrintPostOrder(Binary_Tree_Node_t *Node) {
 }
 */
 
+static int CompareFunc_Size_t(const void *A, const void *B, __attribute__((unused)) size_t Size) {
+
+    if ( *(const size_t *)A > *(const size_t *)B ) {
+        return 1;
+    } else if ( *(const size_t *)A < *(const size_t *)B ) {
+        return -1;
+    }
+
+    return 0;
+}
+
 int Test_binary_tree_iterator(void) {
 
     int FailedTests = 0;
@@ -82,14 +93,15 @@ int Test_Binary_Tree_Iterate_Next_InOrder(void) {
     Binary_Tree_Direction_t    Direction    = Direction_InOrder;
     size_t                     Expected[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15};
 
-    Tree = Binary_Tree_Create(sizeof(size_t), NULL);
+    Tree = Binary_Tree_Create((CompareFunc_t *)CompareFunc_Size_t, sizeof(size_t), NULL,
+                              Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary Tree for testing.");
         TEST_FAILURE;
     }
 
     for ( i = 0; i < ItemCount; i++ ) {
-        if ( 0 != Binary_Tree_Insert(Tree, (int)i, &i) ) {
+        if ( 0 != Binary_Tree_Insert(Tree, &i, sizeof(i), &i, sizeof(i), NULL) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to insert item.");
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
@@ -125,14 +137,15 @@ int Test_Binary_Tree_Iterate_Next_PreOrder(void) {
     Binary_Tree_Direction_t    Direction    = Direction_PreOrder;
     size_t                     Expected[] = {7, 3, 1, 0, 2, 5, 4, 6, 11, 9, 8, 10, 13, 12, 14, 15};
 
-    Tree = Binary_Tree_Create(sizeof(size_t), NULL);
+    Tree = Binary_Tree_Create((CompareFunc_t *)CompareFunc_Size_t, sizeof(size_t), NULL,
+                              Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary Tree for testing.");
         TEST_FAILURE;
     }
 
     for ( i = 0; i < ItemCount; i++ ) {
-        if ( 0 != Binary_Tree_Insert(Tree, (int)i, &i) ) {
+        if ( 0 != Binary_Tree_Insert(Tree, &i, sizeof(i), &i, sizeof(i), NULL) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to insert item.");
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
@@ -169,14 +182,15 @@ int Test_Binary_Tree_Iterate_Next_PostOrder(void) {
     Binary_Tree_Direction_t    Direction    = Direction_PostOrder;
     size_t                     Expected[] = {0, 2, 1, 4, 6, 5, 3, 8, 10, 9, 12, 15, 14, 13, 11, 7};
 
-    Tree = Binary_Tree_Create(sizeof(size_t), NULL);
+    Tree = Binary_Tree_Create((CompareFunc_t *)CompareFunc_Size_t, sizeof(size_t), NULL,
+                              Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary Tree for testing.");
         TEST_FAILURE;
     }
 
     for ( i = 0; i < ItemCount; i++ ) {
-        if ( 0 != Binary_Tree_Insert(Tree, (int)i, &i) ) {
+        if ( 0 != Binary_Tree_Insert(Tree, &i, sizeof(i), &i, sizeof(i), NULL) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to insert item.");
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
@@ -224,14 +238,15 @@ int Test_Binary_Tree_Iterate_Previous_InOrder(void) {
     Binary_Tree_Direction_t    Direction    = Direction_InOrder;
     size_t                     Expected[] = {15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
 
-    Tree = Binary_Tree_Create(sizeof(size_t), NULL);
+    Tree = Binary_Tree_Create((CompareFunc_t *)CompareFunc_Size_t, sizeof(size_t), NULL,
+                              Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary Tree for testing.");
         TEST_FAILURE;
     }
 
     for ( i = 0; i < ItemCount; i++ ) {
-        if ( 0 != Binary_Tree_Insert(Tree, (int)i, &i) ) {
+        if ( 0 != Binary_Tree_Insert(Tree, &i, sizeof(i), &i, sizeof(i), NULL) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to insert item.");
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
@@ -268,14 +283,15 @@ int Test_Binary_Tree_Iterate_Previous_PreOrder(void) {
     Binary_Tree_Direction_t    Direction    = Direction_PreOrder;
     size_t                     Expected[] = {15, 14, 12, 13, 10, 8, 9, 11, 6, 4, 5, 2, 0, 1, 3, 7};
 
-    Tree = Binary_Tree_Create(sizeof(size_t), NULL);
+    Tree = Binary_Tree_Create((CompareFunc_t *)CompareFunc_Size_t, sizeof(size_t), NULL,
+                              Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary Tree for testing.");
         TEST_FAILURE;
     }
 
     for ( i = 0; i < ItemCount; i++ ) {
-        if ( 0 != Binary_Tree_Insert(Tree, (int)i, &i) ) {
+        if ( 0 != Binary_Tree_Insert(Tree, &i, sizeof(i), &i, sizeof(i), NULL) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to insert item.");
             Binary_Tree_Release(Tree);
             TEST_FAILURE;
@@ -312,14 +328,15 @@ int Test_Binary_Tree_Iterate_Previous_PostOrder(void) {
     Binary_Tree_Direction_t    Direction    = Direction_PostOrder;
     size_t                     Expected[] = {7, 11, 13, 14, 15, 12, 9, 10, 8, 3, 5, 6, 4, 1, 2, 0};
 
-    Tree = Binary_Tree_Create(sizeof(size_t), NULL);
+    Tree = Binary_Tree_Create((CompareFunc_t *)CompareFunc_Size_t, sizeof(size_t), NULL,
+                              Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary Tree for testing.");
         TEST_FAILURE;
     }
 
     for ( i = 0; i < ItemCount; i++ ) {
-        if ( 0 != Binary_Tree_Insert(Tree, (int)i, &i) ) {
+        if ( 0 != Binary_Tree_Insert(Tree, &i, sizeof(i), &i, sizeof(i), NULL) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to insert item.");
             Binary_Tree_Release(Tree);
             TEST_FAILURE;

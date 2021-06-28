@@ -123,18 +123,12 @@ implement the following additional containers:
 | Container | Enable Macro | Description |
 | :--- | :--- | :--- |
 | `Set_t`            | `LIBCONTAINER_ENABLE_SET`            | Container of explicitly unique keys                    |
+| `Binary_Heap_t`    | `LIBCONTAINER_ENABLE_BINARY_HEAP`    | Generic Binary heap |
 | `Queue_t`          | `LIBCONTAINER_ENABLE_QUEUE`          | FIFO (First-In First-Out) item access                  |
 | `Priority_Queue_t` | `LIBCONTAINER_ENABLE_PRIORITY_QUEUE` | Priority-ordered FIFO (First-In First-Out) item access |
 
 Note that the containers listed in this section are still tentative. Only those provided in the section
 above are implemented as of now.
-
-In addition to these new containers, there are a handful of outstanding extensions to the
-existing containers that will be implemented at some point, likely before the v.1.0.0 release.
-These include:
-
-* Extending `Binary_Tree_t` to accept a generic Key, not limited to `int`.
-* Extending `Binary_Tree_t` to specify duplicate-item handling, i.e. ignore-new, overwrite, error, etc.
 
 ## License
 
