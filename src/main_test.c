@@ -29,6 +29,7 @@
 #include "array/include/array.h"
 #include "hashmap/include/hashmap.h"
 #include "list/include/list.h"
+#include "queue/include/queue.h"
 #include "set/include/set.h"
 #include "stack/include/stack.h"
 #include "string/include/string.h"
@@ -54,6 +55,7 @@ int Test_main(void) {
     FailedTests += Test_stack();
     FailedTests += Test_string();
     FailedTests += Test_set();
+    FailedTests += Test_queue();
     FailedTests += Test_CompareFunc();
 
     /* Returning non-zero indicates to the Makefile during make to abort.

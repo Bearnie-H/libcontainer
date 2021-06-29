@@ -262,13 +262,12 @@ int Binary_Tree_Remove(Binary_Tree_t *Tree, void *Key, size_t KeySize) {
 int Binary_Tree_DoCallback(Binary_Tree_t *Tree, Binary_Tree_Direction_t Direction,
                            CallbackFunc_t *Callback) {
 
-    Binary_Tree_KeyValuePair_t KeyValuePair = {0, NULL};
-    size_t                     NodesVisited = 0;
+    Binary_Tree_KeyValuePair_t KeyValuePair = {NULL, NULL};
     int                        RetVal       = 0;
 
     if ( NULL == Tree ) {
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
-        return 1;
+        return -1;
     }
 
     if ( NULL == Tree->Root ) {
@@ -287,42 +286,28 @@ int Binary_Tree_DoCallback(Binary_Tree_t *Tree, Binary_Tree_Direction_t Directio
         case Direction_PostOrder: break;
         default:
             DEBUG_PRINTF("Error: Unknown tree traversal direction [ %d ].", Direction);
-            return 1;
+            return -1;
     }
 
-    NodesVisited = 0;
     BINARY_TREE_FOREACH(Tree, KeyValuePair, Direction) {
-        NodesVisited++;
         if ( 0 != Callback(&(KeyValuePair)) ) {
-            DEBUG_PRINTF("%s",
-                         "Error: Callback function returned non-zero for item with Key [ %d ].");
-            RetVal |= 1;
+            DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+            RetVal += 1;
         }
     }
 
-    Iterator_Invalidate(&(Tree->Iterator));
-
-    if ( NodesVisited != Binary_Tree_Length(Tree) ) {
-        DEBUG_PRINTF("Error: Callback function not called on as many elements as tree reports it "
-                     "has. (%lu vs. %lu)",
-                     (unsigned long)NodesVisited, (unsigned long)Binary_Tree_Length(Tree));
-        return 1;
-    }
-
-    DEBUG_PRINTF("%s", "Finished performing Callback on Binary Tree.");
     return RetVal;
 }
 
 int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, Binary_Tree_Direction_t Direction,
                               CallbackArgFunc_t *Callback, void *Args) {
 
-    Binary_Tree_KeyValuePair_t KeyValuePair = {0, NULL};
-    size_t                     NodesVisited = 0;
+    Binary_Tree_KeyValuePair_t KeyValuePair = {NULL, NULL};
     int                        RetVal       = 0;
 
     if ( NULL == Tree ) {
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
-        return 1;
+        return -1;
     }
 
     if ( NULL == Tree->Root ) {
@@ -341,29 +326,16 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, Binary_Tree_Direction_t Direc
         case Direction_PostOrder: break;
         default:
             DEBUG_PRINTF("Error: Unknown tree traversal direction [ %d ].", Direction);
-            return 1;
+            return -1;
     }
 
-    NodesVisited = 0;
     BINARY_TREE_FOREACH(Tree, KeyValuePair, Direction) {
-        NodesVisited++;
         if ( 0 != Callback(&(KeyValuePair), Args) ) {
-            DEBUG_PRINTF("%s",
-                         "Error: Callback function returned non-zero for item with Key [ %d ].");
-            RetVal |= 1;
+            DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+            RetVal += 1;
         }
     }
 
-    Iterator_Invalidate(&(Tree->Iterator));
-
-    if ( NodesVisited != Binary_Tree_Length(Tree) ) {
-        DEBUG_PRINTF("Error: Callback function not called on as many elements as tree reports it "
-                     "has. (%lu vs. %lu)",
-                     (unsigned long)NodesVisited, (unsigned long)Binary_Tree_Length(Tree));
-        return 1;
-    }
-
-    DEBUG_PRINTF("%s", "Finished performing Callback on Binary Tree.");
     return RetVal;
 }
 

@@ -1,0 +1,1 @@
+include $(ROOTDIR)/DefaultComponent.mk

@@ -79,17 +79,19 @@ bool Stack_IsEmpty(Stack_t *Stack) {
     return (0 == List_Length(Stack->Items));
 }
 
-int Stack_Push(Stack_t *Stack, void *Value) {
+int Stack_Push(Stack_t *Stack, void *Value, size_t ValueSize) {
 
     if ( NULL == Stack ) {
         DEBUG_PRINTF("%s", "NULL Stack* provided.");
         return 1;
     }
 
-    if ( 0 == Stack->ItemSize ) {
+    ValueSize = ((ValueSize > Stack->ItemSize) ? (ValueSize) : (Stack->ItemSize));
+
+    if ( 0 == ValueSize ) {
         return List_RefPrepend(Stack->Items, Value, Stack->ReleaseFunc);
     } else {
-        return List_Prepend(Stack->Items, Value, Stack->ItemSize);
+        return List_Prepend(Stack->Items, Value, ValueSize);
     }
 }
 

@@ -22,8 +22,8 @@
     SOFTWARE.
 */
 
-#ifndef LIBCONTAINER_SET_H
-#define LIBCONTAINER_SET_H
+#ifndef LIBCONTAINER_QUEUE_H
+#define LIBCONTAINER_QUEUE_H
 
 /*
     If this header should export C-compatible symbols, rearrange these ifdefs as appropriate
@@ -32,31 +32,33 @@
 extern "C" {
 #endif
 
-#define LIBCONTAINER_ENABLE_SET
-#define LIBCONTAINER_ENABLE_BINARY_TREE
+#define LIBCONTAINER_ENABLE_QUEUE
+#define LIBCONTAINER_ENABLE_LIST
 #include "../../../include/libcontainer.h"
 
-#include "../../tree/binary-tree/include/binary_tree.h"
-#include "../../iterator/include/iterator.h"
-
-struct Set_t {
+struct Queue_t {
 
     /*
-        A set is simply an interface over a Binary_Tree_t.
-
-        The Binary_Tree_t already provides a container with
-        guaranteed unique keys, as well as a sorted iterator
-        interface. Furthermore, the comparable C++ container
-        (std::ordered_set) is based on a self-balancing binary
-        tree to provide the time complexity guarantees
-        required.
+        Items is the List_t containing the actual items within the Queue.
+        This allows for O(1) Push() and Pop() operations.
     */
-    Binary_Tree_t* Contents;
+    List_t* Items;
+
+    /*
+        ReleaseFunc is the cached function pointer to the function to call to release
+        the memory associated with the held items.
+    */
+    ReleaseFunc_t* ReleaseFunc;
+
+    /*
+        ItemSize is the cached size of each item held by the Queue.
+    */
+    size_t ItemSize;
 };
 
 #if defined(TESTING) || defined(DEBUGGER)
 
-#include "set_test.h"
+#include "queue_test.h"
 
 #endif
 

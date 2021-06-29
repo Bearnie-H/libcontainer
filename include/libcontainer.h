@@ -56,6 +56,7 @@ extern "C" {
 #define LIBCONTAINER_ENABLE_BINARY_TREE
 #define LIBCONTAINER_ENABLE_SET
 #define LIBCONTAINER_ENABLE_STACK
+#define LIBCONTAINER_ENABLE_QUEUE
 #define LIBCONTAINER_ENABLE_STRING
 #endif
 
@@ -156,6 +157,23 @@ extern "C" {
     Value   -   Pointer with a type matching that of the items within the Set_t.
 */
 #define SET_FOREACH(Set, Value) for ((Value) = Set_Next(Set); (NULL != (Value)); (Value) = Set_Next(Set))
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_QUEUE
+
+/*
+    QUEUE_FOREACH
+
+    This macro defines the idiomatic method to iterate over a Queue_t container.
+    This will initialize iteration, and return each "next" value to the body of the
+    for loop. At the end of this FOREACH loop, the Value will be NULL, and the iterator
+    will be reset.
+
+    Inputs:
+    Queue   -   Pointer to the Queue_t to iterate over.
+    Value   -   Pointer with a type matching that of the items within the Queue_t.
+*/
+#define QUEUE_FOREACH(Queue, Value) for ((Value) = Queue_Next(Queue); (NULL != Value); (Value) = Queue_Next(Queue))
 #endif
 
 /* ---------- Exported Library Macros ---------- */
@@ -439,6 +457,34 @@ typedef struct Set_t Set_t;
 typedef struct Stack_t Stack_t;
 
 /* ---------- Public Stack_t Typedefs ---------- */
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_QUEUE
+/* ++++++++++ Public Queue_t Typedefs ++++++++++ */
+
+/*
+    Queue_t
+
+    This container provides a First-In First-Out (FIFO) interface for arbitrary,
+    homogeneous items. This container can either own the memory associated with
+    the contents it holds, or it can simply hold references to items which manage
+    their own resources.
+
+    This interface provides the standard Push/Peek/Pop expected for a Queue,
+    as well as the additional DoCallback() and DoCallbackArg() interface
+    provided by other containers in this library for performing an action
+    with each of the items in the container.
+
+    This struct is opaque to ensure all accesses are performed
+    through the functions provided in this library to ensure
+    safe access and operation.
+
+    See the functions prefixed with "Queue_" for the available operations
+    on this container.
+*/
+typedef struct Queue_t Queue_t;
+
+/* ---------- Public Queue_t Typedefs ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_STRING
@@ -1039,7 +1085,8 @@ void* Array_Previous(Array_t *Array);
     Callback    -   Pointer to the Callback function to call for each item of the array.
 
     Outputs:
-    int     -   Returns 0 on success, non-zero if any errors occur.
+    int     -   Returns 0 on success, negative if iteration over the Array_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
 
     Note:
     The "Value*" pointer provided to the Callback is a pointer to each element
@@ -1062,7 +1109,8 @@ int Array_DoCallback(Array_t* Array, CallbackFunc_t* Callback);
                         in to the Callback function along with the item value.
 
     Outputs:
-    int     -   Returns 0 on success, non-zero if any errors occur.
+    int     -   Returns 0 on success, negative if iteration over the Array_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
 
     Note:
     The "Value*" pointer provided to the Callback is a pointer to each element
@@ -1426,7 +1474,8 @@ void* List_Previous(List_t* List);
     Callback    -   Pointer to the Callback function to call for each item of the list.
 
     Outputs:
-    int     -   Returns 0 if all callbacks execute successfully, non-zero if any fail.
+    int     -   Returns 0 on success, negative if iteration over the List_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
 
     Note:
     The "Value*" pointer provided to the Callback points to the Value of the items
@@ -1449,7 +1498,8 @@ int List_DoCallback(List_t* List, CallbackFunc_t* Callback);
                         in to the Callback function along with the item value.
 
     Outputs:
-    int     -   Returns 0 if all callbacks execute successfully, non-zero if any fail.
+    int     -   Returns 0 on success, negative if iteration over the List_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
 
     Note:
     The "Value*" pointer provided to the Callback points to the Value of the items
@@ -1824,7 +1874,8 @@ Hashmap_KeyValuePair_t Hashmap_SortedPrevious(Hashmap_t* Map, CompareFunc_t* Com
     Callback    -   Pointer to the Callback function to call for each item of the hashmap.
 
     Outputs:
-    int     -   Returns 0 if all callbacks execute successfully, non-zero if any fail.
+    int     -   Returns 0 on success, negative if iteration over the Hashmap_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
 
     Note:
     For a Hashmap Callback function, the *Value* pointer provided to the callback
@@ -1847,7 +1898,8 @@ int Hashmap_DoCallback(Hashmap_t* Map, CallbackFunc_t* Callback);
                         in to the Callback function along with the item value.
 
     Outputs:
-    int     -   Returns 0 if all callbacks execute successfully, non-zero if any fail.
+    int     -   Returns 0 on success, negative if iteration over the Hashmap_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
 
     Note:
     For a Hashmap Callback function, the *Value* pointer provided to the callback
@@ -2021,7 +2073,8 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Pop(Binary_Tree_t* Tree, void* Key, size_
                         in the Tree.
 
     Outputs:
-    int     -   Returns 0 on success, non-zero if any Callback fails.
+    int     -   Returns 0 on success, negative if iteration over the Binary_Tree_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
 
     Note:
     The "Value*" provided to the Callback function consists of a
@@ -2046,7 +2099,8 @@ int Binary_Tree_DoCallback(Binary_Tree_t* Tree, Binary_Tree_Direction_t Directio
                         function along with the Key-Value pair.
 
     Outputs:
-    int     -   Returns 0 on success, non-zero if any Callback fails.
+    int     -   Returns 0 on success, negative if iteration over the Binary_Tree_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
 
     Note:
     The "Value*" provided to the Callback function consists of a
@@ -2274,8 +2328,12 @@ void* Set_Next(Set_t* Set);
     Set     -   Pointer to the Set_t to operate on.
 
     Outputs:
-    int     -   Returns the count of how many Callback calls returned non-zero.
-                    For a compliant CallbackFunc_t*, this should be 0 on success.
+    int     -   Returns 0 on success, negative if iteration over the Set_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
+
+    Note:
+    The "Value*" pointer provided to the Callback function is a pointer to the Value added to
+    the Set_t by a Set_Insert() call.
 */
 int Set_DoCallback(Set_t* Set, CallbackFunc_t* Callback);
 
@@ -2293,8 +2351,12 @@ int Set_DoCallback(Set_t* Set, CallbackFunc_t* Callback);
     Set     -   Pointer to the Set_t to operate on.
 
     Outputs:
-    int     -   Returns the count of how many Callback calls returned non-zero.
-                    For a compliant CallbackArgFunc_t*, this should be 0 on success.
+    int     -   Returns 0 on success, negative if iteration over the Set_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
+
+    Note:
+    The "Value*" pointer provided to the Callback function is a pointer to the Value added to
+    the Set_t by a Set_Insert() call.
 */
 int Set_DoCallbackArgs(Set_t* Set, CallbackArgFunc_t* Callback, void* Args);
 
@@ -2401,13 +2463,15 @@ bool Stack_IsEmpty(Stack_t* Stack);
     This function pushes the given item to the top of the stack, adding it.
 
     Inputs:
-    Stack   -   Pointer to the Stack_t to operate on.
-    Value   -   Pointer to the value to push to the Stack.
+    Stack       -   Pointer to the Stack_t to operate on.
+    Value       -   Pointer to the value to push to the Stack.
+    ValueSize   -   Size of the Value, in bytes. Leave 0 to use the cached value
+                        from Stack initialization, or for reference-types.
 
     Outputs:
     int     -   Returns 0 on success, non-zero on failure.
 */
-int Stack_Push(Stack_t* Stack, void* Value);
+int Stack_Push(Stack_t* Stack, void* Value, size_t ValueSize);
 
 /*
     Stack_Peek
@@ -2453,8 +2517,8 @@ void* Stack_Pop(Stack_t* Stack);
     Callback    -   Pointer to the Callback function to apply to each item in the Stack.
 
     Outputs:
-    int     -   Returns 0 on success, non-zero if the Callback returns non-zero for any item
-                    in the Stack.
+    int     -   Returns 0 on success, negative if iteration over the Stack_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
 
     Note:
     The "Value*" pointer passed in to the Callback function is a pointer to the raw value
@@ -2474,8 +2538,8 @@ int Stack_DoCallback(Stack_t* Stack, CallbackFunc_t* Callback);
     Args        -   (Optional) Pointer to additional arguments/values to pass in to the Callback function.
 
     Outputs:
-    int     -   Returns 0 on success, non-zero if the Callback returns non-zero for any item
-                    in the Stack.
+    int     -   Returns 0 on success, negative if iteration over the Stack_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
 
     Note:
     The "Value*" pointer passed in to the Callback function is a pointer to the raw value
@@ -2518,6 +2582,182 @@ int Stack_Clear(Stack_t* Stack);
 void Stack_Release(Stack_t* Stack);
 
 /* ---------- Public Stack_t Functions ---------- */
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_QUEUE
+/* ++++++++++ Public Queue_t Functions ++++++++++ */
+
+/*
+    Queue_Create
+
+    This function creates and initializes a new Queue_t object for use. All items
+    within a single Queue_t must be of the same type and size. For Reference-Type items,
+    simply pass 0 as the ValueSize to indicate that their resources are held elsewhere.
+    If passing string literals, these must be treated as non-reference types to avoid
+    attempting to free() or otherwise release them.
+
+    Inputs:
+    ValueSize   -   The size (in bytes) of the items to contain. A 0 value indicates Reference
+                        values.
+    ReleaseFunc -   Pointer to the function to call to release the resources associated with
+                        each item. Defaults to free() from libstd.h if NULL is given.
+
+    Outputs:
+    Queue_t*    -   Pointer to a fully initialized Queue_t object, or NULL on failure.
+*/
+Queue_t* Queue_Create(size_t ValueSize, ReleaseFunc_t* ReleaseFunc);
+
+/*
+    Queue_Length
+
+    This function returns the "length", or number of items in the Queue.
+
+    Inputs:
+    Queue   -   Pointer to the Queue_t to operate on.
+
+    Outputs:
+    size_t  -   The count of items in the Queue. Returns 0 if given NULL.
+*/
+size_t Queue_Length(Queue_t* Queue);
+
+/*
+    Queue_IsEmpty
+
+    This function returns a boolean indicating whether or not the Queue is empty.
+
+    Inputs:
+    Queue   -   Pointer to the Queue_t to operate on.
+
+    Outputs:
+    bool    -   True if Queue is non-NULL and contains at least one item, false otherwise.
+*/
+bool Queue_IsEmpty(Queue_t* Queue);
+
+/*
+    Queue_Push
+
+    This function pushes the given item to the back of the Queue, adding it.
+
+    Inputs:
+    Queue       -   Pointer to the Queue_t to operate on.
+    Value       -   Pointer to the value to push to the Queue.
+    ValueSize   -   Size of the Value, in bytes. Leave 0 to use the cached value
+                        from Queue initialization, or for reference-types.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Queue_Push(Queue_t* Queue, void* Value, size_t ValueSize);
+
+/*
+    Queue_Peek
+
+    This function returns a pointer to the item at the front of the Queue, without removing
+    it from the Queue.
+
+    Inputs:
+    Queue   -   Pointer to the Queue_t to operate on.
+
+    Outputs:
+    void*   -   Pointer to the item currently at the top of the Queue.
+                    NULL on failure or if the Queue is empty.
+*/
+void* Queue_Peek(Queue_t* Queue);
+
+/*
+    Queue_Pop
+
+    This function removes the item from the front of the Queue, returning it to the caller
+    and transferring ownership to the caller.
+
+    Inputs:
+    Queue   -   Pointer to the Queue_t to operate on.
+
+    Outputs:
+    void*   -   Pointer to the item currently at the top of the Queue.
+                    NULL on failure or if the Queue is empty.
+
+    Note:
+    Memory and resource ownership of the popped item is transferred to the caller,
+    and must be safely handled and released to ensure no resource leaks.
+*/
+void* Queue_Pop(Queue_t* Queue);
+
+/*
+    Queue_DoCallback
+
+    This function calls the given Callback function on each item contained in the Queue.
+
+    Inputs:
+    Queue       -   Pointer to the Queue_t to operate on.
+    Callback    -   Pointer to the Callback function to apply to each item in the Queue.
+
+    Outputs:
+    int     -   Returns 0 on success, negative if iteration over the Queue_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
+
+    Note:
+    The "Value*" pointer passed in to the Callback function is a pointer to the raw value
+    of each item of the Queue, as added by the Queue_Push() function.
+*/
+int Queue_DoCallback(Queue_t* Queue, CallbackFunc_t* Callback);
+
+/*
+    Queue_DoCallbackArg
+
+    This function calls the given Callback function on each item contained in the Queue.
+    This function additionally passes in the Args pointer to the callback.
+
+    Inputs:
+    Queue       -   Pointer to the Queue_t to operate on.
+    Callback    -   Pointer to the Callback function to apply to each item in the Queue.
+    Args        -   (Optional) Pointer to additional arguments/values to pass in to the Callback function.
+
+    Outputs:
+    int     -   Returns 0 on success, negative if iteration over the Queue_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
+
+    Note:
+    The "Value*" pointer passed in to the Callback function is a pointer to the raw value
+    of each item of the Queue, as added by the Queue_Push() function.
+*/
+int Queue_DoCallbackArg(Queue_t* Queue, CallbackArgFunc_t* Callback, void* Args);
+
+/*
+    Queue_Clear
+
+    This function removes and releases all items from the Queue, while retaining
+    the Queue itself to be used again.
+
+    Inputs:
+    Queue   -   Pointer to the Queue_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Queue_Clear(Queue_t* Queue);
+
+/*
+    Queue_Release
+
+    This function fully and safely releases all items held by the Queue, as well
+    as the Queue itself.
+
+    Inputs:
+    Queue   -   Pointer to the Queue_t to operate on.
+
+    Outputs:
+    None, the Queue and all items it held are released. The pointer given is no longer
+    valid for use after calling this function.
+
+    Note:
+    For this function to satisfy the promise of fully releasing all items
+    it holds, the ReleaseFunc it is initialized with must safely and fully
+    release all resources held by a given item.
+*/
+void Queue_Release(Queue_t* Queue);
+
+/* ---------- Public Queue_t Functions ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_STRING

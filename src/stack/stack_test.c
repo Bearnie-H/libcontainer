@@ -157,7 +157,7 @@ int Test_Stack_Length(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Stack_Push(Stack, &Value) ) {
+    if ( 0 != Stack_Push(Stack, &Value, sizeof(Value)) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -199,7 +199,7 @@ int Test_Stack_RefLength(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Stack_Push(Stack, ValueContents) ) {
+    if ( 0 != Stack_Push(Stack, ValueContents, 0) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -274,7 +274,7 @@ int Test_Stack_Push(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Stack_Push(Stack, &Value) ) {
+    if ( 0 != Stack_Push(Stack, &Value, sizeof(Value)) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -316,7 +316,7 @@ int Test_Stack_RefPush(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Stack_Push(Stack, ValueContents) ) {
+    if ( 0 != Stack_Push(Stack, ValueContents, 0) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         free(ValueContents);
@@ -345,7 +345,7 @@ int Test_Stack_Peek(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Stack_Push(Stack, &Value) ) {
+    if ( 0 != Stack_Push(Stack, &Value, sizeof(Value)) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -388,7 +388,7 @@ int Test_Stack_RefPeek(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Stack_Push(Stack, ValueContents) ) {
+    if ( 0 != Stack_Push(Stack, ValueContents, 0) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         free(ValueContents);
@@ -424,7 +424,7 @@ int Test_Stack_Pop(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Stack_Push(Stack, &Value) ) {
+    if ( 0 != Stack_Push(Stack, &Value, sizeof(Value)) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         TEST_FAILURE;
@@ -476,7 +476,7 @@ int Test_Stack_RefPop(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Stack_Push(Stack, ValueContents) ) {
+    if ( 0 != Stack_Push(Stack, ValueContents, 0) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to push new Value onto Stack.");
         Stack_Release(Stack);
         free(ValueContents);
@@ -522,7 +522,7 @@ int Test_Stack_DoCallback(void) {
     }
 
     for ( i = 0; i < Count; i++ ) {
-        if ( 0 != Stack_Push(Stack, &i) ) {
+        if ( 0 != Stack_Push(Stack, &i, sizeof(i)) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value onto Stack.");
             Stack_Release(Stack);
             TEST_FAILURE;
@@ -552,7 +552,7 @@ int Test_Stack_DoCallbackArg(void) {
     }
 
     for ( i = 0; i < Count; i++ ) {
-        if ( 0 != Stack_Push(Stack, &i) ) {
+        if ( 0 != Stack_Push(Stack, &i, sizeof(i)) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value onto Stack.");
             Stack_Release(Stack);
             TEST_FAILURE;
@@ -593,7 +593,7 @@ int Test_Stack_RefDoCallback(void) {
 
         snprintf(TempValue, BufferLength, "Stack Value [ %d ].", i);
 
-        if ( 0 != Stack_Push(Stack, TempValue) ) {
+        if ( 0 != Stack_Push(Stack, TempValue, 0) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value to Stack.");
             free(TempValue);
             Stack_Release(Stack);
@@ -636,7 +636,7 @@ int Test_Stack_RefDoCallbackArg(void) {
 
         snprintf(TempValue, BufferLength, "Stack Value [ %d ].", i);
 
-        if ( 0 != Stack_Push(Stack, TempValue) ) {
+        if ( 0 != Stack_Push(Stack, TempValue, 0) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value to Stack.");
             free(TempValue);
             Stack_Release(Stack);
@@ -666,7 +666,7 @@ int Test_Stack_Clear(void) {
     }
 
     for ( i = 0; i < Count; i++ ) {
-        if ( 0 != Stack_Push(Stack, &i) ) {
+        if ( 0 != Stack_Push(Stack, &i, sizeof(i)) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value onto Stack.");
             Stack_Release(Stack);
             TEST_FAILURE;
@@ -713,7 +713,7 @@ int Test_Stack_RefClear(void) {
 
         snprintf(TempValue, BufferLength, "Stack Value [ %d ].", i);
 
-        if ( 0 != Stack_Push(Stack, TempValue) ) {
+        if ( 0 != Stack_Push(Stack, TempValue, 0) ) {
             TEST_PRINTF("%s", "Test Failure - Failed to Push() value to Stack.");
             free(TempValue);
             Stack_Release(Stack);

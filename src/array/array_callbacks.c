@@ -29,13 +29,12 @@
 
 int Array_DoCallback(Array_t *Array, CallbackFunc_t *Callback) {
 
-    void * ElementValue = NULL;
-    int    RetValue     = 0;
-    size_t Count        = 0;
+    void *ElementValue = NULL;
+    int   RetValue     = 0;
 
     if ( NULL == Array ) {
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
-        return 1;
+        return -1;
     }
 
     Iterator_Invalidate(&(Array->Iterator));
@@ -45,19 +44,11 @@ int Array_DoCallback(Array_t *Array, CallbackFunc_t *Callback) {
         return 0;
     }
 
-    Count = Array_Length(Array);
-
-    while ( NULL != (ElementValue = Array_Next(Array)) ) {
+    ARRAY_FOREACH(Array, ElementValue) {
         if ( 0 != Callback(ElementValue) ) {
-            DEBUG_PRINTF("%s", "Note: Callback function failed.");
-            RetValue = 1;
+            DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+            RetValue += 1;
         }
-        Count -= 1;
-    }
-
-    if ( 0 != Count ) {
-        DEBUG_PRINTF("%s", "Error: Failed to retrieve all Array values during iteration.");
-        RetValue = 1;
     }
 
     return RetValue;
@@ -65,9 +56,8 @@ int Array_DoCallback(Array_t *Array, CallbackFunc_t *Callback) {
 
 int Array_DoCallbackArg(Array_t *Array, CallbackArgFunc_t *Callback, void *Args) {
 
-    void * ElementValue = NULL;
-    int    RetValue     = 0;
-    size_t Count        = 0;
+    void *ElementValue = NULL;
+    int   RetValue     = 0;
 
     if ( NULL == Array ) {
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
@@ -81,19 +71,11 @@ int Array_DoCallbackArg(Array_t *Array, CallbackArgFunc_t *Callback, void *Args)
         return 0;
     }
 
-    Count = Array_Length(Array);
-
-    while ( NULL != (ElementValue = Array_Next(Array)) ) {
+    ARRAY_FOREACH(Array, ElementValue) {
         if ( 0 != Callback(ElementValue, Args) ) {
-            DEBUG_PRINTF("%s", "Note: Callback function failed.");
-            RetValue = 1;
+            DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+            RetValue += 1;
         }
-        Count -= 1;
-    }
-
-    if ( 0 != Count ) {
-        DEBUG_PRINTF("%s", "Error: Failed to retrieve all Array values during iteration.");
-        RetValue = 1;
     }
 
     return RetValue;

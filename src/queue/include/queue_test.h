@@ -22,8 +22,8 @@
     SOFTWARE.
 */
 
-#ifndef LIBCONTAINER_SET_H
-#define LIBCONTAINER_SET_H
+#ifndef LIBCONTAINER_QUEUE_TEST_H
+#define LIBCONTAINER_QUEUE_TEST_H
 
 /*
     If this header should export C-compatible symbols, rearrange these ifdefs as appropriate
@@ -32,33 +32,20 @@
 extern "C" {
 #endif
 
-#define LIBCONTAINER_ENABLE_SET
-#define LIBCONTAINER_ENABLE_BINARY_TREE
-#include "../../../include/libcontainer.h"
+/*
+    Top-level testing entry-point for the component.
+*/
+int Test_queue(void);
 
-#include "../../tree/binary-tree/include/binary_tree.h"
-#include "../../iterator/include/iterator.h"
-
-struct Set_t {
-
-    /*
-        A set is simply an interface over a Binary_Tree_t.
-
-        The Binary_Tree_t already provides a container with
-        guaranteed unique keys, as well as a sorted iterator
-        interface. Furthermore, the comparable C++ container
-        (std::ordered_set) is based on a self-balancing binary
-        tree to provide the time complexity guarantees
-        required.
-    */
-    Binary_Tree_t* Contents;
-};
-
-#if defined(TESTING) || defined(DEBUGGER)
-
-#include "set_test.h"
-
-#endif
+int Test_Queue_Create(void);
+int Test_Queue_Length(void);
+int Test_Queue_IsEmpty(void);
+int Test_Queue_Push(void);
+int Test_Queue_Peek(void);
+int Test_Queue_Pop(void);
+int Test_Queue_DoCallback(void);
+int Test_Queue_DoCallbackArg(void);
+int Test_Queue_Clear(void);
 
 #ifdef __cplusplus
 }

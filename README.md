@@ -106,6 +106,7 @@ Currently, this library provides the following containers for use:
 | `Hashmap_t`     | `LIBCONTAINER_ENABLE_HASHMAP`     | Auto-balancing key-value associative array           |
 | `Binary_Tree_t` | `LIBCONTAINER_ENABLE_BINARY_TREE` | Self-balancing binary search tree of key-value pairs |
 | `Stack_t`       | `LIBCONTAINER_ENABLE_STACK`       | LIFO (Last-In-First-Out), single-item access         |
+| `Queue_t`       | `LIBCONTAINER_ENABLE_QUEUE`       | FIFO (First-In First-Out) item access                |
 | `String_t`      | `LIBCONTAINER_ENABLE_STRING`      | Richer, safe, dynamically growable String type       |
 | `Set_t`         | `LIBCONTAINER_ENABLE_SET`         | Container of explicitly unique keys                  |
 
@@ -124,8 +125,7 @@ implement the following additional containers:
 | Container | Enable Macro | Description |
 | :--- | :--- | :--- |
 | `Binary_Heap_t`    | `LIBCONTAINER_ENABLE_BINARY_HEAP`    | Generic Binary heap                                    |
-| `Queue_t`          | `LIBCONTAINER_ENABLE_QUEUE`          | FIFO (First-In First-Out) item access                  |
-| `Priority_Queue_t` | `LIBCONTAINER_ENABLE_PRIORITY_QUEUE` | Priority-ordered FIFO (First-In First-Out) item access |
+| `Priority_Queue_t` | `LIBCONTAINER_ENABLE_PRIORITY_QUEUE` | Priority-ordered item access |
 
 Note that the containers listed in this section are still tentative. Only those provided in the section
 above are implemented as of now.

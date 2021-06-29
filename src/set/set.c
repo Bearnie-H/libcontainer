@@ -91,28 +91,21 @@ void *Set_Next(Set_t *Set) {
 
 int Set_DoCallback(Set_t *Set, CallbackFunc_t *Callback) {
 
-    void * Value  = NULL;
-    int    RetVal = 0;
-    size_t Count  = 0;
+    void *Value  = NULL;
+    int   RetVal = 0;
 
     if ( NULL == Set ) {
         DEBUG_PRINTF("%s", "Error: NULL Set* provided.");
-        return 1;
+        return -1;
     }
+
+    Iterator_Invalidate(&(Set->Contents->Iterator));
 
     SET_FOREACH(Set, Value) {
         if ( 0 != Callback(Value) ) {
-            DEBUG_PRINTF("Error: Callback returned non-zero on item [ %lu ].",
-                         (unsigned long)Count);
-            RetVal |= 1;
+            DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero");
+            RetVal += 1;
         }
-        Count++;
-    }
-
-    if ( Count != Set_Length(Set) ) {
-        DEBUG_PRINTF("Error: Set iteration did not reach all items in Set_t, (%lu/%lu)",
-                     (unsigned long)Count, (unsigned long)Set_Length(Set));
-        RetVal |= 1;
     }
 
     return RetVal;
@@ -120,28 +113,21 @@ int Set_DoCallback(Set_t *Set, CallbackFunc_t *Callback) {
 
 int Set_DoCallbackArgs(Set_t *Set, CallbackArgFunc_t *Callback, void *Args) {
 
-    void * Value  = NULL;
-    int    RetVal = 0;
-    size_t Count  = 0;
+    void *Value  = NULL;
+    int   RetVal = 0;
 
     if ( NULL == Set ) {
         DEBUG_PRINTF("%s", "Error: NULL Set* provided.");
-        return 1;
+        return -1;
     }
+
+    Iterator_Invalidate(&(Set->Contents->Iterator));
 
     SET_FOREACH(Set, Value) {
         if ( 0 != Callback(Value, Args) ) {
-            DEBUG_PRINTF("Error: Callback returned non-zero on item [ %lu ].",
-                         (unsigned long)Count);
-            RetVal |= 1;
+            DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero");
+            RetVal += 1;
         }
-        Count++;
-    }
-
-    if ( Count != Set_Length(Set) ) {
-        DEBUG_PRINTF("Error: Set iteration did not reach all items in Set_t, (%lu/%lu)",
-                     (unsigned long)Count, (unsigned long)Set_Length(Set));
-        RetVal |= 1;
     }
 
     return RetVal;
