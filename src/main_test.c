@@ -30,6 +30,7 @@
 #include "hashmap/include/hashmap.h"
 #include "heap/binary-heap/include/binary_heap.h"
 #include "list/include/list.h"
+#include "priority-queue/include/priority_queue.h"
 #include "queue/include/queue.h"
 #include "set/include/set.h"
 #include "stack/include/stack.h"
@@ -59,6 +60,7 @@ int Test_main(void) {
     FailedTests += Test_queue();
     FailedTests += Test_CompareFunc();
     FailedTests += Test_binary_heap();
+    FailedTests += Test_priority_queue();
 
     /* Returning non-zero indicates to the Makefile during make to abort.
         This lets failing tests block further builds with the "all" target

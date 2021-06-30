@@ -59,6 +59,7 @@ extern "C" {
 #define LIBCONTAINER_ENABLE_QUEUE
 #define LIBCONTAINER_ENABLE_STRING
 #define LIBCONTAINER_ENABLE_BINARY_HEAP
+#define LIBCONTAINER_ENABLE_PRIORITY_QUEUE
 #endif
 
 /*
@@ -191,6 +192,23 @@ extern "C" {
     Value   -   Binary_Heap_KeyValuePair_t type.
 */
 #define BINARY_HEAP_FOREACH(Heap, KeyValuePair) for ((KeyValuePair) = Binary_Heap_Next(Heap); (NULL != (KeyValuePair).Key); (KeyValuePair) = Binary_Heap_Next(Heap))
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_PRIORITY_QUEUE
+
+/*
+    PRIORITY_QUEUE_FOREACH
+
+    This macro defines the idiomatic method to iterate over a Priority_Queue_t container.
+    This will initialize iteration, and return each "next" value to the body of the
+    for loop. At the end of this FOREACH loop, the Value will be NULL, and the iterator
+    will be reset.
+
+    Inputs:
+    Queue   -   Pointer to the Binary_Heap_t to iterate over.
+    Value   -   Priority_Queue_Item_t type.
+*/
+#define PRIORITY_QUEUE_FOREACH(Queue, Item) for ((Item) = Priority_Queue_Next(Queue); (NULL != (Item).Value); (Item) = Priority_Queue_Next(Queue))
 #endif
 
 /* ---------- Exported Library Macros ---------- */
@@ -548,6 +566,61 @@ typedef struct Queue_t Queue_t;
 /* ---------- Public Queue_t Typedefs ---------- */
 #endif
 
+#ifdef LIBCONTAINER_ENABLE_PRIORITY_QUEUE
+/* ++++++++++ Public Priority_Queue_t Typedefs ++++++++++ */
+
+/*
+    Priority_Queue_Item_t
+
+    This type is a simple record type holding the priority and value from
+    an item pushed into a Priority_Queue_t. This is used to allow returning
+    an item and it's priority back from the queue.
+*/
+typedef struct Priority_Queue_Item_t {
+
+    /*
+        Priority holds the priority value which the Value was registered
+        into the Queue with.
+    */
+    int Priority;
+
+    /*
+        Value is the raw value as was registered into the Queue.
+    */
+    void* Value;
+
+} Priority_Queue_Item_t;
+
+/*
+    Priority_Queue_t
+
+    This container provides a Priority-Ordered interface for arbitrary,
+    homogeneous items. This container can either own the memory associated with
+    the contents it holds, or it can simply hold references to items which manage
+    their own resources.
+
+    This interface provides the standard Push/Peek/Pop expected for a Queue,
+    as well as the additional DoCallback() and DoCallbackArg() interface
+    provided by other containers in this library for performing an action
+    with each of the items in the container.
+
+    This is a distinct container from the standard Queue. That container
+    provides strict FIFO ordering, while this container will potentially
+    re-order items to ensure the highest (or lowest if specified) priority
+    item is returned first.
+
+    This struct is opaque to ensure all accesses are performed
+    through the functions provided in this library to ensure
+    safe access and operation.
+
+    See the functions prefixed with "Priority_Queue_" for the available operations
+    on this container.
+*/
+typedef struct Priority_Queue_t Priority_Queue_t;
+
+/* ---------- Public Priority_Queue_t Typedefs ---------- */
+#endif
+
 #ifdef LIBCONTAINER_ENABLE_STRING
 /* ++++++++++ Public String_t Typedefs ++++++++++ */
 
@@ -762,6 +835,27 @@ long Libcontainer_Build_Time(void);
 CompareFunc_t CompareFunc_Int_Ascending;
 
 /*
+    CompareFunc_Int_Descending
+
+    This function is equivalent to CompareFunc_Int_Ascending, except that
+    it implies the reverse ordering.
+
+    Inputs:
+    A       -   Pointer to the first item to compare.
+    B       -   Pointer to the second item to compare.
+    Size    -   (unused) The size of each item, in bytes.
+
+    Outputs:
+    int     -   Returns negative if A > B, 0 if A == B, and positive if A < B.
+
+    Note:
+    A suitable comparison function must follow this return interpretation to be useful.
+    See the implementations for these functions, as well as the documentation for strncmp()
+    and memcmp() for additional information about these kinds of comparison functions.
+*/
+CompareFunc_t CompareFunc_Int_Descending;
+
+/*
     CompareFunc_String
 
     This function is a suitable comparison function for "char*" types where this library
@@ -785,6 +879,27 @@ CompareFunc_t CompareFunc_Int_Ascending;
     and memcmp() for additional information about these kinds of comparison functions.
 */
 CompareFunc_t CompareFunc_String_Ascending;
+
+/*
+    CompareFunc_String_Descending
+
+    This function is equivalent to CompareFunc_String_Ascending, except that
+    it implies the reverse ordering.
+
+    Inputs:
+    A       -   Pointer to the first item to compare.
+    B       -   Pointer to the second item to compare.
+    Size    -   The size of the strings, or at least the smaller string.
+
+    Outputs:
+    int     -   Returns negative if A > B, 0 if A == B, and positive if A < B.
+
+    Note:
+    A suitable comparison function must follow this return interpretation to be useful.
+    See the implementations for these functions, as well as the documentation for strncmp()
+    and memcmp() for additional information about these kinds of comparison functions.
+*/
+CompareFunc_t CompareFunc_String_Descending;
 
 /* ---------- Default CompareFunc Implementations ---------- */
 
@@ -3038,6 +3153,229 @@ int Queue_Clear(Queue_t* Queue);
 void Queue_Release(Queue_t* Queue);
 
 /* ---------- Public Queue_t Functions ---------- */
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_PRIORITY_QUEUE
+/* ++++++++++ Public Priority_Queue_t Functions ++++++++++ */
+
+/*
+    Priority_Queue_Create
+
+    This function creates and initializes a new Priority_Queue_t, getting
+    it fully ready for use.
+
+    Inputs:
+    Ascending   -   Set true if the highest priority values should be returned first,
+                        or false if the lowest priority values should be returned first.
+
+    Outputs:
+    Priority_Queue_t*   -   Pointer to a created and initialized Priority_Queue_t
+                                on success, or NULL on failure.
+*/
+Priority_Queue_t* Priority_Queue_Create(bool Ascending);
+
+/*
+    Priority_Queue_Length
+
+    This function returns the "Length" or the number of items contained within the
+    Priority_Queue_t.
+
+    Inputs:
+    Queue   -   Pointer to the Priority_Queue_t to operate on.
+
+    Outputs:
+    size_t  -   Returns the count of items within the Queue. Also returns 0
+                    if the given Queue is NULL.
+*/
+size_t Priority_Queue_Length(Priority_Queue_t* Queue);
+
+/*
+    Priority_Queue_IsEmpty
+
+    This function simply returns a boolean equivalent to (0 == Priority_Queue_Length(Queue)),
+    making for a more visually explicit emptiness check.
+
+    Inputs:
+    Queue   -   Pointer to the Priority_Queue_t to operate on.
+
+    Outputs:
+    bool    -   True if the Queue contains 0 items or is NULL, false otherwise.
+*/
+bool Priority_Queue_IsEmpty(Priority_Queue_t* Queue);
+
+/*
+    Priority_Queue_Push
+
+    This function adds a new item to the Queue, with the specified priority.
+
+    Inputs:
+    Queue       -   Pointer to the Priority_Queue_t to operate on.
+    Priority    -   The Priority to assign to this entry.
+    Value       -   Pointer to the raw item to add to the Queue.
+    ValueSize   -   The size of the item (in bytes) to add to the Queue.
+    ReleaseFunc -   Pointer to the function to call to release any resources
+                        associated with the Value pointer. Leave NULL to
+                        default to free().
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Priority_Queue_Push(Priority_Queue_t* Queue, int Priority, void* Value, size_t ValueSize, ReleaseFunc_t* ReleaseFunc);
+
+/*
+    Priority_Queue_Peek
+
+    This function returns the front-most item from the Queue, without removing
+    it from the Queue. Ownership of the returned value is NOT transferred to the
+    caller.
+
+    Inputs:
+    Queue   -   Pointer to the Priority_Queue_t to operate on.
+
+    Outputs:
+    Priority_Queue_Item_t   -   Record-type containing the item at the front
+                                    of the Queue, as well as the Priority value
+                                    it was registered with.
+
+    Note:
+    Ownership of the returned Value pointer in the Priority_Queue_Item_t is NOT
+    transferred to the caller. This function is primarily intended to query and
+    inspect the Queue, not for working with the returned item itself.
+*/
+Priority_Queue_Item_t Priority_Queue_Peek(Priority_Queue_t* Queue);
+
+/*
+    Priority_Queue_Pop
+
+    This function returns the item from the front of the Queue, removing it
+    from the Queue and transferring ownership of the resources to the caller.
+
+    Inputs:
+    Queue   -   Pointer to the Priority_Queue_t to operate on.
+
+    Outputs:
+    Priority_Queue_Item_t   -   Record-type containing the item at the front
+                                    of the Queue, as well as the Priority value
+                                    it was registered with.
+
+    Note:
+    Ownership of the Value pointer within the Priority_Queue_Item_t is transferred
+    to the caller, and must be handled accordingly so as to not leak resources.
+*/
+Priority_Queue_Item_t Priority_Queue_Pop(Priority_Queue_t* Queue);
+
+/*
+    Priority_Queue_Remove
+
+    This function removes the item at the front of the Queue, without
+    returning it to the caller. Essentially, Pop() is equivalent to a
+    Peek() followed by a Remove().
+
+    Inputs:
+    Queue   -   Pointer to the Priority_Queue_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Priority_Queue_Remove(Priority_Queue_t* Queue);
+
+/*
+    Priority_Queue_Next
+
+    This function iterates over the Priority_Queue_t, returning each item
+    in sequence to the caller. Ownership of the resources associated with
+    the items is NOT transferred to the caller, and the items remain within
+    the Queue following this function.
+
+    Inputs:
+    Queue   -   Pointer to the Priority_Queue_t to operate on.
+
+    Outputs:
+    Priority_Queue_Item_t   -   Record-type containing the item at the front
+                                    of the Queue, as well as the Priority value
+                                    it was registered with.
+
+    Note:
+    This iterator provides no guarantees about the order in which
+    the items within the Queue are traversed. The only guarantee is that
+    the FIRST item will have priority equal to the highest in the Queue.
+*/
+Priority_Queue_Item_t Priority_Queue_Next(Priority_Queue_t* Queue);
+
+/*
+    Priority_Queue_DoCallback
+
+    This function performs a Callback function on each item contained within
+    the Queue.
+
+    Inputs:
+    Queue   -   Pointer to the Priority_Queue_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, negative if iteration over the Stack_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
+
+    Note:
+    This iterator provides no guarantees about the order in which
+    the items within the Queue are traversed. The only guarantee is that
+    the FIRST item will have priority equal to the highest in the Queue.
+*/
+int Priority_Queue_DoCallback(Priority_Queue_t* Queue, CallbackFunc_t* Callback);
+
+/*
+    Priority_Queue_DoCallbackArg
+
+    This function performs a Callback function on each item contained within
+    the Queue. This extends the basic Priority_Queue_DoCallback() by accepting
+    and passing to the Callback, an additional Args pointer containing arbitrary data.
+
+    Inputs:
+    Queue   -   Pointer to the Priority_Queue_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, negative if iteration over the Stack_t could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
+
+    Note:
+    This iterator provides no guarantees about the order in which
+    the items within the Queue are traversed. The only guarantee is that
+    the FIRST item will have priority equal to the highest in the Queue.
+*/
+int Priority_Queue_DoCallbackArg(Priority_Queue_t* Queue, CallbackArgFunc_t* Callback, void* Args);
+
+/*
+    Priority_Queue_Clear
+
+    This function removes and releases all items from the Queue,
+    while retaining the Queue itself for further operations.
+    This is less harsh than a full Release(), in that the Queue
+    is still usable following this function.
+
+    Inputs:
+    Queue   -   Pointer to the Priority_Queue_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure or error.
+*/
+int Priority_Queue_Clear(Priority_Queue_t* Queue);
+
+/*
+    Priority_Queue_Release
+
+    This function removes and releases all items held by the Queue,
+    as well as the Queue itself. Following a call to this function,
+    the Queue is no longer valid for use.
+
+    Inputs:
+    Queue   -   Pointer to the Priority_Queue_t to operate on.
+
+    Outputs:
+    None, the queue and all resources held by the items it contained
+    are fully released.
+*/
+void Priority_Queue_Release(Priority_Queue_t* Queue);
+
+/* ---------- Public Priority_Queue_t Functions ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_STRING
