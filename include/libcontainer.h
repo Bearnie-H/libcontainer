@@ -2515,7 +2515,7 @@ int Binary_Heap_Push(Binary_Heap_t* Heap, void* Key, size_t KeySize, void* Value
     Binary_Heap_Next
 
     This function provides an iterator interface over the Heap.
-    This iterator does not define an ordering of the items.
+    This iterator provides level-order iteration over the Heap.
     This is resumable, as long as there are no intervening
     Push(), Pop(), or Remove() calls between pause and resumption.
 

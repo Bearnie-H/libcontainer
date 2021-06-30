@@ -133,7 +133,6 @@ above are implemented as of now.
 
 TODO:
 -   Add an interface for converting an Array_t to a Binary_Heap_t and back.
--   Update the Binary_Heap_t iterator to provide level-order traversal of the structure.
 
 ## License
 

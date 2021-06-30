@@ -134,7 +134,7 @@ int Priority_Queue_Push(Priority_Queue_t *Queue, int Priority, void *Value, size
         return 1;
     }
 
-    return Binary_Heap_Push(Queue->Items, &Priority, sizeof(Priority), Value, ValueSize,
+    return Binary_Heap_Push(Queue->Items, &(Priority), sizeof(Priority), Value, ValueSize,
                             ReleaseFunc);
 }
 
@@ -160,22 +160,42 @@ Priority_Queue_Item_t Priority_Queue_Next(Priority_Queue_t *Queue) {
 
 int Priority_Queue_DoCallback(Priority_Queue_t *Queue, CallbackFunc_t *Callback) {
 
+    Priority_Queue_Item_t Item   = {0, NULL};
+    int                   RetVal = 0;
+
     if ( NULL == Queue ) {
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
         return -1;
     }
 
-    return Binary_Heap_DoCallback(Queue->Items, Callback);
+    PRIORITY_QUEUE_FOREACH(Queue, Item) {
+        if ( 0 != Callback(&Item) ) {
+            DEBUG_PRINTF("%s", "Warning: Callback() function returned non-zero.");
+            RetVal += 1;
+        }
+    }
+
+    return RetVal;
 }
 
 int Priority_Queue_DoCallbackArg(Priority_Queue_t *Queue, CallbackArgFunc_t *Callback, void *Args) {
 
+    Priority_Queue_Item_t Item   = {0, NULL};
+    int                   RetVal = 0;
+
     if ( NULL == Queue ) {
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
         return -1;
     }
 
-    return Binary_Heap_DoCallbackArg(Queue->Items, Callback, Args);
+    PRIORITY_QUEUE_FOREACH(Queue, Item) {
+        if ( 0 != Callback(&Item, Args) ) {
+            DEBUG_PRINTF("%s", "Warning: Callback() function returned non-zero.");
+            RetVal += 1;
+        }
+    }
+
+    return RetVal;
 }
 
 int Priority_Queue_Clear(Priority_Queue_t *Queue) {

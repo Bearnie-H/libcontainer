@@ -56,23 +56,38 @@ PrettyPrintBinaryHeap(const char *Prefix, const Binary_Heap_t *Heap, size_t Inde
 
 __attribute__((unused)) static int Test_Binary_Heap_DoCallbackFunc(void *Value) {
 
+    Binary_Heap_KeyValuePair_t *KeyValuePair = NULL;
+
     if ( NULL == Value ) {
         TEST_PRINTF("%s", "Error: NULL Value* passed to Callback.");
         return 1;
     }
+
+    KeyValuePair = (Binary_Heap_KeyValuePair_t *)Value;
+
+    DEBUG_PRINTF("Binary Heap item: [ %d - \"%s\" ].", *(int *)(KeyValuePair->Key),
+                 (char *)(KeyValuePair->Value));
 
     return 0;
 }
 
 __attribute__((unused)) static int Test_Binary_Heap_DoCallbackArgFunc(void *Value, void *Args) {
 
+    Binary_Heap_KeyValuePair_t *KeyValuePair = NULL;
+
     if ( NULL == Value ) {
         TEST_PRINTF("%s", "Error: NULL Value* passed to Callback.");
         return 1;
     }
 
+    KeyValuePair = (Binary_Heap_KeyValuePair_t *)Value;
+
     if ( NULL == Args ) {
-        DEBUG_PRINTF("%s", "NULL Args* passed to Callback.");
+        DEBUG_PRINTF("Binary Heap item: [ %d - \"%s\", Args (NULL) ].", *(int *)(KeyValuePair->Key),
+                     (char *)(KeyValuePair->Value));
+    } else {
+        DEBUG_PRINTF("Binary Heap item: [ %d - \"%s\", Args (Non-NULL) ].",
+                     *(int *)(KeyValuePair->Key), (char *)(KeyValuePair->Value));
     }
 
     return 0;
