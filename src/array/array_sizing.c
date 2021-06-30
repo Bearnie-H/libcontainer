@@ -56,8 +56,6 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
     }
 
     if ( Array->Capacity >= MinCap ) {
-        DEBUG_PRINTF("%s", "Array_t capacity is already large enough to hold "
-                           "the requested elements.");
         return 0;
     }
 

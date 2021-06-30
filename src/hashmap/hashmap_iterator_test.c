@@ -119,7 +119,7 @@ int Test_Hashmap_Keys_StringKey(void) {
     for ( i = 0; i < Count; i++ ) {
         snprintf(KeyValue, sizeof(KeyValue), "Key %d", i);
         TempValue = Value * i;
-        if ( 0 != Hashmap_Insert(Map, KeyValue, &TempValue, 1 + strlen(KeyValue), sizeof(TempValue),
+        if ( 0 != Hashmap_Insert(Map, KeyValue, &TempValue, strlen(KeyValue) + 1, sizeof(TempValue),
                                  NULL) ) {
             TEST_PRINTF("Test Failure - Failed to insert key (%s) and value (%d) to Hashmap",
                         KeyValue, TempValue);

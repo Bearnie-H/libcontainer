@@ -79,7 +79,7 @@ int Test_Set_Create(void) {
 
     Set_t *Set = NULL;
 
-    Set = Set_Create(CompareFunc_Int, sizeof(int), NULL);
+    Set = Set_Create(CompareFunc_Int_Ascending, sizeof(int), NULL);
     if ( NULL == Set ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Set_t for testing.");
         TEST_FAILURE;
@@ -93,7 +93,7 @@ int Test_Set_Length(void) {
 
     Set_t *Set = NULL;
 
-    Set = Set_Create(CompareFunc_Int, sizeof(int), NULL);
+    Set = Set_Create(CompareFunc_Int_Ascending, sizeof(int), NULL);
     if ( NULL == Set ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Set_t for testing.");
         TEST_FAILURE;
@@ -114,7 +114,7 @@ int Test_Set_Insert(void) {
     Set_t *Set   = NULL;
     int    Count = 32, i = 0;
 
-    Set = Set_Create(CompareFunc_Int, sizeof(int), NULL);
+    Set = Set_Create(CompareFunc_Int_Ascending, sizeof(int), NULL);
     if ( NULL == Set ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Set_t for testing.");
         TEST_FAILURE;
@@ -144,7 +144,7 @@ int Test_Set_ValueExists(void) {
     Set_t *Set   = NULL;
     int    Count = 32, i = 0;
 
-    Set = Set_Create(CompareFunc_Int, sizeof(int), NULL);
+    Set = Set_Create(CompareFunc_Int_Ascending, sizeof(int), NULL);
     if ( NULL == Set ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Set_t for testing.");
         TEST_FAILURE;
@@ -177,7 +177,7 @@ int Test_Set_Next(void) {
     Set_t *Set   = NULL;
     int    Count = 32, i = 0, *CheckValue;
 
-    Set = Set_Create(CompareFunc_Int, sizeof(int), NULL);
+    Set = Set_Create(CompareFunc_Int_Ascending, sizeof(int), NULL);
     if ( NULL == Set ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Set_t for testing.");
         TEST_FAILURE;
@@ -217,7 +217,7 @@ int Test_Set_DoCallback(void) {
     Set_t *Set   = NULL;
     int    Count = 32, i = 0;
 
-    Set = Set_Create(CompareFunc_Int, sizeof(int), NULL);
+    Set = Set_Create(CompareFunc_Int_Ascending, sizeof(int), NULL);
     if ( NULL == Set ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Set_t for testing.");
         TEST_FAILURE;
@@ -246,7 +246,7 @@ int Test_Set_DoCallbackArgs(void) {
     Set_t *Set   = NULL;
     int    Count = 32, i = 0;
 
-    Set = Set_Create(CompareFunc_Int, sizeof(int), NULL);
+    Set = Set_Create(CompareFunc_Int_Ascending, sizeof(int), NULL);
     if ( NULL == Set ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Set_t for testing.");
         TEST_FAILURE;
@@ -275,7 +275,7 @@ int Test_Set_Remove(void) {
     Set_t *Set   = NULL;
     int    Count = 32, i = 0;
 
-    Set = Set_Create(CompareFunc_Int, sizeof(int), NULL);
+    Set = Set_Create(CompareFunc_Int_Ascending, sizeof(int), NULL);
     if ( NULL == Set ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Set_t for testing.");
         TEST_FAILURE;
@@ -312,7 +312,7 @@ int Test_Set_Clear(void) {
     Set_t *Set   = NULL;
     int    Count = 32, i = 0;
 
-    Set = Set_Create(CompareFunc_Int, sizeof(int), NULL);
+    Set = Set_Create(CompareFunc_Int_Ascending, sizeof(int), NULL);
     if ( NULL == Set ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Set_t for testing.");
         TEST_FAILURE;

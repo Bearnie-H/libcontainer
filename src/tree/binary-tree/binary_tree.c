@@ -433,8 +433,11 @@ Binary_Tree_Node_t *Binary_Tree_removeNode(Binary_Tree_Node_t *Root, void *Key, 
             Successor = Binary_Tree_findMinimum(Root->RightChild);
             Binary_Tree_Node_UpdateKey(Root, Successor->Key.KeyRaw, Successor->KeySize);
             Binary_Tree_Node_UpdateValue(Root, Successor->Value.ValueRaw, Successor->ValueSize);
-            Root->RightChild = Binary_Tree_removeNode(Root->RightChild, Successor->Key.KeyRaw,
+            Root->KeyReleaseFunc   = Successor->KeyReleaseFunc;
+            Root->ValueReleaseFunc = Successor->ValueReleaseFunc;
+            Root->RightChild       = Binary_Tree_removeNode(Root->RightChild, Successor->Key.KeyRaw,
                                                       Successor->KeySize, KeyCompareFunc);
+
         } else if ( (NULL != Root->LeftChild) && (NULL == Root->RightChild) ) {
             /*
                 The node has 1 child.
@@ -455,6 +458,7 @@ Binary_Tree_Node_t *Binary_Tree_removeNode(Binary_Tree_Node_t *Root, void *Key, 
             Root->Parent    = NULL;
             Binary_Tree_Node_Release(Root);
             Root = Child;
+
         } else if ( (NULL == Root->LeftChild) && (NULL != Root->RightChild) ) {
             /*
                 The node has 1 child.
@@ -475,6 +479,7 @@ Binary_Tree_Node_t *Binary_Tree_removeNode(Binary_Tree_Node_t *Root, void *Key, 
             Root->Parent     = NULL;
             Binary_Tree_Node_Release(Root);
             Root = Child;
+
         } else {
             /*
                 The node has 0 children.

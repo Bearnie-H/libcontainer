@@ -58,6 +58,7 @@ extern "C" {
 #define LIBCONTAINER_ENABLE_STACK
 #define LIBCONTAINER_ENABLE_QUEUE
 #define LIBCONTAINER_ENABLE_STRING
+#define LIBCONTAINER_ENABLE_BINARY_HEAP
 #endif
 
 /*
@@ -67,7 +68,6 @@ extern "C" {
 #ifdef LIBCONTAINER_ENABLE_HASHMAP
 #define LIBCONTAINER_ENABLE_ARRAY
 #endif
-
 
 /* ---------- Cross-Container Macro Enabling ---------- */
 
@@ -139,7 +139,7 @@ extern "C" {
     KeyValuePair-   The local variable to hold each next item from the List.
     Direction   -   The forward iteration direction to traverse the tree in.
 */
-#define BINARY_TREE_FOREACH(List, KeyValuePair, Direction) for ((KeyValuePair) = Binary_Tree_Next((Tree), (Direction)); (NULL != (KeyValuePair).Value); (KeyValuePair) = Binary_Tree_Next((Tree), (Direction)))
+#define BINARY_TREE_FOREACH(List, KeyValuePair, Direction) for ((KeyValuePair) = Binary_Tree_Next((Tree), (Direction)); (NULL != (KeyValuePair).Key); (KeyValuePair) = Binary_Tree_Next((Tree), (Direction)))
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_SET
@@ -174,6 +174,23 @@ extern "C" {
     Value   -   Pointer with a type matching that of the items within the Queue_t.
 */
 #define QUEUE_FOREACH(Queue, Value) for ((Value) = Queue_Next(Queue); (NULL != Value); (Value) = Queue_Next(Queue))
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_BINARY_HEAP
+
+/*
+    BINARY_HEAP_FOREACH
+
+    This macro defines the idiomatic method to iterate over a Binary_Heap_t container.
+    This will initialize iteration, and return each "next" value to the body of the
+    for loop. At the end of this FOREACH loop, the Value will be NULL, and the iterator
+    will be reset.
+
+    Inputs:
+    Queue   -   Pointer to the Binary_Heap_t to iterate over.
+    Value   -   Binary_Heap_KeyValuePair_t type.
+*/
+#define BINARY_HEAP_FOREACH(Heap, KeyValuePair) for ((KeyValuePair) = Binary_Heap_Next(Heap); (NULL != (KeyValuePair).Key); (KeyValuePair) = Binary_Heap_Next(Heap))
 #endif
 
 /* ---------- Exported Library Macros ---------- */
@@ -403,6 +420,50 @@ typedef struct Binary_Tree_KeyValuePair_t {
 /* --------- Public Binary_Tree_t Typedefs --------- */
 #endif
 
+#ifdef LIBCONTAINER_ENABLE_BINARY_HEAP
+/* ++++++++++ Public Binary_Heap_t Typedefs ++++++++++ */
+
+typedef struct Binary_Heap_KeyValuePair_t {
+
+    /*
+        Key is a pointer to the Key associated with a Binary Heap Key-Value pair.
+        This is a pointer to the item within the Binary_Heap_t itself, so modifications
+        to this will be reflected in the tree itself.
+    */
+    void* Key;
+
+    /*
+        Value is a pointer to the Value associated with a Binary Heap Key-Value pair.
+        This is a pointer to the item within the Binary_Heap_t itself, so modifications
+        to this will be reflected in the tree itself.
+    */
+    void* Value;
+
+} Binary_Heap_KeyValuePair_t;
+
+/*
+    Binary_Heap_t
+
+    This container implements a generic Binary Heap. Whether this is a
+    Min-Heap or a Max-Heap depends on the CompareFunc_t it is initialized with.
+
+    Duplicate Keys and Values are allowed, and can be of arbitrary type.
+    Within a single Binary_Heap_t, the "type" of all Keys must be homogeneous,
+    and all Values must also be homogeneous. As is expected from a Heap,
+    this provides an iterator, but this iterator is unordered.
+
+    This struct is opaque to ensure all accesses are performed
+    through the functions provided in this library to ensure
+    safe access and operation.
+
+    See the functions prefixed with "Binary_Heap_" for the available operations
+    on these lists.
+*/
+typedef struct Binary_Heap_t Binary_Heap_t;
+
+/* ---------- Public Binary_Heap_t Typedefs ---------- */
+#endif
+
 #ifdef LIBCONTAINER_ENABLE_SET
 /* ++++++++++ Public Set_t Typedefs ++++++++++ */
 
@@ -592,6 +653,8 @@ typedef int(CallbackArgFunc_t)(void*, void*);
     int     -   Must return negative if First < Second,
                 Must return 0 if First == Second
                 Must return positive if First > Second
+                (For "ascending" order. Reverse this to define a
+                "descending" order.)
 
     Note:
     The library will assert that NULL pointers are NEVER passed to this
@@ -696,7 +759,7 @@ long Libcontainer_Build_Time(void);
     See the implementations for these functions, as well as the documentation for strncmp()
     and memcmp() for additional information about these kinds of comparison functions.
 */
-CompareFunc_t CompareFunc_Int;
+CompareFunc_t CompareFunc_Int_Ascending;
 
 /*
     CompareFunc_String
@@ -721,7 +784,7 @@ CompareFunc_t CompareFunc_Int;
     See the implementations for these functions, as well as the documentation for strncmp()
     and memcmp() for additional information about these kinds of comparison functions.
 */
-CompareFunc_t CompareFunc_String;
+CompareFunc_t CompareFunc_String_Ascending;
 
 /* ---------- Default CompareFunc Implementations ---------- */
 
@@ -805,24 +868,6 @@ Array_t* Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t* ReleaseFunc);
     int     -   Returns 0 on success, non-zero on failure.
 */
 int Array_Clear(Array_t* Array);
-
-/*
-    Array_Release
-
-    This function will fully and safely release the resources held by an Array_t,
-    including those held by its elements. This safely respects whether the array
-    holds reference-type elements or is a shallow-copy of another array.
-    Once passed to this function, the Array_t* is invalid for further use.
-
-    Inputs:
-    Array   -   Pointer to the Array_t to release.
-
-    Outputs:
-    None. This function always fully releases the resources associated with the array,
-    under the assumption that the ReleaseFunc provided during initialization is "safe"
-    and "correct".
-*/
-void Array_Release(Array_t* Array);
 
 /*
     Array_Length
@@ -1138,6 +1183,24 @@ int Array_DoCallbackArg(Array_t* Array, CallbackArgFunc_t* Callback, void* Args)
     if a stable sort is desired, a stable comparison function must be provided.
 */
 int Array_Sort(Array_t* Array, CompareFunc_t* CompareFunc);
+
+/*
+    Array_Release
+
+    This function will fully and safely release the resources held by an Array_t,
+    including those held by its elements. This safely respects whether the array
+    holds reference-type elements or is a shallow-copy of another array.
+    Once passed to this function, the Array_t* is invalid for further use.
+
+    Inputs:
+    Array   -   Pointer to the Array_t to release.
+
+    Outputs:
+    None. This function always fully releases the resources associated with the array,
+    under the assumption that the ReleaseFunc provided during initialization is "safe"
+    and "correct".
+*/
+void Array_Release(Array_t* Array);
 
 /* ---------- Public Array_t Functions ---------- */
 #endif
@@ -2214,6 +2277,223 @@ int Binary_Tree_Clear(Binary_Tree_t* Tree);
 void Binary_Tree_Release(Binary_Tree_t* Tree);
 
 /* --------- Public Binary_Tree_t Functions --------- */
+#endif
+
+#ifdef LIBCONTAINER_ENABLE_BINARY_HEAP
+/* ++++++++++ Public Binary_Heap_t Functions ++++++++++ */
+
+/*
+    Binary_Heap_Create
+
+    This function creates and initializes a new Binary_Heap_t structure.
+
+    Inputs:
+    KeyCompareFunc  -   Pointer to the function to use to compare two Key values within the Heap.
+    KeyReleaseFunc  -   Pointer to the function to use to release the resources associated with a Key
+                            within the Heap.
+
+    Outputs:
+    Binary_Heap_t*  -   Returns a pointer to an initialized and ready-to-use
+                            Binary_Heap_t on success, or NULL on failure.
+*/
+Binary_Heap_t* Binary_Heap_Create(CompareFunc_t* KeyCompareFunc, ReleaseFunc_t* KeyReleaseFunc);
+
+/*
+    Binary_Heap_Length
+
+    This function returns the count of the number of items contained
+    within the Heap.
+
+    Inputs:
+    Heap    -   Pointer to the Binary_Heap_t to operate on.
+
+    Outputs:
+    size_t  -   Count of the items within the Heap. 0 if Heap is NULL.
+*/
+size_t Binary_Heap_Length(Binary_Heap_t* Heap);
+
+/*
+    Binary_Heap_IsEmpty
+
+    This function allows for simply inspection of whether or not the
+    Heap contains items or not.
+
+    Inputs:
+    Heap    -   Pointer to the Binary_Heap_t to operate on.
+
+    Outputs:
+    bool    -   Returns true if Heap is NULL, or it contains 0 items.
+*/
+bool Binary_Heap_IsEmpty(Binary_Heap_t* Heap);
+
+/*
+    Binary_Heap_Peek
+
+    This function inspects the Root of the Heap, returning a Binary_Heap_KeyValuePair_t
+    containing pointers t the Root Key-Value pair. This does NOT remove the item
+    from the Heap, and does NOT transfer ownership to the caller.
+
+    Inputs:
+    Heap    -   Pointer to the Binary_Heap_t to operate on.
+
+    Outputs:
+    Binary_Heap_KeyValuePair_t  -   Struct containing the Key* and Value* pointers
+                                        for the requested item within the Heap.
+
+    Note:
+    This function does NOT transfer ownership of the returned items to the caller.
+    This simply lets the caller inspect the root of the Heap in order to make
+    a decision about whether or not to pop the value or remove it later.
+*/
+Binary_Heap_KeyValuePair_t Binary_Heap_Peek(Binary_Heap_t* Heap);
+
+/*
+    Binary_Heap_Pop
+
+    This function removes the Root of the Heap, returning the Key-Value
+    pair to the caller and transferring ownership of the resources.
+    This also removes the item from the Heap.
+
+    Inputs:
+    Heap    -   Pointer to the Binary_Heap_t to operate on.
+
+    Outputs:
+    Binary_Heap_KeyValuePair_t  -   Struct containing the Key* and Value* pointers
+                                        for the popped item from the Heap.
+*/
+Binary_Heap_KeyValuePair_t Binary_Heap_Pop(Binary_Heap_t* Heap);
+
+/*
+    Binary_Heap_Remove
+
+    This function removes the Root from the Heap, but does not return it.
+
+    Inputs:
+    Heap    -   Pointer to the Binary_Heap_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Binary_Heap_Remove(Binary_Heap_t* Heap);
+
+/*
+    Binary_Heap_Push
+
+    This function adds a new Key-Value pair to the Heap, ensuring that the
+    Heap maintains the correct shape and structure guarantees.
+
+    Inputs:
+    Heap    -   Pointer to the Binary_Heap_t to operate on.
+    Key                 -   Pointer to the Key of the Key-Value pair to add.
+    KeySize             -   Size of the Key (in bytes). 0 for a Reference-Type.
+    Value               -   Pointer to the Value of the Key-Value pair to add.
+    ValueSize           -   Size of the Value (in bytes). 0 for a Reference-Type.
+    ValueReleaseFunc    -   Pointer to the function to call to release the resources
+                                associated with the Value. Leave NULL to default to free().
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+*/
+int Binary_Heap_Push(Binary_Heap_t* Heap, void* Key, size_t KeySize, void* Value, size_t ValueSize, ReleaseFunc_t* ValueReleaseFunc);
+
+/*
+    Binary_Heap_Next
+
+    This function provides an iterator interface over the Heap.
+    This iterator does not define an ordering of the items.
+    This is resumable, as long as there are no intervening
+    Push(), Pop(), or Remove() calls between pause and resumption.
+
+    Inputs:
+    Heap    -   Pointer to the Binary_Heap_t to operate on.
+
+    Outputs:
+    Binary_Heap_KeyValuePair_t  -   Struct containing the Key* and Value* pointers
+                                        for the "next" item within the Heap.
+
+    Note:
+    This will return a Binary_Heap_KeyValuePair_t with NULL for both Key and Value
+    pointers when iteration has finished.
+*/
+Binary_Heap_KeyValuePair_t Binary_Heap_Next(Binary_Heap_t* Heap);
+
+/*
+    Binary_Heap_DoCallback
+
+    This function performs a Callback function on each item contained within the
+    Heap.
+
+    Inputs:
+    Heap        -   Pointer to the Binary_Heap_t to operate on.
+    Callback    -   Pointer to a function to call on each item contained
+                        within the Binary_Heap_t.
+
+    Outputs:
+    int     -   Returns 0 on success, negative if iteration over the Heap could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
+
+    Note:
+    The "Value*" passed into the Callback function is a Binary_KeyValuePair_t.
+*/
+int Binary_Heap_DoCallback(Binary_Heap_t* Heap, CallbackFunc_t* Callback);
+
+/*
+    Binary_Heap_DoCallbackArg
+
+    This function performs a Callback function on each item contained within the
+    Heap.
+
+    Inputs:
+    Heap        -   Pointer to the Binary_Heap_t to operate on.
+    Callback    -   Pointer to a function to call on each item contained
+                        within the Binary_Heap_t.
+    Args        -   (Optional) Pointer to additional data to pass into the Callback
+                        function along with the Key-Value pair from the Heap.
+
+    Outputs:
+    int     -   Returns 0 on success, negative if iteration over the Heap could not happen,
+                    and positive to indicate the number of Callback functions which returned non-zero.
+
+    Note:
+    The "Value*" passed into the Callback function is a Binary_KeyValuePair_t.
+*/
+int Binary_Heap_DoCallbackArg(Binary_Heap_t* Heap, CallbackArgFunc_t* Callback, void* Args);
+
+/*
+    Binary_Heap_Clear
+
+    This function removes and releases all contents of the Binary_Heap_t,
+    but retains the Heap itself for future use. This is a weaker function
+    than Binary_Heap_Release().
+
+    Inputs:
+    Heap    -   Pointer to the Binary_Heap_t to operate on.
+
+    Outputs:
+    int     -   Returns 0 on success, non-zero on failure.
+
+    Note:
+    The Heap pointer is still valid for future use after being passed to this function.
+    This simply allows for easily resetting the Heap to a default initialized state.
+*/
+int Binary_Heap_Clear(Binary_Heap_t* Heap);
+
+/*
+    Binary_Heap_Release
+
+    This function fully releases the resources held by the Binary_Heap_t
+    and all of the contents it holds. After being passed to this function,
+    the pointer is no longer valid for use.
+
+    Inputs:
+    Heap    -   Pointer to the Binary_Heap_t to operate on.
+
+    Outputs:
+    None, the Binary_Heap_t and all held contents are fully released.
+*/
+void Binary_Heap_Release(Binary_Heap_t* Heap);
+
+/* ---------- Public Binary_Heap_t Functions ---------- */
 #endif
 
 #ifdef LIBCONTAINER_ENABLE_SET

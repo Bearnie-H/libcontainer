@@ -98,7 +98,7 @@ int Array_RemoveN(Array_t *Array, size_t Index, size_t Count) {
 
     Iterator_Invalidate(&(Array->Iterator));
 
-    if ( (0 == Array->Length) || (Array->Length < Index) ) {
+    if ( (0 == Array->Length) || (Array->Length <= Index) ) {
         DEBUG_PRINTF("Index (%d) is out of bounds.", (int)Index);
         return 1;
     }
@@ -149,7 +149,7 @@ int Array_ReplaceN(Array_t *Array, void *Elements, size_t Index, size_t Count) {
         return 1;
     }
 
-    if ( (Array->Length < Index) ) {
+    if ( (Array->Length <= Index) ) {
         DEBUG_PRINTF("Error: Index (%d) is out of bounds.", (int)Index);
         return 1;
     }
@@ -176,7 +176,7 @@ void *Array_GetElement(Array_t *Array, size_t Index) {
         return NULL;
     }
 
-    if ( (0 == Array->Length) || (Array->Length < Index) ) {
+    if ( (0 == Array->Length) || (Array->Length <= Index) ) {
         DEBUG_PRINTF("Error, requested index [ %d ] is out of bounds.", (int)Index);
         return NULL;
     }
@@ -232,13 +232,17 @@ void *Array_PopElement(Array_t *Array, size_t Index) {
 
     /* Resize the array, removing the element. */
     if ( 0 == Array->ElementSize ) {
-        memmove(Array->Contents.ContentRefs[Index], Array->Contents.ContentRefs[Index + 1],
-                (Array->Length - Index - 1) * sizeof(void *));
+        if ( Index < Array_Length(Array) - 1 ) {
+            memmove(Array->Contents.ContentRefs[Index], Array->Contents.ContentRefs[Index + 1],
+                    (Array->Length - Index - 1) * sizeof(void *));
+        }
 
     } else {
-        memmove(&(Array->Contents.ContentBytes[Index * Array->ElementSize]),
-                &(Array->Contents.ContentBytes[(Index + 1) * Array->ElementSize]),
-                (Array->Length - Index - 1) * Array->ElementSize);
+        if ( Index < Array_Length(Array) - 1 ) {
+            memmove(&(Array->Contents.ContentBytes[Index * Array->ElementSize]),
+                    &(Array->Contents.ContentBytes[(Index + 1) * Array->ElementSize]),
+                    (Array->Length - Index - 1) * Array->ElementSize);
+        }
     }
 
     Array->Length -= 1;

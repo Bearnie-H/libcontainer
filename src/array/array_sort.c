@@ -53,6 +53,10 @@ void Array_swapItems(Array_t *Array, size_t IndexA, size_t IndexB) {
     uint8_t  TempByte  = 0;
     size_t   ByteIndex = 0;
 
+    if ( IndexA == IndexB ) {
+        return;
+    }
+
     if ( 0 != Array->ElementSize ) {
         ItemA = &(Array->Contents.ContentBytes[Array->ElementSize * IndexA]);
         ItemB = &(Array->Contents.ContentBytes[Array->ElementSize * IndexB]);

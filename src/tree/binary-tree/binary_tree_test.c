@@ -159,7 +159,7 @@ int Test_Binary_Tree_Create() {
 
     Binary_Tree_t *Tree = NULL;
 
-    Tree = Binary_Tree_Create(CompareFunc_Int, sizeof(int), NULL, Policy_Overwrite);
+    Tree = Binary_Tree_Create(CompareFunc_Int_Ascending, sizeof(int), NULL, Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
@@ -175,7 +175,7 @@ int Test_Binary_Tree_Insert() {
     size_t         Count = 16, i = 0;
     int            Key = 0, Value = 0, Modulo = 1000;
 
-    Tree = Binary_Tree_Create(CompareFunc_Int, sizeof(Value), NULL, Policy_Overwrite);
+    Tree = Binary_Tree_Create(CompareFunc_Int_Ascending, sizeof(Value), NULL, Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
@@ -216,7 +216,7 @@ int Test_Binary_Tree_Get() {
     size_t         Count = 32, i = 0;
     int            Key = 0, Value = 0;
 
-    Tree = Binary_Tree_Create(CompareFunc_Int, sizeof(Value), NULL, Policy_Overwrite);
+    Tree = Binary_Tree_Create(CompareFunc_Int_Ascending, sizeof(Value), NULL, Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
@@ -274,7 +274,7 @@ int Test_Binary_Tree_Pop() {
     size_t                     Count = 32, i = 0;
     int                        Key = 0, Value = 0;
 
-    Tree = Binary_Tree_Create(CompareFunc_Int, sizeof(Value), NULL, Policy_Overwrite);
+    Tree = Binary_Tree_Create(CompareFunc_Int_Ascending, sizeof(Value), NULL, Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
@@ -312,9 +312,12 @@ int Test_Binary_Tree_Pop() {
         KeyValuePair = Binary_Tree_Pop(Tree, &Key, sizeof(Key));
 
         if ( 0 != Binary_Tree_Validate_Parents(Tree->Root) ) {
-            TEST_PRINTF("Error: [ %d/%d ] Nodes within Tree are not the child of their parent.",
-                        Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
+            TEST_PRINTF(
+                "Test Failure - [ %d/%d ] Nodes within Tree are not the child of their parent.",
+                Binary_Tree_Validate_Parents(Tree->Root), (int)Binary_Tree_Length(Tree));
             Binary_Tree_Release(Tree);
+            free(KeyValuePair.Key);
+            free(KeyValuePair.Value);
             TEST_FAILURE;
         }
 
@@ -330,7 +333,6 @@ int Test_Binary_Tree_Pop() {
 
         free(KeyValuePair.Key);
         free(KeyValuePair.Value);
-        memset(&KeyValuePair, 0x00, sizeof(KeyValuePair));
     }
 
     if ( NULL != Tree->Root ) {
@@ -349,7 +351,7 @@ int Test_Binary_Tree_DoCallback() {
     size_t         Count = 32, i = 0;
     int            Key = 0, Value = 0, Modulo = 1000;
 
-    Tree = Binary_Tree_Create(CompareFunc_Int, sizeof(Value), NULL, Policy_Overwrite);
+    Tree = Binary_Tree_Create(CompareFunc_Int_Ascending, sizeof(Value), NULL, Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
@@ -392,7 +394,7 @@ int Test_Binary_Tree_DoCallbackArg() {
     size_t         Count = 32, i = 0;
     int            Key = 0, Value = 0, Modulo = 1000;
 
-    Tree = Binary_Tree_Create(CompareFunc_Int, sizeof(Value), NULL, Policy_Overwrite);
+    Tree = Binary_Tree_Create(CompareFunc_Int_Ascending, sizeof(Value), NULL, Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
@@ -436,7 +438,7 @@ int Test_Binary_Tree_Remove() {
     size_t         Count = 32, i = 0;
     int            Key = 0, Value = 0;
 
-    Tree = Binary_Tree_Create(CompareFunc_Int, sizeof(Value), NULL, Policy_Overwrite);
+    Tree = Binary_Tree_Create(CompareFunc_Int_Ascending, sizeof(Value), NULL, Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
@@ -506,7 +508,7 @@ int Test_Binary_Tree_Balancing() {
     size_t         OperationCount = 1 << 10, i = 0;
     int            Key = 0, Value = 0, OperationType = 0;
 
-    Tree = Binary_Tree_Create(CompareFunc_Int, sizeof(Value), NULL, Policy_Overwrite);
+    Tree = Binary_Tree_Create(CompareFunc_Int_Ascending, sizeof(Value), NULL, Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;
@@ -574,7 +576,7 @@ int Test_Binary_Tree_Clear(void) {
     size_t         Count = 16, i = 0;
     int            Key = 0, Value = 0, Modulo = 1000;
 
-    Tree = Binary_Tree_Create(CompareFunc_Int, sizeof(Value), NULL, Policy_Overwrite);
+    Tree = Binary_Tree_Create(CompareFunc_Int_Ascending, sizeof(Value), NULL, Policy_Overwrite);
     if ( NULL == Tree ) {
         TEST_PRINTF("%s", "Test Failure - Failed to create Binary_Tree_t* for testing.");
         TEST_FAILURE;

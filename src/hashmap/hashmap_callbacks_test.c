@@ -87,7 +87,6 @@ int Test_Hashmap_DoCallbackFunc(void) {
     Hashmap_t *Map  = NULL;
     size_t     Size = 64;
     int        i = 0, Key = 0;
-    ;
 
     Map = Hashmap_Create(HashFunc_Int, 0, NULL);
     if ( NULL == Map ) {

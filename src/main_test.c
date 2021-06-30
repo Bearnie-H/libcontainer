@@ -28,6 +28,7 @@
 #include "CompareFunc/include/CompareFunc.h"
 #include "array/include/array.h"
 #include "hashmap/include/hashmap.h"
+#include "heap/binary-heap/include/binary_heap.h"
 #include "list/include/list.h"
 #include "queue/include/queue.h"
 #include "set/include/set.h"
@@ -57,6 +58,7 @@ int Test_main(void) {
     FailedTests += Test_set();
     FailedTests += Test_queue();
     FailedTests += Test_CompareFunc();
+    FailedTests += Test_binary_heap();
 
     /* Returning non-zero indicates to the Makefile during make to abort.
         This lets failing tests block further builds with the "all" target

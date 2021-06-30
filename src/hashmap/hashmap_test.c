@@ -438,7 +438,7 @@ int Test_Hashmap_Insert_StringKey(void) {
     for ( i = 0; i < Count; i++ ) {
         snprintf(KeyValue, sizeof(KeyValue) - 1, "Key %d", i);
         TempValue = Value * i;
-        if ( 0 != Hashmap_Insert(Map, KeyValue, &TempValue, strlen(KeyValue), sizeof(TempValue),
+        if ( 0 != Hashmap_Insert(Map, KeyValue, &TempValue, strlen(KeyValue) + 1, sizeof(TempValue),
                                  NULL) ) {
             TEST_PRINTF("Test Failure - Failed to insert key (%s) and value (%d) to Hashmap",
                         KeyValue, TempValue);
@@ -471,14 +471,15 @@ int Test_Hashmap_Overwrite_StringKey(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Hashmap_Insert(Map, KeyValue, &InitialValue, strlen(KeyValue), sizeof(InitialValue),
-                             NULL) ) {
+    if ( 0 != Hashmap_Insert(Map, KeyValue, &InitialValue, strlen(KeyValue) + 1,
+                             sizeof(InitialValue), NULL) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform first Insert.");
         Hashmap_Release(Map);
         TEST_FAILURE;
     }
 
-    if ( 0 != Hashmap_Insert(Map, KeyValue, &NewValue, strlen(KeyValue), sizeof(NewValue), NULL) ) {
+    if ( 0 !=
+         Hashmap_Insert(Map, KeyValue, &NewValue, strlen(KeyValue) + 1, sizeof(NewValue), NULL) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform second Insert.");
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -518,7 +519,7 @@ int Test_Hashmap_Retrieve_StringKey(void) {
     for ( i = 0; i < Count; i++ ) {
         snprintf(KeyValue, sizeof(KeyValue) - 1, "Key %d", i);
         TempValue = Value * i;
-        if ( 0 != Hashmap_Insert(Map, KeyValue, &TempValue, strlen(KeyValue), sizeof(TempValue),
+        if ( 0 != Hashmap_Insert(Map, KeyValue, &TempValue, strlen(KeyValue) + 1, sizeof(TempValue),
                                  NULL) ) {
             TEST_PRINTF("Test Failure - Failed to insert key (%s) and value (%d) to Hashmap",
                         KeyValue, TempValue);
@@ -560,7 +561,7 @@ int Test_Hashmap_KeyExists_StringKey(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Hashmap_Insert(Map, ValidKey, &Value, strlen(ValidKey), sizeof(Value), NULL) ) {
+    if ( 0 != Hashmap_Insert(Map, ValidKey, &Value, strlen(ValidKey) + 1, sizeof(Value), NULL) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Insert operation.");
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -594,7 +595,7 @@ int Test_Hashmap_Remove_StringKey(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Hashmap_Insert(Map, KeyValue, &Value, strlen(KeyValue), sizeof(Value), NULL) ) {
+    if ( 0 != Hashmap_Insert(Map, KeyValue, &Value, strlen(KeyValue) + 1, sizeof(Value), NULL) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Insert operation.");
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -635,7 +636,7 @@ int Test_Hashmap_Pop_StringKey(void) {
         TEST_FAILURE;
     }
 
-    if ( 0 != Hashmap_Insert(Map, KeyValue, &Value, strlen(KeyValue), sizeof(Value), NULL) ) {
+    if ( 0 != Hashmap_Insert(Map, KeyValue, &Value, strlen(KeyValue) + 1, sizeof(Value), NULL) ) {
         TEST_PRINTF("%s", "Test Failure - Failed to perform Insert.");
         Hashmap_Release(Map);
         TEST_FAILURE;
@@ -684,7 +685,7 @@ int Test_Hashmap_Clear_StringKey(void) {
     for ( i = 0; i < Count; i++ ) {
         snprintf(KeyValue, sizeof(KeyValue) - 1, "Key %d", i);
         TempValue = Value * i;
-        if ( 0 != Hashmap_Insert(Map, KeyValue, &TempValue, strlen(KeyValue), sizeof(TempValue),
+        if ( 0 != Hashmap_Insert(Map, KeyValue, &TempValue, strlen(KeyValue) + 1, sizeof(TempValue),
                                  NULL) ) {
             TEST_PRINTF("Test Failure - Failed to insert key (%s) and value (%d) to Hashmap",
                         KeyValue, TempValue);

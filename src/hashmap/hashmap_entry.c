@@ -93,6 +93,9 @@ Hashmap_Entry_t *Hashmap_Entry_Create(void *Key, void *Value, size_t KeySize, si
         Entry->Value.ValueRaw = calloc(ValueSize, sizeof(uint8_t));
         if ( NULL == Entry->Value.ValueRaw ) {
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory to hold Value.");
+            if ( !KeyIsReference ) {
+                free(Entry->Key);
+            }
             free(Entry);
             return NULL;
         }

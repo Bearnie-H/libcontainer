@@ -112,33 +112,19 @@ Array_t *Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t *ReleaseFunc) {
 
 int Array_Clear(Array_t *Array) {
 
+    void *ArrayValue = NULL;
+
     if ( NULL == Array ) {
         DEBUG_PRINTF("%s", "NULL Array*, nothing to clear.");
         return 0;
     }
 
-    if ( 0 == Array_Length(Array) ) {
-        DEBUG_PRINTF("%s", "Empty Array*, nothing to clear.");
+    if ( 0 == Array->Length ) {
+        DEBUG_PRINTF("%s", "Note: Array_t already empty, nothing to clear.");
         return 0;
     }
 
-    if ( 0 != Array_RemoveN(Array, 0, Array_Length(Array)) ) {
-        DEBUG_PRINTF("%s", "Error: Failed to remove all entries from Array.");
-        return 1;
-    }
-
-    DEBUG_PRINTF("%s", "Successfully cleared Array_t contents.");
-    return 0;
-}
-
-void Array_Release(Array_t *Array) {
-
-    size_t Index = 0;
-
-    if ( NULL == Array ) {
-        DEBUG_PRINTF("%s", "NULL Array_t* provided, nothing to release.");
-        return;
-    }
+    Iterator_Invalidate(&(Array->Iterator));
 
     if ( NULL != Array->Contents.ContentBytes ) {
 
@@ -150,19 +136,31 @@ void Array_Release(Array_t *Array) {
         if ( (0 == Array->ElementSize) && (NULL != Array->ReleaseFunc) ) {
             DEBUG_PRINTF("%s", "Array_t is array of references, releasing each "
                                "element with the provided ReleaseFunc.");
-            for ( Index = 0; Index < Array->Length; Index++ ) {
-                Array->ReleaseFunc(Array->Contents.ContentRefs[Index]);
+            ARRAY_FOREACH(Array, ArrayValue) {
+                Array->ReleaseFunc(ArrayValue);
             }
         }
-
-        /* Finally, release the memory known to be held by the array. */
-        free(Array->Contents.ContentRefs);
 
     } else {
         DEBUG_PRINTF("%s", "Array_t has NULL contents pointer, no contents to release.");
     }
 
     Iterator_Invalidate(&(Array->Iterator));
+
+    Array->Length = 0;
+    DEBUG_PRINTF("%s", "Successfully cleared Array_t contents.");
+    return 0;
+}
+
+void Array_Release(Array_t *Array) {
+
+    if ( NULL == Array ) {
+        DEBUG_PRINTF("%s", "NULL Array_t* provided, nothing to release.");
+        return;
+    }
+
+    Array_Clear(Array);
+    free(Array->Contents.ContentRefs);
 
     ZERO_CONTAINER(Array, Array_t);
     free(Array);

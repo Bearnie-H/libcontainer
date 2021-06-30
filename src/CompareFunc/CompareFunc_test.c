@@ -47,7 +47,7 @@ int Test_CompareFunc_Int_Equal(void) {
 
     int A = 0, B = 0;
 
-    if ( 0 != CompareFunc_Int(&A, &B, 0) ) {
+    if ( 0 != CompareFunc_Int_Ascending(&A, &B, 0) ) {
         TEST_PRINTF("Test Failure - A (%d) compared unequal to B (%d).", A, B);
         TEST_FAILURE;
     }
@@ -59,7 +59,7 @@ int Test_CompareFunc_Int_Greater(void) {
 
     int A = 10, B = 0;
 
-    if ( 0 >= CompareFunc_Int(&A, &B, 0) ) {
+    if ( 0 >= CompareFunc_Int_Ascending(&A, &B, 0) ) {
         TEST_PRINTF("Test Failure - A (%d) compared less than or equal to B (%d).", A, B);
         TEST_FAILURE;
     }
@@ -71,7 +71,7 @@ int Test_CompareFunc_Int_Lesser(void) {
 
     int A = 0, B = 10;
 
-    if ( 0 <= CompareFunc_Int(&A, &B, 0) ) {
+    if ( 0 <= CompareFunc_Int_Ascending(&A, &B, 0) ) {
         TEST_PRINTF("Test Failure - A (%d) compared greater than or equal to B (%d).", A, B);
         TEST_FAILURE;
     }
@@ -83,7 +83,7 @@ int Test_CompareFunc_String_Equal(void) {
 
     const char A[] = "MMMMMMMMMM", B[] = "MMMMMMMMMM";
 
-    if ( 0 != CompareFunc_String(A, B, 0) ) {
+    if ( 0 != CompareFunc_String_Ascending(A, B, 0) ) {
         TEST_PRINTF("Test Failure - A (%s) compared unequal to B (%s).", A, B);
         TEST_FAILURE;
     }
@@ -95,7 +95,7 @@ int Test_CompareFunc_String_Greater(void) {
 
     const char A[] = "MMMMMMMMMM", B[] = "AAAAAAAAAA";
 
-    if ( 0 >= CompareFunc_String(A, B, 0) ) {
+    if ( 0 >= CompareFunc_String_Ascending(A, B, 0) ) {
         TEST_PRINTF("Test Failure - A (%s) compared less than or equal to B (%s).", A, B);
         TEST_FAILURE;
     }
@@ -107,7 +107,7 @@ int Test_CompareFunc_String_Lesser(void) {
 
     const char A[] = "MMMMMMMMMM", B[] = "ZZZZZZZZZZ";
 
-    if ( 0 <= CompareFunc_String(A, B, 0) ) {
+    if ( 0 <= CompareFunc_String_Ascending(A, B, 0) ) {
         TEST_PRINTF("Test Failure - A (%s) compared greater than or equal to B (%s).", A, B);
         TEST_FAILURE;
     }
