@@ -36,15 +36,18 @@ static int Test_CallbackFunc_Print(void *Value) {
     Priority_Queue_Item_t *Item = NULL;
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Value* provided.");
+#endif
         return 1;
     }
 
     Item = (Priority_Queue_Item_t *)Value;
+    if ( NULL != Item->Value ) {
 
-    DEBUG_PRINTF("Priority Queue item: [ Priority = %d, Value = \"%s\" ].", Item->Priority,
-                 (char *)(Item->Value));
-
+        DEBUG_PRINTF("Priority Queue item: [ Priority = %d, Value = \"%s\" ].", Item->Priority,
+                     (char *)(Item->Value));
+    }
     return 0;
 }
 
@@ -53,18 +56,23 @@ static int Test_CallbackArgFunc_Print(void *Value, void *Args) {
     Priority_Queue_Item_t *Item = NULL;
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Value* provided.");
+#endif
         return 1;
     }
 
     Item = (Priority_Queue_Item_t *)Value;
 
-    if ( NULL == Args ) {
-        DEBUG_PRINTF("Priority Queue item: [ Priority = %d, Value = \"%s\", Args = NULL ].",
-                     Item->Priority, (char *)(Item->Value));
-    } else {
-        DEBUG_PRINTF("Priority Queue item: [ Priority = %d, Value = \"%s\", Args = Non-NULL ].",
-                     Item->Priority, (char *)(Item->Value));
+    if ( NULL != Item->Value ) {
+
+        if ( NULL == Args ) {
+            DEBUG_PRINTF("Priority Queue item: [ Priority = %d, Value = \"%s\", Args = NULL ].",
+                         Item->Priority, (char *)(Item->Value));
+        } else {
+            DEBUG_PRINTF("Priority Queue item: [ Priority = %d, Value = \"%s\", Args = Non-NULL ].",
+                         Item->Priority, (char *)(Item->Value));
+        }
     }
 
     return 0;
@@ -246,7 +254,7 @@ int Test_Priority_Queue_Next(void) {
 
     PRIORITY_QUEUE_FOREACH(Queue, Item) {
         DEBUG_PRINTF("Priority_Queue_t iterator returned: Priority = %d, Value = \"%s\".",
-                     Item.Priority, Item.Value);
+                     Item.Priority, (char *)Item.Value);
         Count++;
     }
 

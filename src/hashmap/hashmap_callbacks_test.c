@@ -39,7 +39,9 @@ static int TestCallbackFunc_PrintIntValue(void *Value) {
         return 1;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("Hashmap Key: %d --- Hashmap Value: %d", *MapKey, *MapValue);
+#endif
 
     return 0;
 }

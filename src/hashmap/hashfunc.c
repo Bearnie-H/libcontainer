@@ -35,12 +35,16 @@ unsigned int HashFunc_Int(const void *Key, size_t KeySize) {
     unsigned int HashValue = 0;
 
     if ( NULL == Key ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, NULL Key* provided!");
+#endif
         return 0;
     }
 
     if ( 0 == KeySize ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: KeySize of 0 provided.");
+#endif
     }
 
     HashValue = *(const unsigned int *)(Key);
@@ -57,12 +61,16 @@ unsigned int HashFunc_Long(const void *Key, size_t KeySize) {
     unsigned int HashValue = 0;
 
     if ( NULL == Key ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, NULL Key* provided!");
+#endif
         return 0;
     }
 
     if ( 0 == KeySize ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: KeySize of 0 provided.");
+#endif
     }
 
     KeyValue  = *(const long *)Key;
@@ -77,12 +85,16 @@ unsigned int HashFunc_Double(const void *Key, size_t KeySize) {
     unsigned int HashValue = 0;
 
     if ( NULL == Key ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, NULL Key* provided!");
+#endif
         return 0;
     }
 
     if ( 0 == KeySize ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: KeySize of 0 provided.");
+#endif
     }
 
     KeyValue  = *(const double *)Key;
@@ -99,15 +111,19 @@ unsigned int HashFunc_String(const void *Key, size_t KeySize) {
     size_t       Index     = 0;
 
     if ( NULL == Key ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Key* provided!");
+#endif
         return 0;
     }
 
     KeyValue = (const char *)Key;
 
     if ( 0 == KeySize ) {
+#ifdef DEBUG
         DEBUG_PRINTF(
             "%s", "Warning: KeySize of 0 provided; using strlen() to compute key string length.");
+#endif
         KeySize = strlen(KeyValue);
     }
 

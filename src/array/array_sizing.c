@@ -32,12 +32,16 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
     uint8_t *Temp = NULL;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, NULL Array_t* provided.");
+#endif
         return 1;
     }
 
     if ( NULL == Array->Contents.ContentBytes ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, Array_t* in invalid state with NULL Contents pointer.");
+#endif
         return 1;
     }
 
@@ -69,22 +73,27 @@ int Array_Grow(Array_t *Array, size_t AdditionalCapacity) {
 
     Temp = (uint8_t *)realloc(Array->Contents.ContentBytes, NewCap * ElementSize);
     if ( NULL == Temp ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Failed to reallocate and grow Array_t Contents");
+#endif
         return 1;
     }
 
     Array->Contents.ContentBytes = Temp;
     Array->Capacity              = NewCap;
-
+#ifdef DEBUG
     DEBUG_PRINTF("Successfully increased Array_t capacity to [ %lu ]",
                  (unsigned long)Array->Capacity);
+#endif
     return 0;
 }
 
 size_t Array_Length(Array_t *Array) {
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, NULL Array_t* provided.");
+#endif
         return 0;
     }
 
@@ -94,7 +103,9 @@ size_t Array_Length(Array_t *Array) {
 size_t Array_Capacity(Array_t *Array) {
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, NULL Array_t* provided.");
+#endif
         return 0;
     }
 

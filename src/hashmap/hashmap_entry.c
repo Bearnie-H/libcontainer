@@ -37,7 +37,9 @@ Hashmap_Entry_t *Hashmap_Entry_Create(void *Key, void *Value, size_t KeySize, si
     bool             KeyIsReference = false, ValueIsReference = false;
 
     if ( (NULL == Key) || (NULL == Value) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Key* or Value* provided.");
+#endif
         return NULL;
     }
 
@@ -46,29 +48,39 @@ Hashmap_Entry_t *Hashmap_Entry_Create(void *Key, void *Value, size_t KeySize, si
 
     if ( NULL == KeyReleaseFunc ) {
         if ( KeyIsReference ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: NULL KeyReleaseFunc* provided for Reference-Type.");
+#endif
             return NULL;
         } else {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Note: NULL KeyReleaseFunc provided for non Reference-Type, "
                                "defaulting to free().");
+#endif
             KeyReleaseFunc = free;
         }
     }
 
     if ( NULL == ValueReleaseFunc ) {
         if ( ValueIsReference ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: NULL ValueReleaseFunc* provided for Reference-Type.");
+#endif
             return NULL;
         } else {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Note: NULL ValueReleaseFunc provided for non Reference-Type, "
                                "defaulting to free().");
+#endif
             ValueReleaseFunc = free;
         }
     }
 
     Entry = (Hashmap_Entry_t *)calloc(1, sizeof(Hashmap_Entry_t));
     if ( NULL == Entry ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Hashmap_Entry_t.");
+#endif
         return NULL;
     }
 
@@ -78,7 +90,9 @@ Hashmap_Entry_t *Hashmap_Entry_Create(void *Key, void *Value, size_t KeySize, si
     if ( !KeyIsReference ) {
         Entry->Key = (uint8_t *)calloc(KeySize, sizeof(uint8_t));
         if ( NULL == Entry->Key ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory to hold Key.");
+#endif
             free(Entry);
             return NULL;
         }
@@ -92,7 +106,9 @@ Hashmap_Entry_t *Hashmap_Entry_Create(void *Key, void *Value, size_t KeySize, si
     if ( !ValueIsReference ) {
         Entry->Value.ValueRaw = calloc(ValueSize, sizeof(uint8_t));
         if ( NULL == Entry->Value.ValueRaw ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory to hold Value.");
+#endif
             if ( !KeyIsReference ) {
                 free(Entry->Key);
             }
@@ -108,7 +124,9 @@ Hashmap_Entry_t *Hashmap_Entry_Create(void *Key, void *Value, size_t KeySize, si
 
     Entry->HashValue = HashValue;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully created Hashmap_Entry_t.");
+#endif
     return Entry;
 }
 
@@ -121,22 +139,30 @@ int Hashmap_Entry_Update(Hashmap_Entry_t *Entry, void *NewValue, size_t NewValue
     NewValueIsReference = (NewValueSize == 0);
 
     if ( NULL == Entry ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Entry* provided.");
+#endif
         return 1;
     }
 
     if ( NULL == NewValue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL NewValue* provided.");
+#endif
         return 1;
     }
 
     if ( NULL == NewValueReleaseFunc ) {
         if ( NewValueIsReference ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: NULL NewValueIsReference* provided for Reference-Type.");
+#endif
             return 1;
         } else {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Note: NULL NewValueIsReference provided for non Reference-Type, "
                                "defaulting to free().");
+#endif
             NewValueReleaseFunc = free;
         }
     }
@@ -144,7 +170,9 @@ int Hashmap_Entry_Update(Hashmap_Entry_t *Entry, void *NewValue, size_t NewValue
     if ( !NewValueIsReference ) {
         NewValueContents = calloc(NewValueSize, sizeof(uint8_t));
         if ( NULL == NewValueContents ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory to hold new Value.");
+#endif
             return 1;
         }
         memcpy(NewValueContents, NewValue, NewValueSize);
@@ -158,14 +186,18 @@ int Hashmap_Entry_Update(Hashmap_Entry_t *Entry, void *NewValue, size_t NewValue
     Entry->ValueSize        = NewValueSize;
     Entry->ValueReleaseFunc = NewValueReleaseFunc;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully updated Value of Hashmap_Entry_t.");
+#endif
     return 0;
 }
 
 void Hashmap_Entry_Release(Hashmap_Entry_t *Entry) {
 
     if ( NULL == Entry ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Entry* provided, nothing to release.");
+#endif
         return;
     }
 

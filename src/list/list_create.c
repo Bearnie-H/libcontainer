@@ -32,7 +32,9 @@ List_t *List_Create(void) {
     /* Allocate the memory for the list. */
     List = (List_t *)calloc(1, sizeof(List_t));
     if ( NULL == List ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, Failed to allocate memory for List_t.");
+#endif
         return NULL;
     }
 
@@ -48,18 +50,24 @@ List_t *List_Create(void) {
 int List_Clear(List_t *List) {
 
     if ( NULL == List ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL List* provided, nothing to remove.");
+#endif
         return 0;
     }
 
     while ( 0 != List_Length(List) ) {
         if ( 0 != List_Remove(List, 0) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to remove item during List_Clear().");
+#endif
             return 1;
         }
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully removed all entries from List_t.");
+#endif
     return 0;
 }
 
@@ -69,7 +77,9 @@ void List_Release(List_t *List) {
     List_Node_t *Next    = NULL;
 
     if ( NULL == List ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL List_t* provided, nothing to release.");
+#endif
         return;
     }
 
@@ -83,6 +93,8 @@ void List_Release(List_t *List) {
     ZERO_CONTAINER(List, List_t);
 
     free(List);
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully released List_t* and all held contents.");
+#endif
     return;
 }

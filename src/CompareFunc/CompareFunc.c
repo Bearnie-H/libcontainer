@@ -42,15 +42,19 @@ int CompareFunc_String_Ascending(const void *A, const void *B, size_t Size) {
     size_t Size_A = 0, Size_B = 0;
 
     if ( 0 == Size ) {
+#ifdef DEBUG
         DEBUG_PRINTF(
             "%s",
             "Warning: Size of 0 provided, using strlen() to compute length of given strings.");
+#endif
         Size_A = strlen(A);
         Size_B = strlen(B);
         Size   = (Size_A > Size_B) ? (Size_B) : (Size_A);
+#ifdef DEBUG
         DEBUG_PRINTF("Provided strings have lengths: strlen(A) = (%lu), strlen(B) = (%lu), Using "
                      "(%lu) as size for strncmp().",
                      (unsigned long)Size_A, (unsigned long)Size_B, (unsigned long)Size);
+#endif
     }
 
     return strncmp(A, B, Size);
@@ -61,15 +65,19 @@ int CompareFunc_String_Descending(const void *A, const void *B, size_t Size) {
     size_t Size_A = 0, Size_B = 0;
 
     if ( 0 == Size ) {
+#ifdef DEBUG
         DEBUG_PRINTF(
             "%s",
             "Warning: Size of 0 provided, using strlen() to compute length of given strings.");
+#endif
         Size_A = strlen(A);
         Size_B = strlen(B);
         Size   = (Size_A > Size_B) ? (Size_B) : (Size_A);
+#ifdef DEBUG
         DEBUG_PRINTF("Provided strings have lengths: strlen(A) = (%lu), strlen(B) = (%lu), Using "
                      "(%lu) as size for strncmp().",
                      (unsigned long)Size_A, (unsigned long)Size_B, (unsigned long)Size);
+#endif
     }
 
     return strncmp(B, A, Size);

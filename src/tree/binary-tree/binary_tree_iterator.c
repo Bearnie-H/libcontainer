@@ -39,7 +39,9 @@ int Iterator_Initialize_Binary_Tree(Binary_Tree_t *Tree, Binary_Tree_Direction_t
     Binary_Tree_Node_t *Node     = NULL;
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
+#endif
         return 1;
     }
 
@@ -47,7 +49,9 @@ int Iterator_Initialize_Binary_Tree(Binary_Tree_t *Tree, Binary_Tree_Direction_t
 
     Iterator = (Iterator_t *)calloc(1, sizeof(Iterator_t));
     if ( NULL == Iterator ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory to initialize Iterator.");
+#endif
         return 1;
     }
 
@@ -69,22 +73,30 @@ int Iterator_Initialize_Binary_Tree(Binary_Tree_t *Tree, Binary_Tree_Direction_t
             if ( Forward ) {
                 Node = Binary_Tree_leftmostLeaf(Tree->Root);
                 if ( NULL == Node ) {
+#ifdef DEBUG
                     DEBUG_PRINTF(
                         "%s",
                         "Error: Failed to find Left-most leaf of Binary Tree to start Iterator.");
+#endif
                     free(Iterator);
                     return 1;
                 }
             }
             break;
-        default: DEBUG_PRINTF("%s", "Error: Unknown traversal direction specified."); return 1;
+        default:
+#ifdef DEBUG
+            DEBUG_PRINTF("%s", "Error: Unknown traversal direction specified.");
+#endif
+            return 1;
     }
 
     Iterator->Context        = Node;
     Iterator->ReleaseContext = NULL;
     Iterator->Type           = Iterator_BinaryTree;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully prepared Binary Tree Iterator.");
+#endif
     Tree->Iterator = Iterator;
     return 0;
 }
@@ -96,13 +108,17 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Next(Binary_Tree_t *         Tree,
     Binary_Tree_Node_t *       Current      = NULL;
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
+#endif
         return KeyValuePair;
     }
 
     if ( (NULL == Tree->Iterator) || (Tree->Iterator->Type == Iterator_UNKNOWN) ) {
         if ( 0 != Iterator_Initialize_Binary_Tree(Tree, Direction, true) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to initialize Binary Tree Iterator.");
+#endif
             return KeyValuePair;
         }
         Current = (Binary_Tree_Node_t *)Tree->Iterator->Context;
@@ -119,12 +135,16 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Next(Binary_Tree_t *         Tree,
         case Direction_PreOrder: Current = Binary_Tree_preOrderNext(Current); break;
         case Direction_PostOrder: Current = Binary_Tree_postOrderNext(Current); break;
         default:
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Unknown Tree traversal direction specified.");
+#endif
             return KeyValuePair;
     }
 
     if ( NULL == Current ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Iteration has reached the end of the Tree.");
+#endif
         Iterator_Invalidate(&(Tree->Iterator));
         return KeyValuePair;
     }
@@ -143,13 +163,17 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t *         Tree,
     Binary_Tree_Node_t *       Current      = NULL;
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
+#endif
         return KeyValuePair;
     }
 
     if ( (NULL == Tree->Iterator) || (Tree->Iterator->Type == Iterator_UNKNOWN) ) {
         if ( 0 != Iterator_Initialize_Binary_Tree(Tree, Direction, false) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to initialize Binary Tree Iterator.");
+#endif
             return KeyValuePair;
         }
         Current = (Binary_Tree_Node_t *)Tree->Iterator->Context;
@@ -166,12 +190,16 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t *         Tree,
         case Direction_PreOrder: Current = Binary_Tree_preOrderPrevious(Current); break;
         case Direction_PostOrder: Current = Binary_Tree_postOrderPrevious(Current); break;
         default:
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Unknown Tree traversal direction specified.");
+#endif
             return KeyValuePair;
     }
 
     if ( NULL == Current ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Iteration has reached the end of the Tree.");
+#endif
         Iterator_Invalidate(&(Tree->Iterator));
         return KeyValuePair;
     }
@@ -188,7 +216,9 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Previous(Binary_Tree_t *         Tree,
 Binary_Tree_Node_t *Binary_Tree_inOrderNext(Binary_Tree_Node_t *Current) {
 
     if ( NULL == Current ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
+#endif
         return NULL;
     }
 
@@ -206,7 +236,9 @@ Binary_Tree_Node_t *Binary_Tree_inOrderNext(Binary_Tree_Node_t *Current) {
 Binary_Tree_Node_t *Binary_Tree_preOrderNext(Binary_Tree_Node_t *Current) {
 
     if ( NULL == Current ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
+#endif
         return NULL;
     }
 
@@ -228,7 +260,9 @@ Binary_Tree_Node_t *Binary_Tree_preOrderNext(Binary_Tree_Node_t *Current) {
 Binary_Tree_Node_t *Binary_Tree_postOrderNext(Binary_Tree_Node_t *Current) {
 
     if ( NULL == Current ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
+#endif
         return NULL;
     }
 
@@ -246,7 +280,9 @@ Binary_Tree_Node_t *Binary_Tree_postOrderNext(Binary_Tree_Node_t *Current) {
 Binary_Tree_Node_t *Binary_Tree_inOrderPrevious(Binary_Tree_Node_t *Current) {
 
     if ( NULL == Current ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
+#endif
         return NULL;
     }
 
@@ -269,7 +305,9 @@ Binary_Tree_Node_t *Binary_Tree_inOrderPrevious(Binary_Tree_Node_t *Current) {
 Binary_Tree_Node_t *Binary_Tree_preOrderPrevious(Binary_Tree_Node_t *Current) {
 
     if ( NULL == Current ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
+#endif
         return NULL;
     }
 
@@ -289,7 +327,9 @@ Binary_Tree_Node_t *Binary_Tree_preOrderPrevious(Binary_Tree_Node_t *Current) {
 Binary_Tree_Node_t *Binary_Tree_postOrderPrevious(Binary_Tree_Node_t *Current) {
 
     if ( NULL == Current ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Current* provided.");
+#endif
         return NULL;
     }
 
@@ -317,7 +357,9 @@ Binary_Tree_Node_t *Binary_Tree_postOrderPrevious(Binary_Tree_Node_t *Current) {
 Binary_Tree_Node_t *Binary_Tree_leftmostLeaf(Binary_Tree_Node_t *Root) {
 
     if ( NULL == Root ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Root* provided.");
+#endif
         return NULL;
     }
 

@@ -32,23 +32,31 @@ Stack_t *Stack_Create(size_t ValueSize, ReleaseFunc_t *ReleaseFunc) {
     Stack_t *Stack = NULL;
 
     if ( 0 == ValueSize ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: ValueSize of 0 indicates Reference-Type items.");
+#endif
     }
 
     if ( NULL == ReleaseFunc ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL ReleaseFunc* provided, defaulting to free().");
+#endif
         ReleaseFunc = free;
     }
 
     Stack = (Stack_t *)calloc(1, sizeof(Stack_t));
     if ( NULL == Stack ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate new Stack_t.");
+#endif
         return NULL;
     }
 
     Stack->Items = List_Create();
     if ( NULL == Stack->Items ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate internal memory to hold items in Stack_t.");
+#endif
         free(Stack);
         return NULL;
     }
@@ -62,7 +70,9 @@ Stack_t *Stack_Create(size_t ValueSize, ReleaseFunc_t *ReleaseFunc) {
 size_t Stack_Length(Stack_t *Stack) {
 
     if ( NULL == Stack ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: NULL Stack* provided, no length to report.");
+#endif
         return 0;
     }
 
@@ -72,7 +82,9 @@ size_t Stack_Length(Stack_t *Stack) {
 bool Stack_IsEmpty(Stack_t *Stack) {
 
     if ( NULL == Stack ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Stack* provided, treating as empty.");
+#endif
         return true;
     }
 
@@ -82,7 +94,9 @@ bool Stack_IsEmpty(Stack_t *Stack) {
 int Stack_Push(Stack_t *Stack, void *Value, size_t ValueSize) {
 
     if ( NULL == Stack ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Stack* provided.");
+#endif
         return 1;
     }
 
@@ -98,7 +112,9 @@ int Stack_Push(Stack_t *Stack, void *Value, size_t ValueSize) {
 void *Stack_Peek(Stack_t *Stack) {
 
     if ( NULL == Stack ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Stack* provided.");
+#endif
         return NULL;
     }
 
@@ -108,7 +124,9 @@ void *Stack_Peek(Stack_t *Stack) {
 void *Stack_Pop(Stack_t *Stack) {
 
     if ( NULL == Stack ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Stack* provided.");
+#endif
         return NULL;
     }
 
@@ -118,7 +136,9 @@ void *Stack_Pop(Stack_t *Stack) {
 int Stack_DoCallback(Stack_t *Stack, CallbackFunc_t *Callback) {
 
     if ( NULL == Stack ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Stack* provided.");
+#endif
         return 1;
     }
 
@@ -128,7 +148,9 @@ int Stack_DoCallback(Stack_t *Stack, CallbackFunc_t *Callback) {
 int Stack_DoCallbackArg(Stack_t *Stack, CallbackArgFunc_t *Callback, void *Args) {
 
     if ( NULL == Stack ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Stack* provided.");
+#endif
         return 1;
     }
 
@@ -138,7 +160,9 @@ int Stack_DoCallbackArg(Stack_t *Stack, CallbackArgFunc_t *Callback, void *Args)
 int Stack_Clear(Stack_t *Stack) {
 
     if ( NULL == Stack ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Stack* provided.");
+#endif
         return 1;
     }
 
@@ -148,7 +172,9 @@ int Stack_Clear(Stack_t *Stack) {
 void Stack_Release(Stack_t *Stack) {
 
     if ( NULL == Stack ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Stack* provided.");
+#endif
         return;
     }
 

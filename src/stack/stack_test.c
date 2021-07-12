@@ -32,56 +32,80 @@
 static int StackCallbackFunc(void *Value) {
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Value* Provided.");
+#endif
         return 1;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("Stack item has value: [ %d ].", *(int *)Value);
+#endif
     return 0;
 }
 
 static int StackCallbackArgFunc(void *Value, void *Args) {
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Value* Provided.");
+#endif
         return 1;
     }
 
     if ( NULL == Args ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Args* provided.");
+#endif
+#ifdef DEBUG
         DEBUG_PRINTF("Stack item has value: [ %d ].", *(int *)Value);
+#endif
         return 0;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("Stack item has value: [ %d ] (%s).", *(int *)Value, (char *)Args);
+#endif
     return 0;
 }
 
 static int StackRefCallbackFunc(void *Value) {
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Value* Provided.");
+#endif
         return 1;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("Stack item has value: [ %s ].", (char *)Value);
+#endif
     return 0;
 }
 
 static int StackRefCallbackArgFunc(void *Value, void *Args) {
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Value* Provided.");
+#endif
         return 1;
     }
 
     if ( NULL == Args ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Args* provided.");
+#endif
+#ifdef DEBUG
         DEBUG_PRINTF("Stack item has value: [ %s ].", (char *)Value);
+#endif
         return 0;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("Stack item has value: [ %s ] (%s).", (char *)Value, (char *)Args);
+#endif
     return 0;
 }
 

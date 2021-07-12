@@ -37,19 +37,25 @@ String_t *String_Create(char *Value, size_t Length) {
 
     String = (String_t *)calloc(1, sizeof(String_t));
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for String_t.");
+#endif
         return NULL;
     }
 
     if ( (NULL != Value) && (0 == Length) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Non-NULL Value provided, but 0 Length specified. Computing "
                            "Length with strlen().");
+#endif
         Length = strlen(Value);
     }
 
     String->Contents = Array_Create(Length, sizeof(char));
     if ( NULL == String->Contents ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for String_t contents.");
+#endif
         free(String);
         return NULL;
     }
@@ -63,7 +69,9 @@ String_t *String_Create(char *Value, size_t Length) {
     /* A Non-NULL initializer string was provided, so set the starting string contents to this
      * value. */
     if ( 0 != Array_InsertN(String->Contents, Value, 0, Length) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to initialize String_t with given value.");
+#endif
         String_Release(String);
         return NULL;
     }
@@ -77,13 +85,17 @@ String_t *String_CreateConst(char *Value) {
 
     String = (String_t *)calloc(1, sizeof(String_t));
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for String_t.");
+#endif
         return NULL;
     }
 
     String->Contents = Array_Create(0, sizeof(char));
     if ( NULL == String->Contents ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for String_t contents.");
+#endif
         free(String);
         return NULL;
     }
@@ -98,7 +110,9 @@ String_t *String_CreateConst(char *Value) {
 size_t String_Length(String_t *String) {
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL String* provided, cannot check length.");
+#endif
         return 0;
     }
 
@@ -114,13 +128,17 @@ char String_GetAtIndex(String_t *String, size_t Index) {
     char *Character = NULL;
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return 0x00;
     }
 
     Character = (char *)Array_GetElement(String->Contents, Index);
     if ( NULL == Character ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Error: Failed to retrieve item at index [ %d ] from String.", (int)Index);
+#endif
         return 0x00;
     }
 
@@ -138,12 +156,16 @@ char String_GetBack(String_t *String) {
 int String_Insert(String_t *String, char *ToInsert, size_t Index, size_t Length) {
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return 1;
     }
 
     if ( String->IsConst ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Cannot modify Const String_t.");
+#endif
         return 1;
     }
 
@@ -153,12 +175,16 @@ int String_Insert(String_t *String, char *ToInsert, size_t Index, size_t Length)
 int String_Prepend(String_t *String, char *ToInsert, size_t Length) {
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return 1;
     }
 
     if ( String->IsConst ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Cannot modify Const String_t.");
+#endif
         return 1;
     }
 
@@ -168,12 +194,16 @@ int String_Prepend(String_t *String, char *ToInsert, size_t Length) {
 int String_Append(String_t *String, char *ToInsert, size_t Length) {
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return 1;
     }
 
     if ( String->IsConst ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Cannot modify Const String_t.");
+#endif
         return 1;
     }
 
@@ -183,12 +213,16 @@ int String_Append(String_t *String, char *ToInsert, size_t Length) {
 int String_Replace(String_t *String, char *ToInsert, size_t Index, size_t Length) {
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return 1;
     }
 
     if ( String->IsConst ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Cannot modify Const String_t.");
+#endif
         return 1;
     }
 
@@ -198,17 +232,23 @@ int String_Replace(String_t *String, char *ToInsert, size_t Index, size_t Length
 int String_Set(String_t *String, char *NewValue, size_t Length) {
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return 1;
     }
 
     if ( String->IsConst ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Cannot modify Const String_t.");
+#endif
         return 1;
     }
 
     if ( 0 != Array_Clear(String->Contents) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to remove existing contents from String_t.");
+#endif
         return 1;
     }
 
@@ -222,7 +262,9 @@ int String_Set(String_t *String, char *NewValue, size_t Length) {
 char *String_ToCString(String_t *String) {
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return NULL;
     }
 
@@ -234,7 +276,9 @@ char *String_ToCString(String_t *String) {
     /* Grow the string to hold a NUL-terminator, if there isn't room. */
     if ( String->Contents->Capacity == String->Contents->Length ) {
         if ( 0 != Array_Grow(String->Contents, 1) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to grow Array to accommodate NULL-terminator.");
+#endif
             return NULL;
         }
     }
@@ -251,7 +295,9 @@ char *String_Unwrap(String_t *String) {
 
     Unwrapped = String_ToCString(String);
     if ( NULL == Unwrapped ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to get raw C-String from String_t.");
+#endif
         return NULL;
     }
 
@@ -266,7 +312,9 @@ String_t *String_Copy(String_t *String) {
     String_t *Duplicate = NULL;
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return NULL;
     }
 
@@ -277,7 +325,9 @@ String_t *String_Copy(String_t *String) {
     }
 
     if ( NULL == Duplicate ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to create new String_t copy.");
+#endif
         return NULL;
     }
 
@@ -289,14 +339,18 @@ String_t *String_Substring(String_t *String, size_t Index, size_t Length) {
     size_t StringLength = 0;
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return NULL;
     }
 
     StringLength = String_Length(String);
 
     if ( StringLength <= Index ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Index is out of bounds.");
+#endif
         return NULL;
     }
 
@@ -332,12 +386,16 @@ int String_Compare(String_t *A, String_t *B) {
 int String_Clear(String_t *String) {
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return 1;
     }
 
     if ( String->IsConst ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Cannot modify const String_t.");
+#endif
         return 1;
     }
 
@@ -351,7 +409,9 @@ int String_Clear(String_t *String) {
 void String_Release(String_t *String) {
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Provided String* is NULL, nothing to release.");
+#endif
         return;
     }
 
@@ -365,7 +425,9 @@ void String_Release(String_t *String) {
     ZERO_CONTAINER(String, String_t);
     free(String);
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully released String and held contents.");
+#endif
     return;
 }
 
@@ -374,7 +436,9 @@ void String_Release(String_t *String) {
 int String_grow(String_t *String, size_t AdditionalCapacity) {
 
     if ( NULL == String ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL String* provided.");
+#endif
         return 1;
     }
 

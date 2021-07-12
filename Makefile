@@ -26,9 +26,9 @@
 #   You will also need to update the DefaultComponent.mk file to use your test-file naming convention as well.
 
 #   Version Settings
-MAJOR_VERSION   := 0
-MINOR_VERSION   := 12
-PATCH_VERSION   := 2
+MAJOR_VERSION   := 1
+MINOR_VERSION   := 0
+PATCH_VERSION   := 1
 BUILD_DATE      := $(shell date "+%A %d %B %Y %T %Z")
 BUILD_DATESTAMP := $(shell date "+%Y%m%d")
 VERSION         := v$(MAJOR_VERSION).$(MINOR_VERSION).$(PATCH_VERSION)
@@ -53,7 +53,7 @@ FMTTOOL         ?=$(shell which clang-format)
 include Build_Tuning.mk
 
 #   Define the flags for the various different end-result build targets
-RELFLAGS  := $(CFLAGS) -Ofast -DNDEBUG
+RELFLAGS  := $(CFLAGS) -std=c89 -Ofast -DNDEBUG
 DBGFLAGS  := $(CFLAGS) -g -O0 -DDEBUG
 DBGRFLAGS := $(CFLAGS) -g -O0 -DDEBUG -DDEBUGGER
 TESTFLAGS := $(CFLAGS) -g -O0 -DDEBUG -DDEBUGGER -DTESTING

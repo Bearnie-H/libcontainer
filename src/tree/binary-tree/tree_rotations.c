@@ -46,7 +46,9 @@ Binary_Tree_Node_t *Binary_Tree_rebalance(Binary_Tree_Node_t *Root) {
     int BalanceFactor = 0;
 
     if ( NULL == Root ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Cannot perform tree rotations on NULL Root*.");
+#endif
         return NULL;
     }
 
@@ -74,12 +76,16 @@ Binary_Tree_Node_t *Binary_Tree_rotateLeft(Binary_Tree_Node_t *Root) {
     Binary_Tree_Node_t *Pivot = NULL;
 
     if ( NULL == Root ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Cannot perform tree rotations on NULL Root*.");
+#endif
         return NULL;
     }
 
     if ( NULL == Root->RightChild ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Cannot perform Left rotation with NULL Right Child.");
+#endif
         return Root;
     }
 
@@ -100,12 +106,16 @@ Binary_Tree_Node_t *Binary_Tree_rotateRight(Binary_Tree_Node_t *Root) {
     Binary_Tree_Node_t *Pivot = NULL;
 
     if ( NULL == Root ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Cannot perform tree rotations on NULL Root*.");
+#endif
         return NULL;
     }
 
     if ( NULL == Root->LeftChild ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Cannot perform Left rotation with NULL Left Child.");
+#endif
         return Root;
     }
 
@@ -124,7 +134,9 @@ Binary_Tree_Node_t *Binary_Tree_rotateRight(Binary_Tree_Node_t *Root) {
 Binary_Tree_Node_t *Binary_Tree_rotateDoubleLeft(Binary_Tree_Node_t *Root) {
 
     if ( NULL == Root ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Cannot perform tree rotations on NULL Root*.");
+#endif
         return NULL;
     }
 
@@ -137,7 +149,9 @@ Binary_Tree_Node_t *Binary_Tree_rotateDoubleLeft(Binary_Tree_Node_t *Root) {
 Binary_Tree_Node_t *Binary_Tree_rotateDoubleRight(Binary_Tree_Node_t *Root) {
 
     if ( NULL == Root ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Cannot perform tree rotations on NULL Root*.");
+#endif
         return NULL;
     }
 

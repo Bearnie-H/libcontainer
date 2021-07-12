@@ -34,23 +34,31 @@ static CallbackArgFunc_t CallbackArgFunc_Int;
 static int CallbackFunc_Int(void *Value) {
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Value* provided.");
+#endif
         return 1;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("Callback function called with integer [ %d ].", *(int *)Value);
+#endif
     return 0;
 }
 
 static int CallbackArgFunc_Int(void *Value, void *Args) {
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Value* provided.");
+#endif
         return 1;
     }
 
     if ( NULL == Args ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Callback function called with integer [ %d ] and no Args.", *(int *)Value);
+#endif
     } else {
         DEBUG_PRINTF("Callback function called with integer [ %d ] and Non-NULL Args.",
                      *(int *)Value);

@@ -75,12 +75,6 @@ extern "C" {
 
 #else
 
-#define DEBUG_PRINTF(_fmt, ...) ((void)0)
-#define TEST_PRINTF(_fmt, ...) ((void)0)
-#define TEST_NOT_IMPLEMENTED ((void)0)
-#define TEST_SUCCESSFUL ((void)0)
-#define TEST_FAILURE ((void)0)
-
 #endif
 
 #if defined(TESTING)

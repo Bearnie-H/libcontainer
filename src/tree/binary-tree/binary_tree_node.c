@@ -37,18 +37,24 @@ Binary_Tree_Node_t *Binary_Tree_Node_Create(void *Key, size_t KeySize,
     uint8_t *           ValueContents = NULL;
 
     if ( NULL == KeyReleaseFunc ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL KeyReleaseFunc* provided, defaulting to free().");
+#endif
         KeyReleaseFunc = free;
     }
 
     if ( NULL == ValueReleaseFunc ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL ValueReleaseFunc* provided, defaulting to free().");
+#endif
         ValueReleaseFunc = free;
     }
 
     Node = (Binary_Tree_Node_t *)calloc(1, sizeof(Binary_Tree_Node_t));
     if ( NULL == Node ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Binary_Tree_Node_t.");
+#endif
         return NULL;
     }
 
@@ -57,7 +63,9 @@ Binary_Tree_Node_t *Binary_Tree_Node_Create(void *Key, size_t KeySize,
     } else {
         KeyContents = (uint8_t *)calloc(KeySize, sizeof(uint8_t));
         if ( NULL == KeyContents ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Binary_Tree_Node_t Key.");
+#endif
             free(Node);
             return NULL;
         }
@@ -69,7 +77,9 @@ Binary_Tree_Node_t *Binary_Tree_Node_Create(void *Key, size_t KeySize,
     } else {
         ValueContents = (uint8_t *)calloc(ValueSize, sizeof(uint8_t));
         if ( NULL == ValueContents ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Binary_Tree_Node_t contents.");
+#endif
             free(Node);
             free(KeyContents);
             return NULL;
@@ -89,7 +99,9 @@ Binary_Tree_Node_t *Binary_Tree_Node_Create(void *Key, size_t KeySize,
     Node->LeftChild  = NULL;
     Node->RightChild = NULL;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully created Binary_Tree_Node_t.");
+#endif
     return Node;
 }
 
@@ -116,18 +128,24 @@ int Binary_Tree_Node_UpdateKey(Binary_Tree_Node_t *Node, void *NewKey, size_t Ke
     } else {
         TempKey = (uint8_t *)calloc(KeySize, sizeof(uint8_t));
         if ( NULL == TempKey ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory for new Key.");
+#endif
             return 1;
         }
         memcpy(TempKey, NewKey, KeySize);
     }
 
     if ( (Node->Key.KeyRaw != NULL) && (NULL != Node->KeyReleaseFunc) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Binary_Tree_Node_t has non-NULL Key, releasing.");
+#endif
         Node->KeyReleaseFunc(Node->Key.KeyRaw);
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully updated Key of Binary_Tree_Node_t.");
+#endif
     Node->Key.KeyBytes = TempKey;
     Node->KeySize      = KeySize;
     return 0;
@@ -142,18 +160,24 @@ int Binary_Tree_Node_UpdateValue(Binary_Tree_Node_t *Node, void *NewValue, size_
     } else {
         TempValue = (uint8_t *)calloc(ValueSize, sizeof(uint8_t));
         if ( NULL == TempValue ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to allocate memory for new Value.");
+#endif
             return 1;
         }
         memcpy(TempValue, NewValue, ValueSize);
     }
 
     if ( (Node->Value.ValueRaw != NULL) && (NULL != Node->ValueReleaseFunc) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Binary_Tree_Node_t has non-NULL value, releasing.");
+#endif
         Node->ValueReleaseFunc(Node->Value.ValueRaw);
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully updated value of Binary_Tree_Node_t.");
+#endif
     Node->Value.ValueBytes = TempValue;
     Node->ValueSize        = ValueSize;
     return 0;
@@ -185,13 +209,17 @@ void Binary_Tree_Node_Release(Binary_Tree_Node_t *Node) {
         } else if ( Node == Parent->RightChild ) {
             Parent->RightChild = NULL;
         } else {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Node* is not a child of its Parent!");
+#endif
         }
     }
 
     ZERO_CONTAINER(Node, Binary_Tree_Node_t);
     free(Node);
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully release Binary_Tree_Node_t.");
+#endif
     return;
 }

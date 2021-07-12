@@ -86,7 +86,9 @@ static int PrintBinaryTreeCallback(void *KeyValuePair) {
         TEST_FAILURE;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("(%d,%d) ", *(int *)Pair.Key, *(int *)Pair.Value);
+#endif
 
     return 0;
 }
@@ -96,7 +98,9 @@ static int PrintBinaryTreeCallbackArgs(void *KeyValuePair, void *Args) {
     Binary_Tree_KeyValuePair_t Pair;
 
     if ( NULL == Args ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Args* provided.");
+#endif
     }
 
     if ( NULL == KeyValuePair ) {
@@ -111,7 +115,9 @@ static int PrintBinaryTreeCallbackArgs(void *KeyValuePair, void *Args) {
         TEST_FAILURE;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("(%d,%d) ", *(int *)Pair.Key, *(int *)Pair.Value);
+#endif
 
     return 0;
 }

@@ -37,7 +37,9 @@ int Iterator_Initialize_List(List_t *List) {
     Iterator_t *Iterator = NULL;
 
     if ( NULL == List ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
+#endif
         return 1;
     }
 
@@ -45,7 +47,9 @@ int Iterator_Initialize_List(List_t *List) {
 
     Iterator = (Iterator_t *)calloc(1, sizeof(Iterator_t));
     if ( NULL == Iterator ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory to initialize Iterator.");
+#endif
         return 1;
     }
 
@@ -53,7 +57,9 @@ int Iterator_Initialize_List(List_t *List) {
     Iterator->Type           = Iterator_List;
     Iterator->Context        = NULL;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully prepared List Iterator.");
+#endif
     List->Iterator = Iterator;
     return 0;
 }
@@ -63,20 +69,26 @@ void *List_Next(List_t *List) {
     void *Item = NULL;
 
     if ( NULL == List ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
+#endif
         return NULL;
     }
 
     if ( (NULL == List->Iterator) || (List->Iterator->Type == Iterator_UNKNOWN) ) {
         if ( 0 != Iterator_Initialize_List(List) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to initialize List iterator.");
+#endif
             return NULL;
         }
         List->Iterator->Context = List->Head;
     }
 
     if ( NULL == List->Iterator->Context ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Iteration has reached the end of the List_t.");
+#endif
         Iterator_Invalidate(&(List->Iterator));
         return NULL;
     }
@@ -93,20 +105,26 @@ void *List_Previous(List_t *List) {
     void *Item = NULL;
 
     if ( NULL == List ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
+#endif
         return NULL;
     }
 
     if ( (NULL == List->Iterator) || (List->Iterator->Type == Iterator_UNKNOWN) ) {
         if ( 0 != Iterator_Initialize_List(List) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to initialize List iterator.");
+#endif
             return NULL;
         }
         List->Iterator->Context = List->Tail;
     }
 
     if ( NULL == List->Iterator->Context ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Iteration has reached the end of the List_t.");
+#endif
         Iterator_Invalidate(&(List->Iterator));
         return NULL;
     }

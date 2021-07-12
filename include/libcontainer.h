@@ -967,7 +967,6 @@ Array_t* Array_Create(size_t StartingCapacity, size_t ElementSize);
     when an element is removed, or if the array is released as a whole. Each element
     must be able to be fully released by a single call of the given ReleaseFunc.
 */
-// Array_t* Array_RefCreate(size_t StartingCapacity, size_t ElementSize, ReleaseFunc_t* ReleaseFunc);
 Array_t* Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t* ReleaseFunc);
 
 /*
@@ -3460,6 +3459,7 @@ String_t* String_Createf(const char* fmt, ...);
     Inputs:
     fmt     -   The raw format C-String to use to generate the initialization value for the String_t.
     VarArgs -   The (optional) arguments as defined by the format string.
+    ...
 
     Outputs:
     String_t*   -   Pointer to a fully prepared and ready-to-use String_t, or NULL on failure.
@@ -3468,7 +3468,7 @@ String_t* String_Createf(const char* fmt, ...);
     This function is helpful for creating complex strings, or for simply accessing a
     memory-safe sprintf() API. See sprintf() for API details for fmt and the var-args.
 */
-String_t* String_VCreatef(const char* fmt, va_list VarArgs);
+String_t* String_VCreatef(const char* fmt, va_list VarArgs, va_list VarArgsCopy);
 
 /*
     String_SPrintf
@@ -3501,6 +3501,7 @@ int String_SPrintf(String_t* String, const char* fmt, ...);
     String  -   Pointer to the String_t to write the resulting formatted string to.
     fmt     -   The raw format C-String to use to generate the initialization value for the String_t.
     VarArgs -   The (optional) arguments as defined by the format string.
+    ...
 
     Outputs:
     int     -   Returns 0 on success, non-zero on failure.
@@ -3509,7 +3510,7 @@ int String_SPrintf(String_t* String, const char* fmt, ...);
     This function is helpful for creating complex strings, or for simply accessing a
     memory-safe sprintf() API. See sprintf() for API details for fmt and the var-args.
 */
-int String_VSPrintf(String_t* String, const char* fmt, va_list VarArgs);
+int String_VSPrintf(String_t* String, const char* fmt, va_list VarArgs, va_list VarArgsCopy);
 
 /*
     String_Appendf
@@ -3543,6 +3544,7 @@ int String_Appendf(String_t* String, const char* fmt, ...);
     String  -   Pointer to the String_t to append the resulting formatted string to.
     fmt     -   The raw format C-String to use to generate the initialization value for the String_t.
     VarArgs -   The (optional) arguments as defined by the format string.
+    ...
 
     Outputs:
     int     -   Returns 0 on success, non-zero on failure.
@@ -3551,7 +3553,7 @@ int String_Appendf(String_t* String, const char* fmt, ...);
     This function is helpful for creating complex strings, or for simply accessing a
     memory-safe sprintf() API. See sprintf() for API details for fmt and the var-args.
 */
-int String_VAppendf(String_t* String, const char* fmt, va_list VarArgs);
+int String_VAppendf(String_t* String, const char* fmt, va_list VarArgs, va_list VarArgsCopy);
 
 /*
     String_Length

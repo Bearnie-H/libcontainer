@@ -32,7 +32,9 @@ int Iterator_Initialize_Array(Array_t *Array) {
     Iterator_t *Iterator = NULL;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+#endif
         return 1;
     }
 
@@ -40,13 +42,17 @@ int Iterator_Initialize_Array(Array_t *Array) {
 
     Iterator = (Iterator_t *)calloc(1, sizeof(Iterator_t));
     if ( NULL == Iterator ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory to initialize Iterator.");
+#endif
         return 1;
     }
 
     Iterator->Context = (ssize_t *)calloc(1, sizeof(ssize_t));
     if ( NULL == Iterator->Context ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to prepare Iterator context.");
+#endif
         free(Iterator);
         return 1;
     }
@@ -54,7 +60,9 @@ int Iterator_Initialize_Array(Array_t *Array) {
     Iterator->ReleaseContext = (ReleaseFunc_t *)free;
     Iterator->Type           = Iterator_Array;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully prepared Array Iterator.");
+#endif
     Array->Iterator = Iterator;
     return 0;
 }
@@ -64,14 +72,18 @@ void *Array_Next(Array_t *Array) {
     ssize_t *Index = 0;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+#endif
         return NULL;
     }
 
     if ( (NULL == Array->Iterator) || (Array->Iterator->Type == Iterator_UNKNOWN) ) {
         if ( 0 != Iterator_Initialize_Array(Array) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s",
                          "Error: Failed to initialize Iterator to begin Iteration over Array.");
+#endif
             return NULL;
         }
         *((ssize_t *)(Array->Iterator->Context)) = 0;
@@ -80,7 +92,9 @@ void *Array_Next(Array_t *Array) {
     Index = (ssize_t *)(Array->Iterator->Context);
 
     if ( (size_t)(*Index) >= Array_Length(Array) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Iteration has reached the end of the Array_t.");
+#endif
         Iterator_Invalidate(&(Array->Iterator));
         return NULL;
     }
@@ -93,14 +107,18 @@ void *Array_Previous(Array_t *Array) {
     ssize_t *Index = 0;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+#endif
         return NULL;
     }
 
     if ( (NULL == Array->Iterator) || (Array->Iterator->Type == Iterator_UNKNOWN) ) {
         if ( 0 != Iterator_Initialize_Array(Array) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s",
                          "Error: Failed to initialize Iterator to begin Iteration over Array.");
+#endif
             return NULL;
         }
         *((ssize_t *)(Array->Iterator->Context)) = (ssize_t)Array_Length(Array) - 1;
@@ -109,7 +127,9 @@ void *Array_Previous(Array_t *Array) {
     Index = (ssize_t *)(Array->Iterator->Context);
 
     if ( *Index < 0 ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Iteration has reached the end of the Array_t.");
+#endif
         Iterator_Invalidate(&(Array->Iterator));
         return NULL;
     }

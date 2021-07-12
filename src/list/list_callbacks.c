@@ -33,20 +33,26 @@ int List_DoCallback(List_t *List, CallbackFunc_t *Callback) {
     int   RetValue  = 0;
 
     if ( NULL == List ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
+#endif
         return -1;
     }
 
     Iterator_Invalidate(&(List->Iterator));
 
     if ( NULL == Callback ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
+#endif
         return 0;
     }
 
     LIST_FOREACH(List, NodeValue) {
         if ( 0 != Callback(NodeValue) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+#endif
             RetValue += 1;
         }
     }
@@ -60,20 +66,26 @@ int List_DoCallbackArg(List_t *List, CallbackArgFunc_t *Callback, void *Args) {
     int   RetValue  = 0;
 
     if ( NULL == List ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL List* provided.");
+#endif
         return -1;
     }
 
     Iterator_Invalidate(&(List->Iterator));
 
     if ( NULL == Callback ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
+#endif
         return 0;
     }
 
     LIST_FOREACH(List, NodeValue) {
         if ( 0 != Callback(NodeValue, Args) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+#endif
             RetValue += 1;
         }
     }

@@ -36,23 +36,31 @@ Binary_Tree_t *Binary_Tree_Create(CompareFunc_t *KeyCompareFunc, size_t KeySize,
     Binary_Tree_t *Tree = NULL;
 
     if ( NULL == KeyReleaseFunc ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL KeyReleaseFunc* provided, defaulting to free().");
+#endif
         KeyReleaseFunc = free;
     }
 
     if ( NULL == KeyCompareFunc ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL KeyCompareFunc provided, defaulting to memcmp().");
+#endif
         KeyCompareFunc = memcmp;
     }
 
     if ( 0 == KeySize ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s",
                      "Note: 0 ValueSize provided, creating Binary_Tree_t of Reference-Types.");
+#endif
     }
 
     Tree = (Binary_Tree_t *)calloc(1, sizeof(Binary_Tree_t));
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Binary_Tree_t.");
+#endif
         return NULL;
     }
 
@@ -63,14 +71,18 @@ Binary_Tree_t *Binary_Tree_Create(CompareFunc_t *KeyCompareFunc, size_t KeySize,
     Tree->KeySize         = KeySize;
     Tree->DuplicatePolicy = Policy;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully created new Binary_Tree_t.");
+#endif
     return Tree;
 }
 
 size_t Binary_Tree_Length(Binary_Tree_t *Tree) {
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: NULL Tree* provided, unable to report length.");
+#endif
         return 0;
     }
 
@@ -84,33 +96,45 @@ int Binary_Tree_Insert(Binary_Tree_t *Tree, void *Key, size_t KeySize, void *Val
     bool                IncrementSize = false;
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided, cannot insert new value.");
+#endif
         return 1;
     }
 
     if ( NULL == Key ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Key* Provided.");
+#endif
         return 1;
     }
 
     if ( 0 == KeySize ) {
         if ( 0 != Tree->KeySize ) {
+#ifdef DEBUG
             DEBUG_PRINTF("Note: KeySize of 0 provided, using cached value from tree initialization "
                          "of [ %lu ].",
                          (unsigned long)Tree->KeySize);
+#endif
             KeySize = Tree->KeySize;
         } else {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Note: KeySize of 0 provided, treating as reference type.");
+#endif
         }
     }
 
     if ( NULL != Value ) {
         if ( 0 == ValueSize ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Note: ValueSize of 0 provided, treating as reference type.");
+#endif
         }
 
         if ( NULL == ValueReleaseFunc ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Note: NULL ValueReleaseFunc* provided, defaulting to free().");
+#endif
             ValueReleaseFunc = free;
         }
     }
@@ -118,7 +142,9 @@ int Binary_Tree_Insert(Binary_Tree_t *Tree, void *Key, size_t KeySize, void *Val
     Iterator_Invalidate(&(Tree->Iterator));
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Value* provided, just inserting Key.");
+#endif
     }
 
     IncrementSize = !(Binary_Tree_KeyExists(Tree, Key, KeySize));
@@ -126,7 +152,9 @@ int Binary_Tree_Insert(Binary_Tree_t *Tree, void *Key, size_t KeySize, void *Val
     if ( !IncrementSize ) {
         switch ( Tree->DuplicatePolicy ) {
             case Policy_Error:
+#ifdef DEBUG
                 DEBUG_PRINTF("%s", "Error: Value with the given key already exists in the Tree!");
+#endif
                 return -1;
             default: break;
         }
@@ -136,13 +164,17 @@ int Binary_Tree_Insert(Binary_Tree_t *Tree, void *Key, size_t KeySize, void *Val
     NewNode = Binary_Tree_Node_Create(Key, KeySize, Tree->KeyReleaseFunc, Value, ValueSize,
                                       ValueReleaseFunc);
     if ( NULL == NewNode ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to create new Binary_Tree_Node_t");
+#endif
         return 1;
     }
 
     NewRoot = Binary_Tree_insertNode(Tree->Root, Tree->KeyCompareFunc, NewNode);
     if ( NULL == NewRoot ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to insert new Binary_Tree_Node_t");
+#endif
         Binary_Tree_Node_Release(NewNode);
         return 1;
     }
@@ -157,18 +189,24 @@ bool Binary_Tree_KeyExists(Binary_Tree_t *Tree, void *Key, size_t KeySize) {
     Binary_Tree_Node_t *Node = NULL;
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided, cannot search for Key.");
+#endif
         return false;
     }
 
     if ( (0 == KeySize) && (0 != Tree->KeySize) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Note: Using cached KeySize of [ %lu ].", (unsigned long)Tree->KeySize);
+#endif
         KeySize = Tree->KeySize;
     }
 
     Node = Binary_Tree_find(Tree->Root, Key, KeySize, Tree->KeyCompareFunc);
     if ( NULL == Node ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to find Key in Tree.");
+#endif
         return false;
     }
 
@@ -180,22 +218,30 @@ void *Binary_Tree_Get(Binary_Tree_t *Tree, void *Key, size_t KeySize) {
     Binary_Tree_Node_t *Node = NULL;
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided, cannot search for Key.");
+#endif
         return NULL;
     }
 
     if ( (0 == KeySize) && (0 != Tree->KeySize) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Note: Using cached KeySize of [ %lu ].", (unsigned long)Tree->KeySize);
+#endif
         KeySize = Tree->KeySize;
     }
 
     Node = Binary_Tree_find(Tree->Root, Key, KeySize, Tree->KeyCompareFunc);
     if ( NULL == Node ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to find Key in Tree.");
+#endif
         return NULL;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully returned requested item from Binary_Tree_t.");
+#endif
     return Node->Value.ValueRaw;
 }
 
@@ -205,12 +251,16 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Pop(Binary_Tree_t *Tree, void *Key, size_
     Binary_Tree_KeyValuePair_t KeyValuePair = {NULL, NULL};
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided, cannot pop Key.");
+#endif
         return KeyValuePair;
     }
 
     if ( (0 == KeySize) && (0 != Tree->KeySize) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Note: Using cached KeySize of [ %lu ].", (unsigned long)Tree->KeySize);
+#endif
         KeySize = Tree->KeySize;
     }
 
@@ -218,7 +268,9 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Pop(Binary_Tree_t *Tree, void *Key, size_
 
     Node = Binary_Tree_find(Tree->Root, Key, KeySize, Tree->KeyCompareFunc);
     if ( NULL == Node ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to find Key in Tree.");
+#endif
         return KeyValuePair;
     }
 
@@ -229,7 +281,9 @@ Binary_Tree_KeyValuePair_t Binary_Tree_Pop(Binary_Tree_t *Tree, void *Key, size_
 
     Tree->Root = Binary_Tree_removeNode(Tree->Root, Key, KeySize, Tree->KeyCompareFunc);
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully removed requested item from Tree.");
+#endif
     Tree->TreeSize -= 1;
     return KeyValuePair;
 }
@@ -239,12 +293,16 @@ int Binary_Tree_Remove(Binary_Tree_t *Tree, void *Key, size_t KeySize) {
     bool DecrementSize = false;
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided, cannot remove Key.");
+#endif
         return 1;
     }
 
     if ( (0 == KeySize) && (0 != Tree->KeySize) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Note: Using cached KeySize of [ %lu ].", (unsigned long)Tree->KeySize);
+#endif
         KeySize = Tree->KeySize;
     }
 
@@ -254,7 +312,9 @@ int Binary_Tree_Remove(Binary_Tree_t *Tree, void *Key, size_t KeySize) {
 
     Tree->Root = Binary_Tree_removeNode(Tree->Root, Key, KeySize, Tree->KeyCompareFunc);
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully removed requested item from Tree.");
+#endif
     Tree->TreeSize -= (1 && DecrementSize);
     return 0;
 }
@@ -266,17 +326,23 @@ int Binary_Tree_DoCallback(Binary_Tree_t *Tree, Binary_Tree_Direction_t Directio
     int                        RetVal       = 0;
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
+#endif
         return -1;
     }
 
     if ( NULL == Tree->Root ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Tree is empty, no items to call Callback with.");
+#endif
         return 0;
     }
 
     if ( NULL == Callback ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Callback* provided, nothing to call.");
+#endif
         return 0;
     }
 
@@ -285,13 +351,17 @@ int Binary_Tree_DoCallback(Binary_Tree_t *Tree, Binary_Tree_Direction_t Directio
         case Direction_PreOrder: break;
         case Direction_PostOrder: break;
         default:
+#ifdef DEBUG
             DEBUG_PRINTF("Error: Unknown tree traversal direction [ %d ].", Direction);
+#endif
             return -1;
     }
 
     BINARY_TREE_FOREACH(Tree, KeyValuePair, Direction) {
         if ( 0 != Callback(&(KeyValuePair)) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+#endif
             RetVal += 1;
         }
     }
@@ -306,17 +376,23 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, Binary_Tree_Direction_t Direc
     int                        RetVal       = 0;
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Tree* provided.");
+#endif
         return -1;
     }
 
     if ( NULL == Tree->Root ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Tree is empty, no items to call Callback with.");
+#endif
         return 0;
     }
 
     if ( NULL == Callback ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Callback* provided, nothing to call.");
+#endif
         return 0;
     }
 
@@ -325,13 +401,17 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, Binary_Tree_Direction_t Direc
         case Direction_PreOrder: break;
         case Direction_PostOrder: break;
         default:
+#ifdef DEBUG
             DEBUG_PRINTF("Error: Unknown tree traversal direction [ %d ].", Direction);
+#endif
             return -1;
     }
 
     BINARY_TREE_FOREACH(Tree, KeyValuePair, Direction) {
         if ( 0 != Callback(&(KeyValuePair), Args) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+#endif
             RetVal += 1;
         }
     }
@@ -342,7 +422,9 @@ int Binary_Tree_DoCallbackArg(Binary_Tree_t *Tree, Binary_Tree_Direction_t Direc
 int Binary_Tree_Clear(Binary_Tree_t *Tree) {
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Tree* provided, nothing to clear.");
+#endif
         return 0;
     }
 
@@ -352,14 +434,18 @@ int Binary_Tree_Clear(Binary_Tree_t *Tree) {
     Tree->Root     = NULL;
     Tree->TreeSize = 0;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully released all items from Binary_Tree.");
+#endif
     return 0;
 }
 
 void Binary_Tree_Release(Binary_Tree_t *Tree) {
 
     if ( NULL == Tree ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: NULL Tree* provided, nothing to release.");
+#endif
         return;
     }
 
@@ -368,7 +454,9 @@ void Binary_Tree_Release(Binary_Tree_t *Tree) {
     ZERO_CONTAINER(Tree, Binary_Tree_t);
     free(Tree);
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully released Binary_Tree_t and all held values.");
+#endif
     return;
 }
 
@@ -409,7 +497,9 @@ Binary_Tree_Node_t *Binary_Tree_removeNode(Binary_Tree_Node_t *Root, void *Key, 
     int                 CompareResult;
 
     if ( NULL == Root ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Node* provided.");
+#endif
         return NULL;
     }
 
@@ -501,7 +591,9 @@ Binary_Tree_Node_t *Binary_Tree_find(Binary_Tree_Node_t *Root, void *Key, size_t
     int    CompareResult = 0;
 
     if ( NULL == Root ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: NULL Node reached without finding Key.");
+#endif
         return NULL;
     }
 
@@ -509,7 +601,9 @@ Binary_Tree_Node_t *Binary_Tree_find(Binary_Tree_Node_t *Root, void *Key, size_t
     CompareResult = KeyCompareFunc(Root->Key.KeyRaw, Key, MinKeySize);
 
     if ( 0 == CompareResult ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Successfully found Key within Tree.");
+#endif
         return Root;
     } else if ( CompareResult > 0 ) {
         return Binary_Tree_find(Root->LeftChild, Key, KeySize, KeyCompareFunc);

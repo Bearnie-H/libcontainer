@@ -32,7 +32,9 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
     size_t   Capacity = 1;
 
     if ( 0 == ElementSize ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Error, invalid ElementSize [ %lu ].", (unsigned long)ElementSize);
+#endif
         return NULL;
     }
 
@@ -42,7 +44,9 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
 
     Array = (Array_t *)calloc(1, sizeof(Array_t));
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t.");
+#endif
         return NULL;
     }
 
@@ -53,7 +57,9 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
 
     Array->Contents.ContentBytes = (uint8_t *)calloc(Capacity, ElementSize);
     if ( NULL == Array->Contents.ContentBytes ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t->Contents.");
+#endif
         free(Array);
         return NULL;
     }
@@ -64,7 +70,9 @@ Array_t *Array_Create(size_t StartingCapacity, size_t ElementSize) {
     Array->ReleaseFunc = NULL;
     Array->Iterator    = NULL;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully created Array_t*.");
+#endif
     return Array;
 }
 
@@ -74,7 +82,9 @@ Array_t *Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t *ReleaseFunc) {
     size_t   Capacity = 1;
 
     if ( NULL == ReleaseFunc ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL ReleaseFunc provided, defaulting to free().");
+#endif
         ReleaseFunc = free;
     }
 
@@ -84,7 +94,9 @@ Array_t *Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t *ReleaseFunc) {
 
     Array = (Array_t *)calloc(1, sizeof(Array_t));
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t.");
+#endif
         return NULL;
     }
 
@@ -95,7 +107,9 @@ Array_t *Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t *ReleaseFunc) {
 
     Array->Contents.ContentRefs = (void **)calloc(Capacity, sizeof(void *));
     if ( NULL == Array->Contents.ContentRefs ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, failed to allocate memory for Array_t->Contents.");
+#endif
         free(Array);
         return NULL;
     }
@@ -106,7 +120,9 @@ Array_t *Array_RefCreate(size_t StartingCapacity, ReleaseFunc_t *ReleaseFunc) {
     Array->ReleaseFunc = ReleaseFunc;
     Array->Iterator    = NULL;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully created Array_t*.");
+#endif
     return Array;
 }
 
@@ -115,12 +131,16 @@ int Array_Clear(Array_t *Array) {
     void *ArrayValue = NULL;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Array*, nothing to clear.");
+#endif
         return 0;
     }
 
     if ( 0 == Array->Length ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Array_t already empty, nothing to clear.");
+#endif
         return 0;
     }
 
@@ -134,28 +154,36 @@ int Array_Clear(Array_t *Array) {
             ReleaseFunc.
         */
         if ( (0 == Array->ElementSize) && (NULL != Array->ReleaseFunc) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Array_t is array of references, releasing each "
                                "element with the provided ReleaseFunc.");
+#endif
             ARRAY_FOREACH(Array, ArrayValue) {
                 Array->ReleaseFunc(ArrayValue);
             }
         }
 
     } else {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Array_t has NULL contents pointer, no contents to release.");
+#endif
     }
 
     Iterator_Invalidate(&(Array->Iterator));
 
     Array->Length = 0;
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully cleared Array_t contents.");
+#endif
     return 0;
 }
 
 void Array_Release(Array_t *Array) {
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "NULL Array_t* provided, nothing to release.");
+#endif
         return;
     }
 
@@ -165,6 +193,8 @@ void Array_Release(Array_t *Array) {
     ZERO_CONTAINER(Array, Array_t);
     free(Array);
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully released Array_t*.");
+#endif
     return;
 }

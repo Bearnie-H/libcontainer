@@ -36,7 +36,9 @@ int Iterator_Initialize_Hashmap(Hashmap_t *Map, CompareFunc_t *CompareFunc) {
     Iterator_t *Iterator = NULL;
 
     if ( NULL == Map ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
+#endif
         return 1;
     }
 
@@ -44,7 +46,9 @@ int Iterator_Initialize_Hashmap(Hashmap_t *Map, CompareFunc_t *CompareFunc) {
 
     Iterator = (Iterator_t *)calloc(1, sizeof(Iterator_t));
     if ( NULL == Iterator ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory to initialize Iterator.");
+#endif
         return 1;
     }
 
@@ -54,7 +58,9 @@ int Iterator_Initialize_Hashmap(Hashmap_t *Map, CompareFunc_t *CompareFunc) {
         Iterator->Context = Hashmap_Keys(Map);
     }
     if ( NULL == Iterator->Context ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to create Iteration context.");
+#endif
         free(Iterator);
         return 1;
     }
@@ -62,27 +68,30 @@ int Iterator_Initialize_Hashmap(Hashmap_t *Map, CompareFunc_t *CompareFunc) {
     Iterator->ReleaseContext = (ReleaseFunc_t *)Array_Release;
     Iterator->Type           = Iterator_Hashmap;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully prepared Hashmap Iterator.");
+#endif
     Map->Iterator = Iterator;
     return 0;
 }
 
 Hashmap_KeyValuePair_t Hashmap_Next(Hashmap_t *Map) {
 
-    Hashmap_KeyValuePair_t KeyValue = {
-        .Key   = NULL,
-        .Value = NULL,
-    };
-    void *Temp[2] = {NULL, NULL};
+    Hashmap_KeyValuePair_t KeyValue = {NULL, NULL};
+    void *                 Temp[2]  = {NULL, NULL};
 
     if ( NULL == Map ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
+#endif
         return KeyValue;
     }
 
     if ( (NULL == Map->Iterator) || (Map->Iterator->Type == Iterator_UNKNOWN) ) {
         if ( 0 != Iterator_Initialize_Hashmap(Map, NULL) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to initialize Iterator to begin Map iteration.");
+#endif
             return KeyValue;
         }
     }
@@ -90,16 +99,22 @@ Hashmap_KeyValuePair_t Hashmap_Next(Hashmap_t *Map) {
     Temp[0] = Array_Next((Array_t *)(Map->Iterator->Context));
     if ( NULL == Temp[0] ) {
         if ( NULL == ((Array_t *)(Map->Iterator->Context))->Iterator ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Note: Successfully iterated over Hashmap.");
+#endif
             return KeyValue;
         }
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to retrieve next Key.");
+#endif
         return KeyValue;
     }
 
     Temp[1] = Hashmap_Retrieve(Map, Temp[0], 0);
     if ( NULL == Temp[1] ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to retrieve Value for next Key.");
+#endif
         return KeyValue;
     }
 
@@ -111,20 +126,21 @@ Hashmap_KeyValuePair_t Hashmap_Next(Hashmap_t *Map) {
 
 Hashmap_KeyValuePair_t Hashmap_SortedNext(Hashmap_t *Map, CompareFunc_t *CompareFunc) {
 
-    Hashmap_KeyValuePair_t KeyValue = {
-        .Key   = NULL,
-        .Value = NULL,
-    };
-    void *Temp[2] = {NULL, NULL};
+    Hashmap_KeyValuePair_t KeyValue = {NULL, NULL};
+    void *                 Temp[2]  = {NULL, NULL};
 
     if ( NULL == Map ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
+#endif
         return KeyValue;
     }
 
     if ( (NULL == Map->Iterator) || (Map->Iterator->Type == Iterator_UNKNOWN) ) {
         if ( 0 != Iterator_Initialize_Hashmap(Map, CompareFunc) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to initialize Iterator to begin Map iteration.");
+#endif
             return KeyValue;
         }
     }
@@ -132,16 +148,22 @@ Hashmap_KeyValuePair_t Hashmap_SortedNext(Hashmap_t *Map, CompareFunc_t *Compare
     Temp[0] = Array_Next((Array_t *)(Map->Iterator->Context));
     if ( NULL == Temp[0] ) {
         if ( NULL == ((Array_t *)(Map->Iterator->Context))->Iterator ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Note: Successfully iterated over Hashmap.");
+#endif
             return KeyValue;
         }
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to retrieve next Key.");
+#endif
         return KeyValue;
     }
 
     Temp[1] = Hashmap_Retrieve(Map, Temp[0], 0);
     if ( NULL == Temp[1] ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to retrieve Value for next Key.");
+#endif
         return KeyValue;
     }
 
@@ -153,20 +175,21 @@ Hashmap_KeyValuePair_t Hashmap_SortedNext(Hashmap_t *Map, CompareFunc_t *Compare
 
 Hashmap_KeyValuePair_t Hashmap_Previous(Hashmap_t *Map) {
 
-    Hashmap_KeyValuePair_t KeyValue = {
-        .Key   = NULL,
-        .Value = NULL,
-    };
-    void *Temp[2] = {NULL, NULL};
+    Hashmap_KeyValuePair_t KeyValue = {NULL, NULL};
+    void *                 Temp[2]  = {NULL, NULL};
 
     if ( NULL == Map ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
+#endif
         return KeyValue;
     }
 
     if ( (NULL == Map->Iterator) || (Map->Iterator->Type == Iterator_UNKNOWN) ) {
         if ( 0 != Iterator_Initialize_Hashmap(Map, NULL) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to initialize Iterator to begin Map iteration.");
+#endif
             return KeyValue;
         }
     }
@@ -174,16 +197,22 @@ Hashmap_KeyValuePair_t Hashmap_Previous(Hashmap_t *Map) {
     Temp[0] = Array_Previous((Array_t *)(Map->Iterator->Context));
     if ( NULL == Temp[0] ) {
         if ( NULL == ((Array_t *)(Map->Iterator->Context))->Iterator ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Note: Successfully iterated over Hashmap.");
+#endif
             return KeyValue;
         }
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to retrieve next Key.");
+#endif
         return KeyValue;
     }
 
     Temp[1] = Hashmap_Retrieve(Map, Temp[0], 0);
     if ( NULL == Temp[1] ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to retrieve Value for next Key.");
+#endif
         return KeyValue;
     }
 
@@ -195,20 +224,21 @@ Hashmap_KeyValuePair_t Hashmap_Previous(Hashmap_t *Map) {
 
 Hashmap_KeyValuePair_t Hashmap_SortedPrevious(Hashmap_t *Map, CompareFunc_t *CompareFunc) {
 
-    Hashmap_KeyValuePair_t KeyValue = {
-        .Key   = NULL,
-        .Value = NULL,
-    };
-    void *Temp[2] = {NULL, NULL};
+    Hashmap_KeyValuePair_t KeyValue = {NULL, NULL};
+    void *                 Temp[2]  = {NULL, NULL};
 
     if ( NULL == Map ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
+#endif
         return KeyValue;
     }
 
     if ( (NULL == Map->Iterator) || (Map->Iterator->Type == Iterator_UNKNOWN) ) {
         if ( 0 != Iterator_Initialize_Hashmap(Map, CompareFunc) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to initialize Iterator to begin Map iteration.");
+#endif
             return KeyValue;
         }
     }
@@ -216,16 +246,22 @@ Hashmap_KeyValuePair_t Hashmap_SortedPrevious(Hashmap_t *Map, CompareFunc_t *Com
     Temp[0] = Array_Previous((Array_t *)(Map->Iterator->Context));
     if ( NULL == Temp[0] ) {
         if ( NULL == ((Array_t *)(Map->Iterator->Context))->Iterator ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Note: Successfully iterated over Hashmap.");
+#endif
             return KeyValue;
         }
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to retrieve next Key.");
+#endif
         return KeyValue;
     }
 
     Temp[1] = Hashmap_Retrieve(Map, Temp[0], 0);
     if ( NULL == Temp[1] ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to retrieve Value for next Key.");
+#endif
         return KeyValue;
     }
 
@@ -244,13 +280,17 @@ Array_t *Hashmap_Keys(Hashmap_t *Map) {
     Hashmap_Entry_t *CurrentEntry = NULL;
 
     if ( NULL == Map ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
+#endif
         return NULL;
     }
 
     Keys = Array_RefCreate(0, NULL);
     if ( NULL == Keys ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to create Keys Array to return.");
+#endif
         return NULL;
     }
     /* Explicitly set the ReleaseFunc to NULL, as this Array only holds pointers to objects owned by
@@ -260,7 +300,9 @@ Array_t *Hashmap_Keys(Hashmap_t *Map) {
     for ( BucketIndex = 0; BucketIndex < Array_Length(Map->Buckets); BucketIndex++ ) {
         Bucket = (List_t *)Array_GetElement(Map->Buckets, BucketIndex);
         if ( NULL == Bucket ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to get Bucket of items to build Keys Array.");
+#endif
             Array_Release(Keys);
             return NULL;
         }
@@ -268,7 +310,9 @@ Array_t *Hashmap_Keys(Hashmap_t *Map) {
         for ( BucketItem = Bucket->Head; NULL != BucketItem; BucketItem = BucketItem->Next ) {
             CurrentEntry = (Hashmap_Entry_t *)BucketItem->Contents.ContentRaw;
             if ( 0 != Array_Append(Keys, &(CurrentEntry->Key)) ) {
+#ifdef DEBUG
                 DEBUG_PRINTF("%s", "Error: Failed to add Key value to Keys array to be returned.");
+#endif
                 Array_Release(Keys);
                 return NULL;
             }

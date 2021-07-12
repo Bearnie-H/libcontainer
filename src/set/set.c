@@ -34,25 +34,33 @@ Set_t *Set_Create(CompareFunc_t *CompareFunc, size_t ValueSize, ReleaseFunc_t *R
 
     Set = (Set_t *)calloc(1, sizeof(Set_t));
     if ( NULL == Set ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Set_t.");
+#endif
         return NULL;
     }
 
     Set->Contents = Binary_Tree_Create(CompareFunc, ValueSize, ReleaseFunc, Policy_Error);
     if ( NULL == Set->Contents ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to prepare internal data structure to implement Set_t.");
+#endif
         free(Set);
         return NULL;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully created and initialized Set_t.");
+#endif
     return Set;
 }
 
 size_t Set_Length(Set_t *Set) {
 
     if ( NULL == Set ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: NULL Set* provided.");
+#endif
         return 0;
     }
 
@@ -62,7 +70,9 @@ size_t Set_Length(Set_t *Set) {
 int Set_Insert(Set_t *Set, void *Value, size_t ValueSize) {
 
     if ( NULL == Set ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Set* provided.");
+#endif
         return 1;
     }
 
@@ -72,7 +82,9 @@ int Set_Insert(Set_t *Set, void *Value, size_t ValueSize) {
 bool Set_ValueExists(Set_t *Set, void *Value, size_t ValueSize) {
 
     if ( NULL == Set ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Set* provided.");
+#endif
         return false;
     }
 
@@ -82,7 +94,9 @@ bool Set_ValueExists(Set_t *Set, void *Value, size_t ValueSize) {
 void *Set_Next(Set_t *Set) {
 
     if ( NULL == Set ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Set* provided.");
+#endif
         return NULL;
     }
 
@@ -95,7 +109,9 @@ int Set_DoCallback(Set_t *Set, CallbackFunc_t *Callback) {
     int   RetVal = 0;
 
     if ( NULL == Set ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Set* provided.");
+#endif
         return -1;
     }
 
@@ -103,7 +119,9 @@ int Set_DoCallback(Set_t *Set, CallbackFunc_t *Callback) {
 
     SET_FOREACH(Set, Value) {
         if ( 0 != Callback(Value) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero");
+#endif
             RetVal += 1;
         }
     }
@@ -117,7 +135,9 @@ int Set_DoCallbackArgs(Set_t *Set, CallbackArgFunc_t *Callback, void *Args) {
     int   RetVal = 0;
 
     if ( NULL == Set ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Set* provided.");
+#endif
         return -1;
     }
 
@@ -125,7 +145,9 @@ int Set_DoCallbackArgs(Set_t *Set, CallbackArgFunc_t *Callback, void *Args) {
 
     SET_FOREACH(Set, Value) {
         if ( 0 != Callback(Value, Args) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero");
+#endif
             RetVal += 1;
         }
     }
@@ -136,7 +158,9 @@ int Set_DoCallbackArgs(Set_t *Set, CallbackArgFunc_t *Callback, void *Args) {
 int Set_Remove(Set_t *Set, void *Value, size_t ValueSize) {
 
     if ( NULL == Set ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Set* provided.");
+#endif
         return 1;
     }
 
@@ -146,7 +170,9 @@ int Set_Remove(Set_t *Set, void *Value, size_t ValueSize) {
 int Set_Clear(Set_t *Set) {
 
     if ( NULL == Set ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Set* provided.");
+#endif
         return 1;
     }
 
@@ -156,7 +182,9 @@ int Set_Clear(Set_t *Set) {
 void Set_Release(Set_t *Set) {
 
     if ( NULL == Set ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Set* provided.");
+#endif
         return;
     }
 

@@ -33,20 +33,26 @@ int Hashmap_DoCallback(Hashmap_t *Map, CallbackFunc_t *Callback) {
     int                    RetVal = 0;
 
     if ( NULL == Map ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
+#endif
         return -1;
     }
 
     Iterator_Invalidate(&(Map->Iterator));
 
     if ( NULL == Callback ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
+#endif
         return 0;
     }
 
     HASHMAP_FOREACH(Map, KeyValue) {
         if ( 0 != Callback(&(KeyValue)) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+#endif
             RetVal += 1;
         }
     }
@@ -60,20 +66,26 @@ int Hashmap_DoCallbackArg(Hashmap_t *Map, CallbackArgFunc_t *Callback, void *Arg
     int                    RetVal = 0;
 
     if ( NULL == Map ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Map* provided.");
+#endif
         return -1;
     }
 
     Iterator_Invalidate(&(Map->Iterator));
 
     if ( NULL == Callback ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
+#endif
         return 0;
     }
 
     HASHMAP_FOREACH(Map, KeyValue) {
         if ( 0 != Callback(&(KeyValue), Args) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+#endif
             RetVal += 1;
         }
     }

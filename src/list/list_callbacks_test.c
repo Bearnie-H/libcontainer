@@ -42,7 +42,9 @@ static int TestCallbackFunc_PrintIntValue(void *Value) {
         return 1;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("%d ", *(int *)IntValue);
+#endif
 
     return 0;
 }
@@ -58,9 +60,13 @@ static int TestCallbackArgFunc_PrintIntValue(void *Value, void *Args) {
     }
 
     if ( 0 == (*IntValue % *Divisor) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("List value [ %d ] is divisible by [ %d ]!", *IntValue, *Divisor);
+#endif
     } else {
+#ifdef DEBUG
         DEBUG_PRINTF("List value [ %d ] is NOT divisible by [ %d ]!", *IntValue, *Divisor);
+#endif
     }
 
     return 0;

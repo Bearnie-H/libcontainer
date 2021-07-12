@@ -99,13 +99,6 @@ struct Array_t {
         the Contents pointer.
     */
     size_t ElementSize;
-
-    /*
-        IsReference allows disambiguating whether the elements held by this
-        array are held WITHIN the array, or if the array simply holds pointers
-        to memory held by something else.
-    */
-    // bool IsReference;
 };
 
 /*

@@ -34,11 +34,15 @@ static CallbackArgFunc_t CallbackArgFunc_Int;
 static int CallbackFunc_Int(void *Value) {
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Value* provided.");
+#endif
         return 1;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("Queue Value: [ %d ].", *(int *)Value);
+#endif
 
     return 0;
 }
@@ -46,14 +50,20 @@ static int CallbackFunc_Int(void *Value) {
 static int CallbackArgFunc_Int(void *Value, void *Args) {
 
     if ( NULL == Value ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Value* provided.");
+#endif
         return 1;
     }
 
     if ( NULL == Args ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Queue Value: [ %d ] (and NULL Args).", *(int *)Value);
+#endif
     } else {
+#ifdef DEBUG
         DEBUG_PRINTF("Queue Value: [ %d ] (and Non-NULL Args).", *(int *)Value);
+#endif
     }
 
     return 0;

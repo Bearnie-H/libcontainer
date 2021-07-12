@@ -64,9 +64,11 @@ __attribute__((unused)) static int Test_Binary_Heap_DoCallbackFunc(void *Value) 
     }
 
     KeyValuePair = (Binary_Heap_KeyValuePair_t *)Value;
+    if ( NULL != KeyValuePair->Key && NULL != KeyValuePair->Value ) {
 
-    DEBUG_PRINTF("Binary Heap item: [ %d - \"%s\" ].", *(int *)(KeyValuePair->Key),
-                 (char *)(KeyValuePair->Value));
+        DEBUG_PRINTF("Binary Heap item: [ %d - \"%s\" ].", *(int *)(KeyValuePair->Key),
+                     (char *)(KeyValuePair->Value));
+    }
 
     return 0;
 }
@@ -82,12 +84,14 @@ __attribute__((unused)) static int Test_Binary_Heap_DoCallbackArgFunc(void *Valu
 
     KeyValuePair = (Binary_Heap_KeyValuePair_t *)Value;
 
-    if ( NULL == Args ) {
-        DEBUG_PRINTF("Binary Heap item: [ %d - \"%s\", Args (NULL) ].", *(int *)(KeyValuePair->Key),
-                     (char *)(KeyValuePair->Value));
-    } else {
-        DEBUG_PRINTF("Binary Heap item: [ %d - \"%s\", Args (Non-NULL) ].",
-                     *(int *)(KeyValuePair->Key), (char *)(KeyValuePair->Value));
+    if ( NULL != KeyValuePair->Key && NULL != KeyValuePair->Value ) {
+        if ( NULL == Args ) {
+            DEBUG_PRINTF("Binary Heap item: [ %d - \"%s\", Args (NULL) ].",
+                         *(int *)(KeyValuePair->Key), (char *)(KeyValuePair->Value));
+        } else {
+            DEBUG_PRINTF("Binary Heap item: [ %d - \"%s\", Args (Non-NULL) ].",
+                         *(int *)(KeyValuePair->Key), (char *)(KeyValuePair->Value));
+        }
     }
 
     return 0;

@@ -33,25 +33,33 @@ Binary_Heap_t *Binary_Heap_Create(CompareFunc_t *KeyCompareFunc, ReleaseFunc_t *
     Binary_Heap_t *Heap = NULL;
 
     if ( NULL == KeyCompareFunc ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL KeyCompareFunc* provided, defaulting to memcmp().");
+#endif
         KeyCompareFunc = memcmp;
     }
 
     if ( NULL == KeyReleaseFunc ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL KeyReleaseFunc* provided, defaulting to free().");
+#endif
         KeyReleaseFunc = free;
     }
 
     Heap = (Binary_Heap_t *)calloc(1, sizeof(Binary_Heap_t));
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Binary_Heap_t.");
+#endif
         return NULL;
     }
 
     Heap->Items = Array_RefCreate(0, (ReleaseFunc_t *)Binary_Heap_Node_Release);
     if ( NULL == Heap->Items ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s",
                      "Error: Failed to allocate internal memory to hold Binary_Heap_t items.");
+#endif
         free(Heap);
         return NULL;
     }
@@ -59,14 +67,18 @@ Binary_Heap_t *Binary_Heap_Create(CompareFunc_t *KeyCompareFunc, ReleaseFunc_t *
     Heap->KeyCompareFunc = KeyCompareFunc;
     Heap->KeyReleaseFunc = KeyReleaseFunc;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully created and initialized new Binary_Heap_t.");
+#endif
     return Heap;
 }
 
 size_t Binary_Heap_Length(Binary_Heap_t *Heap) {
 
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: NULL Heap* provided.");
+#endif
         return 0;
     }
 
@@ -83,25 +95,33 @@ Binary_Heap_KeyValuePair_t Binary_Heap_Peek(Binary_Heap_t *Heap) {
     Binary_Heap_Node_t *       Node         = NULL;
 
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Heap* provided.");
+#endif
         return KeyValuePair;
     }
 
     if ( Binary_Heap_IsEmpty(Heap) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: Binary_Heap_t is empty.");
+#endif
         return KeyValuePair;
     }
 
     Node = Array_GetElement(Heap->Items, 0);
     if ( NULL == Node ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to get root node of Binary_Heap_t.");
+#endif
         return KeyValuePair;
     }
 
     KeyValuePair.Key   = Node->Key;
     KeyValuePair.Value = Node->Value;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully Peeked item at root of Binary_Heap_t.");
+#endif
     return KeyValuePair;
 }
 
@@ -111,12 +131,16 @@ Binary_Heap_KeyValuePair_t Binary_Heap_Pop(Binary_Heap_t *Heap) {
     Binary_Heap_Node_t *       Node         = NULL;
 
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Heap* provided.");
+#endif
         return KeyValuePair;
     }
 
     if ( Binary_Heap_IsEmpty(Heap) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: Binary_Heap_t is empty.");
+#endif
         return KeyValuePair;
     }
 
@@ -125,7 +149,9 @@ Binary_Heap_KeyValuePair_t Binary_Heap_Pop(Binary_Heap_t *Heap) {
     if ( NULL == Node ) {
         /* We have to swap the items back, so we don't leave the heap in an invalid state. */
         Array_swapItems(Heap->Items, 0, Array_Length(Heap->Items) - 1);
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to remove item from Binary_Heap_t.");
+#endif
         return KeyValuePair;
     }
 
@@ -140,11 +166,15 @@ Binary_Heap_KeyValuePair_t Binary_Heap_Pop(Binary_Heap_t *Heap) {
     Binary_Heap_Node_Release(Node);
 
     if ( 0 != Binary_Heap_siftDown(Heap) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Error occurred during Sift-Down process.");
+#endif
         return KeyValuePair;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully removed Root from Binary_Heap_t.");
+#endif
     return KeyValuePair;
 }
 
@@ -153,12 +183,16 @@ int Binary_Heap_Remove(Binary_Heap_t *Heap) {
     Binary_Heap_Node_t *Node = NULL;
 
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Heap* provided.");
+#endif
         return 1;
     }
 
     if ( Binary_Heap_IsEmpty(Heap) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: Binary_Heap_t is empty.");
+#endif
         return 0;
     }
 
@@ -167,7 +201,9 @@ int Binary_Heap_Remove(Binary_Heap_t *Heap) {
     if ( NULL == Node ) {
         /* We have to swap the items back, so we don't leave the heap in an invalid state. */
         Array_swapItems(Heap->Items, 0, Array_Length(Heap->Items) - 1);
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to remove item from Binary_Heap_t.");
+#endif
         return 1;
     }
 
@@ -176,11 +212,15 @@ int Binary_Heap_Remove(Binary_Heap_t *Heap) {
     Binary_Heap_Node_Release(Node);
 
     if ( 0 != Binary_Heap_siftDown(Heap) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Error occurred during Sift-Down process.");
+#endif
         return 1;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully removed Root from Binary_Heap_t.");
+#endif
     return 0;
 }
 
@@ -190,7 +230,9 @@ int Binary_Heap_Push(Binary_Heap_t *Heap, void *Key, size_t KeySize, void *Value
     Binary_Heap_Node_t *NewNode = NULL;
 
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Heap* provided.");
+#endif
         return 1;
     }
 
@@ -198,7 +240,9 @@ int Binary_Heap_Push(Binary_Heap_t *Heap, void *Key, size_t KeySize, void *Value
                                       ValueReleaseFunc);
 
     if ( 0 != Array_Append(Heap->Items, &NewNode) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to add new item to Binary_Heap_t.");
+#endif
         Binary_Heap_Node_Release(NewNode);
         return 1;
     }
@@ -206,11 +250,15 @@ int Binary_Heap_Push(Binary_Heap_t *Heap, void *Key, size_t KeySize, void *Value
     Iterator_Invalidate(&(Heap->Items->Iterator));
 
     if ( 0 != Binary_Heap_siftUp(Heap) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Error occurred during Sift-Up process.");
+#endif
         return 1;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully added item to Binary_Heap_t.");
+#endif
     return 0;
 }
 
@@ -220,16 +268,22 @@ Binary_Heap_KeyValuePair_t Binary_Heap_Next(Binary_Heap_t *Heap) {
     Binary_Heap_Node_t *       Node         = NULL;
 
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Heap* provided.");
+#endif
         return KeyValuePair;
     }
 
     Node = Array_Next(Heap->Items);
     if ( NULL == Node ) {
         if ( NULL == Heap->Items->Iterator ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Iteration has successfully finished for Binary_Heap_t.");
+#endif
         } else {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Iteration has failed for Binary_Heap_t.");
+#endif
         }
         return KeyValuePair;
     }
@@ -237,7 +291,9 @@ Binary_Heap_KeyValuePair_t Binary_Heap_Next(Binary_Heap_t *Heap) {
     KeyValuePair.Key   = Node->Key;
     KeyValuePair.Value = Node->Value;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully retrieved Next item from Binary_Heap_t.");
+#endif
     return KeyValuePair;
 }
 
@@ -247,25 +303,33 @@ int Binary_Heap_DoCallback(Binary_Heap_t *Heap, CallbackFunc_t *Callback) {
     int                        RetVal       = 0;
 
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Heap* provided.");
+#endif
         return -1;
     }
 
     if ( NULL == Callback ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Callback* provided, nothing to do.");
+#endif
         return 0;
     }
 
     BINARY_HEAP_FOREACH(Heap, KeyValuePair) {
         if ( 0 != Callback(&KeyValuePair) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+#endif
             RetVal += 1;
         }
     }
 
     Iterator_Invalidate(&(Heap->Items->Iterator));
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Finished performing Callback on Binary_Heap_t items.");
+#endif
     return RetVal;
 }
 
@@ -275,40 +339,54 @@ int Binary_Heap_DoCallbackArg(Binary_Heap_t *Heap, CallbackArgFunc_t *Callback, 
     int                        RetVal       = 0;
 
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Heap* provided.");
+#endif
         return -1;
     }
 
     if ( NULL == Callback ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Callback* provided, nothing to do.");
+#endif
         return 0;
     }
 
     BINARY_HEAP_FOREACH(Heap, KeyValuePair) {
         if ( 0 != Callback(&KeyValuePair, Args) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+#endif
             RetVal += 1;
         }
     }
 
     Iterator_Invalidate(&(Heap->Items->Iterator));
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Finished performing Callback on Binary_Heap_t items.");
+#endif
     return RetVal;
 }
 
 int Binary_Heap_Clear(Binary_Heap_t *Heap) {
 
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Heap* provided.");
+#endif
         return 1;
     }
 
     if ( 0 == Array_Clear(Heap->Items) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Successfully cleared all contents from Binary_Heap_t.");
+#endif
         return 0;
     } else {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to fully clear Binary_Heap_t.");
+#endif
         return 1;
     }
 }
@@ -316,7 +394,9 @@ int Binary_Heap_Clear(Binary_Heap_t *Heap) {
 void Binary_Heap_Release(Binary_Heap_t *Heap) {
 
     if ( NULL == Heap ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Heap* provided, nothing to release.");
+#endif
         return;
     }
 
@@ -325,7 +405,9 @@ void Binary_Heap_Release(Binary_Heap_t *Heap) {
     ZERO_CONTAINER(Heap, Binary_Heap_t);
     free(Heap);
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully released Binary_Heap_t.");
+#endif
     return;
 }
 
@@ -337,7 +419,9 @@ int Binary_Heap_siftUp(Binary_Heap_t *Heap) {
     size_t              MinKeySize = 0, Index = 0;
 
     if ( Binary_Heap_IsEmpty(Heap) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: Sift-Up is not defined for the Root of a Binary_Heap_t.");
+#endif
         return 0;
     }
 
@@ -345,7 +429,9 @@ int Binary_Heap_siftUp(Binary_Heap_t *Heap) {
 
     Current = Array_GetElement(Heap->Items, Index);
     if ( NULL == Current ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to get \"Current\" Heap item.");
+#endif
         return 1;
     }
 
@@ -365,7 +451,9 @@ int Binary_Heap_siftUp(Binary_Heap_t *Heap) {
 
         Parent = Array_GetElement(Heap->Items, PARENT_INDEX(Index));
         if ( NULL == Parent ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to get \"Parent\" Heap item.");
+#endif
             return 1;
         }
 
@@ -392,13 +480,17 @@ int Binary_Heap_siftDown(Binary_Heap_t *Heap) {
     ArrayLength = Array_Length(Heap->Items);
 
     if ( 0 == ArrayLength ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Sift-Down operation not necessary for Binary_Heap_t with no elements.");
+#endif
         return 0;
     }
 
     Current = Array_GetElement(Heap->Items, Index);
     if ( NULL == Current ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to get Current.");
+#endif
         return 1;
     }
 
@@ -407,7 +499,9 @@ int Binary_Heap_siftDown(Binary_Heap_t *Heap) {
         if ( LEFT_CHILD_INDEX(Index) < ArrayLength ) {
             LeftChild = Array_GetElement(Heap->Items, LEFT_CHILD_INDEX(Index));
             if ( NULL == LeftChild ) {
+#ifdef DEBUG
                 DEBUG_PRINTF("%s", "Error: Failed to get Left Child.");
+#endif
                 return 1;
             }
         }
@@ -415,7 +509,9 @@ int Binary_Heap_siftDown(Binary_Heap_t *Heap) {
         if ( RIGHT_CHILD_INDEX(Index) < ArrayLength ) {
             RightChild = Array_GetElement(Heap->Items, RIGHT_CHILD_INDEX(Index));
             if ( NULL == RightChild ) {
+#ifdef DEBUG
                 DEBUG_PRINTF("%s", "Error: Failed to get Right Child.");
+#endif
                 return 1;
             }
         }

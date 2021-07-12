@@ -83,19 +83,25 @@ int Test_ListNode_InsertAfter(void) {
 
     Node1 = ListNode_Create(Contents, sizeof(Contents));
     if ( NULL == Node1 ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node1).");
+#endif
         TEST_FAILURE;
     }
 
     Node2 = ListNode_Create(Contents, sizeof(Contents));
     if ( NULL == Node2 ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node2).");
+#endif
         ListNode_Release(Node1);
         TEST_FAILURE;
     }
 
     if ( 0 != ListNode_InsertAfter(Node1, Node2) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Test Failure - Failed to insert List_Node_t.");
+#endif
         ListNode_Release(Node1);
         ListNode_Release(Node2);
         TEST_FAILURE;
@@ -103,7 +109,9 @@ int Test_ListNode_InsertAfter(void) {
 
     if ( !((Node1->Next == Node2) && (Node1->Next->Previous == Node1) &&
            (Node2->Previous == Node1) && (Node2->Previous->Next == Node2)) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Test Failure - Inter-Node linking not equal to expectation.");
+#endif
         ListNode_Release(Node1);
         ListNode_Release(Node2);
         TEST_FAILURE;
@@ -121,19 +129,25 @@ int Test_ListNode_InsertBefore(void) {
 
     Node1 = ListNode_Create(Contents, sizeof(Contents));
     if ( NULL == Node1 ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node1).");
+#endif
         TEST_FAILURE;
     }
 
     Node2 = ListNode_Create(Contents, sizeof(Contents));
     if ( NULL == Node2 ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Test Failure - Failed to allocate List_Node_t (Node2).");
+#endif
         ListNode_Release(Node1);
         TEST_FAILURE;
     }
 
     if ( 0 != ListNode_InsertBefore(Node1, Node2) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Test Failure - Failed to insert List_Node_t.");
+#endif
         ListNode_Release(Node1);
         ListNode_Release(Node2);
         TEST_FAILURE;
@@ -141,7 +155,9 @@ int Test_ListNode_InsertBefore(void) {
 
     if ( !((Node1->Previous == Node2) && (Node1->Previous->Next == Node1) &&
            (Node2->Next == Node1) && (Node2->Next->Previous == Node2)) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Test Failure - Inter-Node linking not equal to expectation.");
+#endif
         ListNode_Release(Node1);
         ListNode_Release(Node2);
         TEST_FAILURE;

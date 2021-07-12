@@ -33,20 +33,26 @@ int Array_DoCallback(Array_t *Array, CallbackFunc_t *Callback) {
     int   RetValue     = 0;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+#endif
         return -1;
     }
 
     Iterator_Invalidate(&(Array->Iterator));
 
     if ( NULL == Callback ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
+#endif
         return 0;
     }
 
     ARRAY_FOREACH(Array, ElementValue) {
         if ( 0 != Callback(ElementValue) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+#endif
             RetValue += 1;
         }
     }
@@ -60,20 +66,26 @@ int Array_DoCallbackArg(Array_t *Array, CallbackArgFunc_t *Callback, void *Args)
     int   RetValue     = 0;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+#endif
         return 1;
     }
 
     Iterator_Invalidate(&(Array->Iterator));
 
     if ( NULL == Callback ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Callback* provided, nothing to call.");
+#endif
         return 0;
     }
 
     ARRAY_FOREACH(Array, ElementValue) {
         if ( 0 != Callback(ElementValue, Args) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback function returned non-zero.");
+#endif
             RetValue += 1;
         }
     }

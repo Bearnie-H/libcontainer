@@ -33,7 +33,9 @@ Priority_Queue_t *Priority_Queue_Create(bool Ascending) {
 
     Queue = (Priority_Queue_t *)calloc(1, sizeof(Priority_Queue_t));
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Priority_Queue_t.");
+#endif
         return NULL;
     }
 
@@ -44,19 +46,25 @@ Priority_Queue_t *Priority_Queue_Create(bool Ascending) {
     }
 
     if ( NULL == Queue->Items ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate internal memory to hold Queued items.");
+#endif
         free(Queue);
         return NULL;
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully created Priority_Queue_t.");
+#endif
     return Queue;
 }
 
 size_t Priority_Queue_Length(Priority_Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: NULL Queue* provided.");
+#endif
         return 0;
     }
 
@@ -66,7 +74,9 @@ size_t Priority_Queue_Length(Priority_Queue_t *Queue) {
 bool Priority_Queue_IsEmpty(Priority_Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: NULL Queue* provided.");
+#endif
         return true;
     }
 
@@ -79,7 +89,9 @@ Priority_Queue_Item_t Priority_Queue_Peek(Priority_Queue_t *Queue) {
     Binary_Heap_KeyValuePair_t KeyValuePair = {NULL, NULL};
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return Item;
     }
 
@@ -90,7 +102,9 @@ Priority_Queue_Item_t Priority_Queue_Peek(Priority_Queue_t *Queue) {
 
     Item.Value = KeyValuePair.Value;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully Peek()'d top value from Priority_Queue_t.");
+#endif
     return Item;
 }
 
@@ -100,7 +114,9 @@ Priority_Queue_Item_t Priority_Queue_Pop(Priority_Queue_t *Queue) {
     Binary_Heap_KeyValuePair_t KeyValuePair = {NULL, NULL};
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return Item;
     }
 
@@ -112,14 +128,18 @@ Priority_Queue_Item_t Priority_Queue_Pop(Priority_Queue_t *Queue) {
 
     Item.Value = KeyValuePair.Value;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully Pop()'d top item from Priority_Queue_t.");
+#endif
     return Item;
 }
 
 int Priority_Queue_Remove(Priority_Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return 1;
     }
 
@@ -130,7 +150,9 @@ int Priority_Queue_Push(Priority_Queue_t *Queue, int Priority, void *Value, size
                         ReleaseFunc_t *ReleaseFunc) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return 1;
     }
 
@@ -144,7 +166,9 @@ Priority_Queue_Item_t Priority_Queue_Next(Priority_Queue_t *Queue) {
     Binary_Heap_KeyValuePair_t KeyValuePair = {NULL, NULL};
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return Item;
     }
 
@@ -154,7 +178,9 @@ Priority_Queue_Item_t Priority_Queue_Next(Priority_Queue_t *Queue) {
     }
     Item.Value = KeyValuePair.Value;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully retrieved Next value from Priority_Queue_t.");
+#endif
     return Item;
 }
 
@@ -164,13 +190,17 @@ int Priority_Queue_DoCallback(Priority_Queue_t *Queue, CallbackFunc_t *Callback)
     int                   RetVal = 0;
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return -1;
     }
 
     PRIORITY_QUEUE_FOREACH(Queue, Item) {
         if ( 0 != Callback(&Item) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback() function returned non-zero.");
+#endif
             RetVal += 1;
         }
     }
@@ -184,13 +214,17 @@ int Priority_Queue_DoCallbackArg(Priority_Queue_t *Queue, CallbackArgFunc_t *Cal
     int                   RetVal = 0;
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return -1;
     }
 
     PRIORITY_QUEUE_FOREACH(Queue, Item) {
         if ( 0 != Callback(&Item, Args) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Warning: Callback() function returned non-zero.");
+#endif
             RetVal += 1;
         }
     }
@@ -201,7 +235,9 @@ int Priority_Queue_DoCallbackArg(Priority_Queue_t *Queue, CallbackArgFunc_t *Cal
 int Priority_Queue_Clear(Priority_Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return 1;
     }
 
@@ -211,7 +247,9 @@ int Priority_Queue_Clear(Priority_Queue_t *Queue) {
 void Priority_Queue_Release(Priority_Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Queue* provided, nothing to release.");
+#endif
         return;
     }
 
@@ -220,6 +258,8 @@ void Priority_Queue_Release(Priority_Queue_t *Queue) {
     ZERO_CONTAINER(Queue, Priority_Queue_t);
     free(Queue);
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully released Priority_Queue_t and all held contents.");
+#endif
     return;
 }

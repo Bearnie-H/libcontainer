@@ -32,23 +32,31 @@ Queue_t *Queue_Create(size_t ValueSize, ReleaseFunc_t *ReleaseFunc) {
     Queue_t *Queue = NULL;
 
     if ( 0 == ValueSize ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: ValueSize of 0 indicated reference-type items.");
+#endif
     }
 
     if ( NULL == ReleaseFunc ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL ReleaseFunc* provided, defaulting to free().");
+#endif
         ReleaseFunc = free;
     }
 
     Queue = (Queue_t *)calloc(1, sizeof(Queue_t));
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate memory for Queue_t.");
+#endif
         return NULL;
     }
 
     Queue->Items = List_Create();
     if ( NULL == Queue->Items ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to allocate internal memory to hold items in Queue_t.");
+#endif
         free(Queue);
         return NULL;
     }
@@ -56,14 +64,18 @@ Queue_t *Queue_Create(size_t ValueSize, ReleaseFunc_t *ReleaseFunc) {
     Queue->ItemSize    = ValueSize;
     Queue->ReleaseFunc = ReleaseFunc;
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully created and initialized Queue_t.");
+#endif
     return Queue;
 }
 
 size_t Queue_Length(Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return 0;
     }
 
@@ -73,7 +85,9 @@ size_t Queue_Length(Queue_t *Queue) {
 bool Queue_IsEmpty(Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Warning: NULL Queue* provided.");
+#endif
         return true;
     }
 
@@ -83,7 +97,9 @@ bool Queue_IsEmpty(Queue_t *Queue) {
 int Queue_Push(Queue_t *Queue, void *Value, size_t ValueSize) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return 1;
     }
 
@@ -99,7 +115,9 @@ int Queue_Push(Queue_t *Queue, void *Value, size_t ValueSize) {
 void *Queue_Peek(Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return NULL;
     }
 
@@ -109,7 +127,9 @@ void *Queue_Peek(Queue_t *Queue) {
 void *Queue_Pop(Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return NULL;
     }
 
@@ -119,7 +139,9 @@ void *Queue_Pop(Queue_t *Queue) {
 int Queue_DoCallback(Queue_t *Queue, CallbackFunc_t *Callback) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return -1;
     }
 
@@ -129,7 +151,9 @@ int Queue_DoCallback(Queue_t *Queue, CallbackFunc_t *Callback) {
 int Queue_DoCallbackArg(Queue_t *Queue, CallbackArgFunc_t *Callback, void *Args) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return -1;
     }
 
@@ -139,7 +163,9 @@ int Queue_DoCallbackArg(Queue_t *Queue, CallbackArgFunc_t *Callback, void *Args)
 int Queue_Clear(Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Queue* provided.");
+#endif
         return 1;
     }
 
@@ -149,7 +175,9 @@ int Queue_Clear(Queue_t *Queue) {
 void Queue_Release(Queue_t *Queue) {
 
     if ( NULL == Queue ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Note: NULL Queue* provided, nothing to release.");
+#endif
         return;
     }
 
@@ -158,6 +186,8 @@ void Queue_Release(Queue_t *Queue) {
     ZERO_CONTAINER(Queue, Queue_t);
     free(Queue);
 
+#ifdef DEBUG
     DEBUG_PRINTF("%s", "Successfully released Queue_t.");
+#endif
     return;
 }

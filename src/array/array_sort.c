@@ -31,14 +31,18 @@
 int Array_Sort(Array_t *Array, CompareFunc_t *CompareFunc) {
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+#endif
         return 1;
     }
 
     Iterator_Invalidate(&(Array->Iterator));
 
     if ( NULL == CompareFunc ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL CompareFunc* provided.");
+#endif
         return 1;
     }
 
@@ -90,14 +94,18 @@ ssize_t Array_doPartition(Array_t *Array, CompareFunc_t *CompareFunc, ssize_t Lo
 
     Pivot = Array_GetElement(Array, (size_t)Upper);
     if ( NULL == Pivot ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: Failed to retrieve item during Sort().");
+#endif
         return -1;
     }
 
     for ( j = Lower; j < Upper; j++ ) {
         Test = Array_GetElement(Array, (size_t)j);
         if ( NULL == Test ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to retrieve item during Sort().");
+#endif
             return -1;
         }
 
@@ -119,17 +127,23 @@ int Array_doQuickSort(Array_t *Array, CompareFunc_t *CompareFunc, ssize_t Lower,
 
         Pivot = Array_doPartition(Array, CompareFunc, Lower, Upper);
         if ( 0 > Pivot ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to perform Sort() on Array_t.");
+#endif
             return 1;
         }
 
         if ( 0 != Array_doQuickSort(Array, CompareFunc, Lower, (Pivot - 1)) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to perform Sort() on Array_t.");
+#endif
             return 1;
         }
 
         if ( 0 != Array_doQuickSort(Array, CompareFunc, (Pivot + 1), Upper) ) {
+#ifdef DEBUG
             DEBUG_PRINTF("%s", "Error: Failed to perform Sort() on Array_t.");
+#endif
             return 1;
         }
     }

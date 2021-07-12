@@ -43,19 +43,25 @@ int Array_InsertN(Array_t *Array, void *Elements, size_t Index, size_t Count) {
     size_t i = 0;
 
     if ( (NULL == Array) || (NULL == Elements) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, NULL Array_t or Element provided.");
+#endif
         return 1;
     }
 
     Iterator_Invalidate(&(Array->Iterator));
 
     if ( (Array->Length < Index) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Index (%d) is out of bounds.", (int)Index);
+#endif
         return 1;
     }
 
     if ( 0 != Array_Grow(Array, Count) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, failed to ensure array has room to insert new element.");
+#endif
         return 1;
     }
 
@@ -78,8 +84,10 @@ int Array_InsertN(Array_t *Array, void *Elements, size_t Index, size_t Count) {
 
     Array->Length += Count;
 
+#ifdef DEBUG
     DEBUG_PRINTF("Successfully inserted [ %d ] element(s) starting at index [ %d ].", (int)Count,
                  (int)Index);
+#endif
     return 0;
 }
 
@@ -92,14 +100,18 @@ int Array_RemoveN(Array_t *Array, size_t Index, size_t Count) {
     size_t ReleaseIndex = 0;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, NULL Array_t provided.");
+#endif
         return 1;
     }
 
     Iterator_Invalidate(&(Array->Iterator));
 
     if ( (0 == Array->Length) || (Array->Length <= Index) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Index (%d) is out of bounds.", (int)Index);
+#endif
         return 1;
     }
 
@@ -131,8 +143,10 @@ int Array_RemoveN(Array_t *Array, size_t Index, size_t Count) {
 
     Array->Length -= Count;
 
+#ifdef DEBUG
     DEBUG_PRINTF("Successfully removed [ %d ] element(s) starting at index [ %d ].", (int)Count,
                  (int)Index);
+#endif
     return 0;
 }
 
@@ -145,12 +159,16 @@ int Array_ReplaceN(Array_t *Array, void *Elements, size_t Index, size_t Count) {
     size_t ElementSize = sizeof(void *), i = 0;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+#endif
         return 1;
     }
 
     if ( (Array->Length <= Index) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Error: Index (%d) is out of bounds.", (int)Index);
+#endif
         return 1;
     }
 
@@ -172,12 +190,16 @@ void *Array_GetElement(Array_t *Array, size_t Index) {
     void *Element = NULL;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, NULL Array_t provided.");
+#endif
         return NULL;
     }
 
     if ( (0 == Array->Length) || (Array->Length <= Index) ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Error, requested index [ %d ] is out of bounds.", (int)Index);
+#endif
         return NULL;
     }
 
@@ -187,7 +209,9 @@ void *Array_GetElement(Array_t *Array, size_t Index) {
         Element = (void *)&(Array->Contents.ContentBytes[Index * Array->ElementSize]);
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("Successfully retrieved element at index [ %d ].", (int)Index);
+#endif
     return Element;
 }
 
@@ -197,7 +221,9 @@ int Array_SetElement(Array_t *Array, void *Element, size_t Index) {
 
     ExistingElement = Array_GetElement(Array, Index);
     if ( NULL == ExistingElement ) {
+#ifdef DEBUG
         DEBUG_PRINTF("Error: Failed to get element at index [ %d ] to update value.", (int)Index);
+#endif
         return 1;
     }
 
@@ -207,7 +233,9 @@ int Array_SetElement(Array_t *Array, void *Element, size_t Index) {
         memcpy(ExistingElement, Element, Array->ElementSize);
     }
 
+#ifdef DEBUG
     DEBUG_PRINTF("Successfully set element at index [ %d ].", (int)Index);
+#endif
     return 0;
 }
 
@@ -216,7 +244,9 @@ void *Array_PopElement(Array_t *Array, size_t Index) {
     void *ElementContents = NULL;
 
     if ( NULL == Array ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error: NULL Array* provided.");
+#endif
         return NULL;
     }
 
@@ -226,7 +256,9 @@ void *Array_PopElement(Array_t *Array, size_t Index) {
      */
     ElementContents = Array_GetElement(Array, Index);
     if ( NULL == ElementContents ) {
+#ifdef DEBUG
         DEBUG_PRINTF("%s", "Error, Failed to GetElement during PopElement.");
+#endif
         return NULL;
     }
 
@@ -247,6 +279,8 @@ void *Array_PopElement(Array_t *Array, size_t Index) {
 
     Array->Length -= 1;
 
+#ifdef DEBUG
     DEBUG_PRINTF("Successfully popped element at index [ %d ] from Array_t.", (int)Index);
+#endif
     return ElementContents;
 }
