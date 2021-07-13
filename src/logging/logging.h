@@ -75,6 +75,10 @@ extern "C" {
 
 #else
 
+#define TEST_NOT_IMPLEMENTED ((void)0)
+#define TEST_SUCCESSFUL ((void)0)
+#define TEST_FAILURE ((void)0)
+
 #endif
 
 #if defined(TESTING)

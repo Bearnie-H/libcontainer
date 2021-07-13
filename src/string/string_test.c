@@ -52,7 +52,7 @@ int Test_string(void) {
     FailedTests += Test_String_Compare();
     FailedTests += Test_String_Clear();
 
-    FailedTests += Test_string_fmt();
+    // FailedTests += Test_string_fmt();
 
     return FailedTests;
 }
